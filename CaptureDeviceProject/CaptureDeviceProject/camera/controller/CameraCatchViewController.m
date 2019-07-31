@@ -9,6 +9,7 @@
 #import "CameraCatchViewController.h"
 #import "CameraCatchHandler.h"
 #import <AVFoundation/AVFoundation.h>
+#import <ReplayKit/ReplayKit.h>
 
 @interface CameraCatchViewController ()
 
@@ -19,7 +20,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [self configCamera];
+//    [self configCamera];
+    
+    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.gunmm.CaptureDeviceProject"];
+    [userDefaults setObject:@"http://www.baidu.com" forKey:@"rtmpPushUrl"];
 }
 
 - (void)configCamera {
@@ -42,6 +46,21 @@
     [cameraCatchHandler configWithCameraConfigModel:cameraConfigModel];
     [cameraCatchHandler startRunning];
 }
+
+- (IBAction)beginBtnAct:(id)sender {
+    NSLog(@"111");
+
+    if (@available(iOS 12.0, *)) {
+        RPSystemBroadcastPickerView *_broadPickerView = [[RPSystemBroadcastPickerView alloc] initWithFrame:self.view.bounds];
+        _broadPickerView.preferredExtension = @"gunmm.CaptureDeviceProject.ScreenCapture";
+        [self.view addSubview:_broadPickerView];
+    } else {
+        // Fallback on earlier versions
+    }
+  
+   
+}
+
 
 
 @end

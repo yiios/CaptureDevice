@@ -1,0 +1,6 @@
+framework module Pods_CaptureDeviceProject {
+  umbrella header "Pods-CaptureDeviceProject-umbrella.h"
+
+  export *
+  module * { export * }
+}

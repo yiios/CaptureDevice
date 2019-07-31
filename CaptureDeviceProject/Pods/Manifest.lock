@@ -1,0 +1,16 @@
+PODS:
+  - LFLiveKit (2.6)
+
+DEPENDENCIES:
+  - LFLiveKit
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - LFLiveKit
+
+SPEC CHECKSUMS:
+  LFLiveKit: 2219563721f8aa0f188effc3395a06e2d53b23f2
+
+PODFILE CHECKSUM: 47716567086b46ef02c7e01a9d9bc8f053c17b5b
+
+COCOAPODS: 1.7.0.beta.3

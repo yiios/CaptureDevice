@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <LFLiveKit/LFLiveKit.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
