@@ -19,6 +19,10 @@
 #import "LFLiveDebug.h"
 #import "LFStreamRTMPSocket.h"
 #import "LFHardwareVideoEncoder.h"
+#import "GPUImageFilter.h"
+#import "GPUImageVideoCamera.h"
+
+
 
 #endif
 

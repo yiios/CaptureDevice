@@ -70,6 +70,19 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     return self;
 }
 
+- (instancetype)initWithScreenCapure {
+    if (!(self = [super init]))
+    {
+        return nil;
+    }
+    
+    
+    
+    captureAsYUV = YES;
+    _preferredConversion = kColorConversion709;
+    return self;
+}
+
 - (id)initWithSessionPreset:(NSString *)sessionPreset cameraPosition:(AVCaptureDevicePosition)cameraPosition; 
 {
 	if (!(self = [super init]))
@@ -713,7 +726,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
             
 //            if (!allTargetsWantMonochromeData)
 //            {
-                [self convertYUVToRGBOutput];
+//                [self convertYUVToRGBOutput];
 //            }
 
             int rotatedImageBufferWidth = bufferWidth, rotatedImageBufferHeight = bufferHeight;

@@ -26,6 +26,12 @@
 
 @property (nonatomic, assign) BOOL canUpload;
 
+//@property (nonatomic, strong) GPUImageOutput<GPUImageInput> *filter;
+@property (nonatomic, strong) GPUImageOutput<GPUImageInput> *output;
+
+@property (nonatomic, strong) GPUImageVideoCamera *videoCamera;
+
+
 
 @end
 
@@ -87,8 +93,24 @@
     NSLog(@"------url: %@ -------", [userDefaults valueForKey:@"rtmpPushUrl"]);
 
     NSLog(@"------Start-------");
+    self.videoCamera = [[GPUImageVideoCamera alloc] initWithScreenCapure];
     
     [self.socket start];
+    
+    
+    self.output = [[GPUImageFilter alloc] init];
+//    self.filter = [[LFGPUImageEmptyFilter alloc] init];
+//    [self.videoCamera addTarget:self.filter];
+//    [self.filter addTarget:self.output];
+//    [self.output addTarget:self.gpuImageView];
+//
+//    //< 输出数据
+//    __weak typeof(self) _self = self;
+    [self.output setFrameProcessingCompletionBlock:^(GPUImageOutput *output, CMTime time) {
+        NSLog(@"-------");
+//        [_self processVideo:output];
+    }];
+
 }
 
 - (void)broadcastPaused {
@@ -113,34 +135,45 @@
     switch (sampleBufferType) {
         case RPSampleBufferTypeVideo:
             // Handle video sample buffer
-            NSLog(@"----RPSampleBufferTypeVideo------");
-            if (self.canUpload) {
-                CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-                CIImage *sourceImage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
-                sourceImage = [sourceImage imageByApplyingOrientation:kCGImagePropertyOrientationRight];
-                
-                CGFloat outputWidth  = 1280;
-                CGFloat outputHeight = 720;
-                CGFloat inputWidth = sourceImage.extent.size.width;
-                CGFloat inputHeight = sourceImage.extent.size.height;
-                CGAffineTransform tranfrom = CGAffineTransformMakeScale(outputWidth/inputWidth, outputHeight/inputHeight);
-                CIImage *outputImage = [sourceImage imageByApplyingTransform:tranfrom];
-
-//                CIFilter *filter = [CIFilter filterWithName:@"CISepiaTone"];
-//                [filter setValue:outputImage forKey:kCIInputImageKey];
-//                [filter setValue:@0.8f forKey:kCIInputIntensityKey];
-//                CIImage  *outputImg = [filter outputImage];
-                //这句话最主要
-                CIContext *context = [CIContext contextWithOptions:nil];
-                CGImageRef cgImage = [context createCGImage:outputImage fromRect:[outputImage extent]];
-                
-                
-              
-                [self.videoEncoder encodeVideoData:[self pixelBufferFromCGImage:cgImage] timeStamp:(CACurrentMediaTime()*1000)];
-            }
+//            NSLog(@"----RPSampleBufferTypeVideo------");
             
+            [self.videoCamera processVideoSampleBuffer:sampleBuffer];
             
-            
+//            if (self.canUpload) {
+//                CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+//                CIImage *sourceImage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
+//                sourceImage = [sourceImage imageByApplyingOrientation:kCGImagePropertyOrientationRight];
+//
+//                CGFloat outputWidth  = 1280;
+//                CGFloat outputHeight = 720;
+//                CGFloat inputWidth = sourceImage.extent.size.width;
+//                CGFloat inputHeight = sourceImage.extent.size.height;
+//                CGAffineTransform tranfrom = CGAffineTransformMakeScale(outputWidth/inputWidth, outputHeight/inputHeight);
+//                CIImage *outputImage = [sourceImage imageByApplyingTransform:tranfrom];
+//
+////                //这句话最主要
+//                CIContext *context = [CIContext contextWithOptions:nil];
+////                CGImageRef cgImage = [context createCGImage:outputImage fromRect:[outputImage extent]];
+//
+//                CVPixelBufferRef outputPixelBuffer = NULL;
+//                if (!outputPixelBuffer) {
+//                    //推流
+//                    NSDictionary* pixelBufferOptions = @{
+//                                                         (NSString*) kCVPixelBufferWidthKey : @(outputWidth),
+//                                                         (NSString*) kCVPixelBufferHeightKey : @(outputHeight),
+//                                                         (NSString*) kCVPixelBufferOpenGLESCompatibilityKey : @YES,
+//                                                         (NSString*) kCVPixelBufferIOSurfacePropertiesKey : @{}
+//                                                         };
+//                    CVReturn ret = CVPixelBufferCreate(kCFAllocatorDefault, outputWidth, outputHeight, kCVPixelFormatType_32BGRA, (__bridge CFDictionaryRef)pixelBufferOptions, &outputPixelBuffer);
+//
+//                    if (ret!= noErr) {
+//                        NSLog(@"创建streamer buffer失败");
+//                        outputPixelBuffer = nil;
+//                    }
+//                }
+//                [context render:outputImage toCVPixelBuffer:outputPixelBuffer bounds:outputImage.extent colorSpace:CGColorSpaceCreateDeviceRGB()];
+//                [self.videoEncoder encodeVideoData:outputPixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+//            }
             break;
         case RPSampleBufferTypeAudioApp:
             // Handle audio sample buffer for app audio
@@ -156,55 +189,6 @@
         default:
             break;
     }
-}
-
-- (CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image
-{
-    NSDictionary *options = @{
-                              (NSString*)kCVPixelBufferCGImageCompatibilityKey : @YES,
-                              (NSString*)kCVPixelBufferCGBitmapContextCompatibilityKey : @YES,
-                              (NSString*)kCVPixelBufferIOSurfacePropertiesKey: [NSDictionary dictionary]
-                              };
-    CVPixelBufferRef pxbuffer = NULL;
-    
-    CGFloat frameWidth = CGImageGetWidth(image);
-    CGFloat frameHeight = CGImageGetHeight(image);
-    
-    CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault,
-                                          frameWidth,
-                                          frameHeight,
-                                          kCVPixelFormatType_32BGRA,
-                                          (__bridge CFDictionaryRef) options,
-                                          &pxbuffer);
-    
-    NSParameterAssert(status == kCVReturnSuccess && pxbuffer != NULL);
-    
-    CVPixelBufferLockBaseAddress(pxbuffer, 0);
-    void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
-    NSParameterAssert(pxdata != NULL);
-    
-    CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
-    
-    CGContextRef context = CGBitmapContextCreate(pxdata,
-                                                 frameWidth,
-                                                 frameHeight,
-                                                 8,
-                                                 CVPixelBufferGetBytesPerRow(pxbuffer),
-                                                 rgbColorSpace,
-                                                 (CGBitmapInfo)kCGImageAlphaNoneSkipFirst);
-    NSParameterAssert(context);
-    CGContextConcatCTM(context, CGAffineTransformIdentity);
-    CGContextDrawImage(context, CGRectMake(0,
-                                           0,
-                                           frameWidth,
-                                           frameHeight),
-                       image);
-    CGColorSpaceRelease(rgbColorSpace);
-    CGContextRelease(context);
-    
-    CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
-    
-    return pxbuffer;
 }
 
 - (uint64_t)uploadTimestamp:(uint64_t)captureTimestamp{
@@ -223,9 +207,10 @@
 }
 
 - (void)videoEncoder:(nullable id<LFVideoEncoding>)encoder videoFrame:(nullable LFVideoFrame *)frame {
+    NSLog(@"------");
     //上传 时间戳对齐
 //    if (self.uploading){
-    [self pushSendBuffer:frame];
+//    [self pushSendBuffer:frame];
 //    }
 }
 
