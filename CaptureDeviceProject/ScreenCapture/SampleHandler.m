@@ -22,17 +22,16 @@
 
 @property (nonatomic, strong) id<LFVideoEncoding> videoEncoder;
 
-@property (nonatomic, strong) LFLiveVideoConfiguration *videoConfiguration;
-
 @property (nonatomic, assign) BOOL canUpload;
 
-//@property (nonatomic, strong) GPUImageOutput<GPUImageInput> *filter;
-@property (nonatomic, strong) GPUImageOutput<GPUImageInput> *output;
+@property (nonatomic, strong) CIContext *ciContext;
 
-@property (nonatomic, strong) GPUImageVideoCamera *videoCamera;
+@property (nonatomic, strong) NSUserDefaults *userDefaults;
 
+@property (nonatomic, strong) LFVideoFrame *oldRecordFrame;
+@property (nonatomic, strong) LFVideoFrame *newrecordFrame;
 
-
+@property (nonatomic, strong) NSTimer *timer;
 @end
 
 @implementation SampleHandler
@@ -40,8 +39,7 @@
 - (LFLiveStreamInfo *)streamInfo {
     if (!_streamInfo) {
         _streamInfo = [[LFLiveStreamInfo alloc] init];
-        _streamInfo.url = @"rtmp://push-rtmp-l6.douyincdn.com/third/stream-6719745786529286916?did=43547290386&k=b93356042023011d&t=1565172452&uid=101863542832";
-        
+        _streamInfo.url = [_userDefaults objectForKey:@"urlStr"];
     }
     
     return _streamInfo;
@@ -57,7 +55,7 @@
 
 - (id<LFVideoEncoding>)videoEncoder {
     if (!_videoEncoder) {
-        _videoEncoder = [[LFHardwareVideoEncoder alloc] initWithVideoStreamConfiguration:[LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_High3 outputImageOrientation:UIInterfaceOrientationLandscapeRight]];
+        _videoEncoder = [[LFHardwareVideoEncoder alloc] initWithVideoStreamConfiguration:[LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_Medium3 outputImageOrientation:UIInterfaceOrientationLandscapeRight]];
         [_videoEncoder setDelegate:self];
     }
     
@@ -67,50 +65,30 @@
 
 
 - (void)broadcastStartedWithSetupInfo:(NSDictionary<NSString *,NSObject *> *)setupInfo {
-    // User has requested to start the broadcast. Setup info from the UI extension can be supplied but optional.
-//    NSString *urlStr = @"http://web.juhe.cn:8080/constellation/getAll";
-//    urlStr = [urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-//
-//    //创建request
-//    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlStr]];
-//    request.HTTPMethod = @"POST";
-//    request.HTTPBody = [@"key=12bb68a2f0a5b97bed27d660ef23229f&consName=金牛座&type=today" dataUsingEncoding:NSUTF8StringEncoding];
-//
-//    //创建NSURLSession
-//    NSURLSession *session = [NSURLSession sharedSession];
-//
-//    //创建任务
-//    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-//        NSLog(@"****%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-//    }];
-//
-//    //开始任务
-//    [task resume];
     
-    
-    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.gunmm.CaptureDeviceProject"];
-    
-    NSLog(@"------url: %@ -------", [userDefaults valueForKey:@"rtmpPushUrl"]);
-
-    NSLog(@"------Start-------");
-    self.videoCamera = [[GPUImageVideoCamera alloc] initWithScreenCapure];
-    
+    self.userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.gunmm.CaptureDeviceProject"];
     [self.socket start];
+    _ciContext = [CIContext contextWithOptions:nil];
+    __weak typeof(self) weakSelf = self;
+////    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkFPS) userInfo:nil repeats:YES];
+////    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+////    [[NSRunLoop mainRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
+//    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1.
+//                                             target:self
+//                                           selector:@selector(checkFPS:)
+//                                           userInfo:nil
+//                                            repeats:YES];
     
-    
-    self.output = [[GPUImageFilter alloc] init];
-//    self.filter = [[LFGPUImageEmptyFilter alloc] init];
-//    [self.videoCamera addTarget:self.filter];
-//    [self.filter addTarget:self.output];
-//    [self.output addTarget:self.gpuImageView];
-//
-//    //< 输出数据
-//    __weak typeof(self) _self = self;
-    [self.output setFrameProcessingCompletionBlock:^(GPUImageOutput *output, CMTime time) {
-        NSLog(@"-------");
-//        [_self processVideo:output];
-    }];
+    TestTimer *testT = [TestTimer new];
+    [testT beginTimer];
+}
 
+
+- (void)checkFPS:(NSTimer *)timer {
+    if (self.oldRecordFrame.timestamp == self.newrecordFrame.timestamp) {
+        NSLog(@"s**********补帧了");
+        [self pushSendBuffer:self.newrecordFrame];
+    }
 }
 
 - (void)broadcastPaused {
@@ -136,43 +114,10 @@
         case RPSampleBufferTypeVideo:
             // Handle video sample buffer
 //            NSLog(@"----RPSampleBufferTypeVideo------");
-            
-            [self.videoCamera processVideoSampleBuffer:sampleBuffer];
+            [self dealWithSampleBuffer:sampleBuffer];
             
 //            if (self.canUpload) {
-//                CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-//                CIImage *sourceImage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
-//                sourceImage = [sourceImage imageByApplyingOrientation:kCGImagePropertyOrientationRight];
-//
-//                CGFloat outputWidth  = 1280;
-//                CGFloat outputHeight = 720;
-//                CGFloat inputWidth = sourceImage.extent.size.width;
-//                CGFloat inputHeight = sourceImage.extent.size.height;
-//                CGAffineTransform tranfrom = CGAffineTransformMakeScale(outputWidth/inputWidth, outputHeight/inputHeight);
-//                CIImage *outputImage = [sourceImage imageByApplyingTransform:tranfrom];
-//
-////                //这句话最主要
-//                CIContext *context = [CIContext contextWithOptions:nil];
-////                CGImageRef cgImage = [context createCGImage:outputImage fromRect:[outputImage extent]];
-//
-//                CVPixelBufferRef outputPixelBuffer = NULL;
-//                if (!outputPixelBuffer) {
-//                    //推流
-//                    NSDictionary* pixelBufferOptions = @{
-//                                                         (NSString*) kCVPixelBufferWidthKey : @(outputWidth),
-//                                                         (NSString*) kCVPixelBufferHeightKey : @(outputHeight),
-//                                                         (NSString*) kCVPixelBufferOpenGLESCompatibilityKey : @YES,
-//                                                         (NSString*) kCVPixelBufferIOSurfacePropertiesKey : @{}
-//                                                         };
-//                    CVReturn ret = CVPixelBufferCreate(kCFAllocatorDefault, outputWidth, outputHeight, kCVPixelFormatType_32BGRA, (__bridge CFDictionaryRef)pixelBufferOptions, &outputPixelBuffer);
-//
-//                    if (ret!= noErr) {
-//                        NSLog(@"创建streamer buffer失败");
-//                        outputPixelBuffer = nil;
-//                    }
-//                }
-//                [context render:outputImage toCVPixelBuffer:outputPixelBuffer bounds:outputImage.extent colorSpace:CGColorSpaceCreateDeviceRGB()];
-//                [self.videoEncoder encodeVideoData:outputPixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+
 //            }
             break;
         case RPSampleBufferTypeAudioApp:
@@ -207,10 +152,12 @@
 }
 
 - (void)videoEncoder:(nullable id<LFVideoEncoding>)encoder videoFrame:(nullable LFVideoFrame *)frame {
-    NSLog(@"------");
     //上传 时间戳对齐
 //    if (self.uploading){
-//    [self pushSendBuffer:frame];
+    [self pushSendBuffer:frame];
+    self.oldRecordFrame = self.newrecordFrame;
+    self.newrecordFrame = frame;
+    
 //    }
 }
 
@@ -232,23 +179,7 @@
     } else {
         self.canUpload = NO;
     }
-    //    if (status == LFLiveStart) {
-    //        if (!self.uploading) {
-    //            self.AVAlignment = NO;
-    //            self.hasCaptureAudio = NO;
-    //            self.hasKeyFrameVideo = NO;
-    //            self.relativeTimestamps = 0;
-    //            self.uploading = YES;
-    //        }
-    //    } else if(status == LFLiveStop || status == LFLiveError){
-    //        self.uploading = NO;
-    //    }
-    //    dispatch_async(dispatch_get_main_queue(), ^{
-    //        self.state = status;
-    //        if (self.delegate && [self.delegate respondsToSelector:@selector(liveSession:liveStateDidChange:)]) {
-    //            [self.delegate liveSession:self liveStateDidChange:status];
-    //        }
-    //    });
+  
 }
 
 - (void)socketDidError:(nullable id<LFStreamSocket>)socket errorCode:(LFLiveSocketErrorCode)errorCode {
@@ -287,6 +218,28 @@
     //            }
     //        }
     //    }
+}
+
+- (void)dealWithSampleBuffer:(CMSampleBufferRef)buffer {
+    CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(buffer);
+    
+    CIImage *ciimage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
+    size_t width                        = CVPixelBufferGetWidth(pixelBuffer);
+    size_t height                       = CVPixelBufferGetHeight(pixelBuffer);
+    NSLog(@"----%zu,   %zu", width, height);
+    // 旋转的方法
+    CIImage *wImage = [ciimage imageByApplyingCGOrientation:kCGImagePropertyOrientationLeft];
+    
+    CIImage *newImage = [wImage imageByApplyingTransform:CGAffineTransformMakeScale(1, 1)];
+    CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+    CVPixelBufferRef newPixcelBuffer = nil;
+    CVPixelBufferCreate(kCFAllocatorDefault, height, width, kCVPixelFormatType_32BGRA, nil, &newPixcelBuffer);
+    [_ciContext render:newImage toCVPixelBuffer:newPixcelBuffer];
+    [self.videoEncoder encodeVideoData:newPixcelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+    
+ 
+    
+    CVPixelBufferRelease(newPixcelBuffer);
 }
 
 @end

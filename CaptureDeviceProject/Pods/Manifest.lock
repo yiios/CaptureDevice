@@ -1,16 +1,24 @@
 PODS:
+  - IQKeyboardManager (6.2.1)
   - LFLiveKit (2.6)
+  - Toast (4.0.0)
 
 DEPENDENCIES:
+  - IQKeyboardManager
   - LFLiveKit
+  - Toast
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - IQKeyboardManager
     - LFLiveKit
+    - Toast
 
 SPEC CHECKSUMS:
+  IQKeyboardManager: 964638372b4a61892cc74fdfa6fd26de8c9464a2
   LFLiveKit: 2219563721f8aa0f188effc3395a06e2d53b23f2
+  Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
 
-PODFILE CHECKSUM: 47716567086b46ef02c7e01a9d9bc8f053c17b5b
+PODFILE CHECKSUM: c661d1a5656b4f7121ca46c2c7a66fe8a14e129c
 
-COCOAPODS: 1.7.0.beta.3
+COCOAPODS: 1.7.5

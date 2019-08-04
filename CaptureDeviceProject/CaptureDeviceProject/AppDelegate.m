@@ -8,6 +8,9 @@
 
 #import "AppDelegate.h"
 #import "CameraCatchViewController.h"
+#import "ScreenCatchViewController.h"
+#import "BaseNavigationController.h"
+#import <IQKeyboardManager/IQKeyboardManager.h>
 
 @interface AppDelegate ()
 
@@ -19,9 +22,17 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
+    IQKeyboardManager *manager = [IQKeyboardManager sharedManager];
+    manager.enable = YES;
+    manager.shouldResignOnTouchOutside = YES;
+    manager.shouldToolbarUsesTextFieldTintColor = YES;
+    manager.enableAutoToolbar = YES;
+    
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     [self.window makeKeyAndVisible];
-    self.window.rootViewController = [[CameraCatchViewController alloc] init];
+    ScreenCatchViewController *screenCatchViewController = [[ScreenCatchViewController alloc] init];
+    BaseNavigationController *screenCatchNav = [[BaseNavigationController alloc] initWithRootViewController:screenCatchViewController];
+    self.window.rootViewController = screenCatchNav;
     
     [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:@"https://www.baidu.com"] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSLog(@"");

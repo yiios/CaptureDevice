@@ -8,6 +8,30 @@
 
 /* Begin PBXBuildFile section */
 		74F304F39BD212AB75E03124 /* Pods_CaptureDeviceProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70DC69F188720B81DC66933C /* Pods_CaptureDeviceProject.framework */; };
+		7647932122F5B413005B622E /* SelectListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7647931F22F5B413005B622E /* SelectListViewController.m */; };
+		7647932222F5B413005B622E /* SelectListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7647932022F5B413005B622E /* SelectListViewController.xib */; };
+		7657731F22F5D3C50042A8FF /* ScreenCatchTableFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7657731E22F5D3C50042A8FF /* ScreenCatchTableFooterView.m */; };
+		7657732122F5D3D10042A8FF /* ScreenCatchTableFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7657732022F5D3D10042A8FF /* ScreenCatchTableFooterView.xib */; };
+		7657732922F5E2420042A8FF /* UIViewExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 7657732822F5E2420042A8FF /* UIViewExt.m */; };
+		765FCAD722F51CBF00948374 /* CameraCatchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 765FCACE22F51CBF00948374 /* CameraCatchViewController.m */; };
+		765FCAD822F51CBF00948374 /* CameraCatchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 765FCACF22F51CBF00948374 /* CameraCatchViewController.xib */; };
+		765FCAD922F51CBF00948374 /* CameraConfigModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 765FCAD322F51CBF00948374 /* CameraConfigModel.m */; };
+		765FCADA22F51CBF00948374 /* CameraCatchHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 765FCAD422F51CBF00948374 /* CameraCatchHandler.m */; };
+		765FCADE22F51CF800948374 /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 765FCADD22F51CF800948374 /* BaseViewController.m */; };
+		765FCAE622F523FD00948374 /* BaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 765FCAE522F523FD00948374 /* BaseNavigationController.m */; };
+		765FCAED22F5265B00948374 /* captureInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 765FCAEC22F5265B00948374 /* captureInfo.plist */; };
+		765FCAF122F5297100948374 /* CSConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 765FCAF022F5297100948374 /* CSConstants.m */; };
+		765FCAF622F52B1E00948374 /* NavBgImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 765FCAF522F52B1D00948374 /* NavBgImage.m */; };
+		765FCAFD22F533A000948374 /* ScreenCatchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 765FCAF922F533A000948374 /* ScreenCatchViewController.xib */; };
+		765FCAFE22F533A000948374 /* ScreenCatchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 765FCAFA22F533A000948374 /* ScreenCatchViewController.m */; };
+		765FCB0222F5340300948374 /* ClickJumpTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 765FCB0022F5340300948374 /* ClickJumpTableViewCell.m */; };
+		765FCB0322F5340300948374 /* ClickJumpTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 765FCB0122F5340300948374 /* ClickJumpTableViewCell.xib */; };
+		765FCB0722F5376100948374 /* SetPushUrlViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 765FCB0522F5376100948374 /* SetPushUrlViewController.m */; };
+		765FCB0822F5376100948374 /* SetPushUrlViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 765FCB0622F5376100948374 /* SetPushUrlViewController.xib */; };
+		765FCB0B22F5730200948374 /* UIView+HUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 765FCB0A22F5730200948374 /* UIView+HUD.m */; };
+		7676F0D422F6D155003EF940 /* TestTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7676F0D322F6D155003EF940 /* TestTimer.m */; };
+		7676F0D522F6D155003EF940 /* TestTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7676F0D322F6D155003EF940 /* TestTimer.m */; };
+		76C9072A22F5C1A8006BA6E5 /* SelectListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C9072922F5C1A8006BA6E5 /* SelectListModel.m */; };
 		CD93A6E022F1374D009190E2 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD93A6DF22F1374D009190E2 /* ReplayKit.framework */; };
 		CD93A6E422F1374D009190E2 /* SampleHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = CD93A6E322F1374D009190E2 /* SampleHandler.m */; };
 		CD93A6EB22F1374D009190E2 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD93A6DF22F1374D009190E2 /* ReplayKit.framework */; };
@@ -21,10 +45,6 @@
 		CD97050622DC6D9600132518 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CD97050522DC6D9600132518 /* main.m */; };
 		CD97051022DC6D9600132518 /* CaptureDeviceProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD97050F22DC6D9600132518 /* CaptureDeviceProjectTests.m */; };
 		CD97051B22DC6D9600132518 /* CaptureDeviceProjectUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD97051A22DC6D9600132518 /* CaptureDeviceProjectUITests.m */; };
-		CD97053822DC6F0D00132518 /* CameraCatchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD97053322DC6F0D00132518 /* CameraCatchViewController.m */; };
-		CD97053922DC6F0D00132518 /* CameraCatchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD97053422DC6F0D00132518 /* CameraCatchViewController.xib */; };
-		CD97053C22DC6F9200132518 /* CameraCatchHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = CD97053B22DC6F9200132518 /* CameraCatchHandler.m */; };
-		CD97053F22DC6FC500132518 /* CameraConfigModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CD97053E22DC6FC500132518 /* CameraConfigModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,7 +95,48 @@
 
 /* Begin PBXFileReference section */
 		70DC69F188720B81DC66933C /* Pods_CaptureDeviceProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CaptureDeviceProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		83E51EBA627AED0ED6A98E7B /* Pods-CaptureDeviceProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureDeviceProject.debug.xcconfig"; path = "Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject.debug.xcconfig"; sourceTree = "<group>"; };
+		7647931E22F5B413005B622E /* SelectListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelectListViewController.h; sourceTree = "<group>"; };
+		7647931F22F5B413005B622E /* SelectListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelectListViewController.m; sourceTree = "<group>"; };
+		7647932022F5B413005B622E /* SelectListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectListViewController.xib; sourceTree = "<group>"; };
+		7657731D22F5D3C50042A8FF /* ScreenCatchTableFooterView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenCatchTableFooterView.h; sourceTree = "<group>"; };
+		7657731E22F5D3C50042A8FF /* ScreenCatchTableFooterView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenCatchTableFooterView.m; sourceTree = "<group>"; };
+		7657732022F5D3D10042A8FF /* ScreenCatchTableFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ScreenCatchTableFooterView.xib; sourceTree = "<group>"; };
+		7657732722F5E2410042A8FF /* UIViewExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIViewExt.h; sourceTree = "<group>"; };
+		7657732822F5E2420042A8FF /* UIViewExt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIViewExt.m; sourceTree = "<group>"; };
+		765FCACE22F51CBF00948374 /* CameraCatchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraCatchViewController.m; sourceTree = "<group>"; };
+		765FCACF22F51CBF00948374 /* CameraCatchViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CameraCatchViewController.xib; sourceTree = "<group>"; };
+		765FCAD022F51CBF00948374 /* CameraCatchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraCatchViewController.h; sourceTree = "<group>"; };
+		765FCAD222F51CBF00948374 /* CameraCatchHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraCatchHandler.h; sourceTree = "<group>"; };
+		765FCAD322F51CBF00948374 /* CameraConfigModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraConfigModel.m; sourceTree = "<group>"; };
+		765FCAD422F51CBF00948374 /* CameraCatchHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraCatchHandler.m; sourceTree = "<group>"; };
+		765FCAD522F51CBF00948374 /* CameraConfigModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraConfigModel.h; sourceTree = "<group>"; };
+		765FCADC22F51CF800948374 /* BaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseViewController.h; sourceTree = "<group>"; };
+		765FCADD22F51CF800948374 /* BaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseViewController.m; sourceTree = "<group>"; };
+		765FCAE422F523FD00948374 /* BaseNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseNavigationController.h; sourceTree = "<group>"; };
+		765FCAE522F523FD00948374 /* BaseNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseNavigationController.m; sourceTree = "<group>"; };
+		765FCAEC22F5265B00948374 /* captureInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = captureInfo.plist; sourceTree = "<group>"; };
+		765FCAEF22F5297100948374 /* CSConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CSConstants.h; sourceTree = "<group>"; };
+		765FCAF022F5297100948374 /* CSConstants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CSConstants.m; sourceTree = "<group>"; };
+		765FCAF322F52A0F00948374 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		765FCAF422F52B1D00948374 /* NavBgImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavBgImage.h; sourceTree = "<group>"; };
+		765FCAF522F52B1D00948374 /* NavBgImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavBgImage.m; sourceTree = "<group>"; };
+		765FCAF822F533A000948374 /* ScreenCatchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenCatchViewController.h; sourceTree = "<group>"; };
+		765FCAF922F533A000948374 /* ScreenCatchViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ScreenCatchViewController.xib; sourceTree = "<group>"; };
+		765FCAFA22F533A000948374 /* ScreenCatchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScreenCatchViewController.m; sourceTree = "<group>"; };
+		765FCAFF22F5340300948374 /* ClickJumpTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClickJumpTableViewCell.h; sourceTree = "<group>"; };
+		765FCB0022F5340300948374 /* ClickJumpTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClickJumpTableViewCell.m; sourceTree = "<group>"; };
+		765FCB0122F5340300948374 /* ClickJumpTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClickJumpTableViewCell.xib; sourceTree = "<group>"; };
+		765FCB0422F5376100948374 /* SetPushUrlViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SetPushUrlViewController.h; sourceTree = "<group>"; };
+		765FCB0522F5376100948374 /* SetPushUrlViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SetPushUrlViewController.m; sourceTree = "<group>"; };
+		765FCB0622F5376100948374 /* SetPushUrlViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SetPushUrlViewController.xib; sourceTree = "<group>"; };
+		765FCB0922F5730200948374 /* UIView+HUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+HUD.h"; sourceTree = "<group>"; };
+		765FCB0A22F5730200948374 /* UIView+HUD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+HUD.m"; sourceTree = "<group>"; };
+		7676F0D222F6D155003EF940 /* TestTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestTimer.h; sourceTree = "<group>"; };
+		7676F0D322F6D155003EF940 /* TestTimer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestTimer.m; sourceTree = "<group>"; };
+		76C9072822F5C1A8006BA6E5 /* SelectListModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelectListModel.h; sourceTree = "<group>"; };
+		76C9072922F5C1A8006BA6E5 /* SelectListModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelectListModel.m; sourceTree = "<group>"; };
+		7F0FDCEB97630057A8FC3AD7 /* Pods-CaptureDeviceProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureDeviceProject.debug.xcconfig"; path = "Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject.debug.xcconfig"; sourceTree = "<group>"; };
+		96A4689A7507BFC71587A013 /* Pods-CaptureDeviceProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureDeviceProject.release.xcconfig"; path = "Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject.release.xcconfig"; sourceTree = "<group>"; };
 		CD93A6DD22F1374D009190E2 /* ScreenCapture.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ScreenCapture.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD93A6DF22F1374D009190E2 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		CD93A6E222F1374D009190E2 /* SampleHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SampleHandler.h; sourceTree = "<group>"; };
@@ -93,7 +154,6 @@
 		CD9704F722DC6D9500132518 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		CD9704FF22DC6D9600132518 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CD97050222DC6D9600132518 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		CD97050422DC6D9600132518 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CD97050522DC6D9600132518 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		CD97050B22DC6D9600132518 /* CaptureDeviceProjectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CaptureDeviceProjectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD97050F22DC6D9600132518 /* CaptureDeviceProjectTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CaptureDeviceProjectTests.m; sourceTree = "<group>"; };
@@ -101,14 +161,6 @@
 		CD97051622DC6D9600132518 /* CaptureDeviceProjectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CaptureDeviceProjectUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD97051A22DC6D9600132518 /* CaptureDeviceProjectUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CaptureDeviceProjectUITests.m; sourceTree = "<group>"; };
 		CD97051C22DC6D9600132518 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CD97053322DC6F0D00132518 /* CameraCatchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraCatchViewController.m; sourceTree = "<group>"; };
-		CD97053422DC6F0D00132518 /* CameraCatchViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CameraCatchViewController.xib; sourceTree = "<group>"; };
-		CD97053522DC6F0D00132518 /* CameraCatchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraCatchViewController.h; sourceTree = "<group>"; };
-		CD97053A22DC6F9200132518 /* CameraCatchHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CameraCatchHandler.h; sourceTree = "<group>"; };
-		CD97053B22DC6F9200132518 /* CameraCatchHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CameraCatchHandler.m; sourceTree = "<group>"; };
-		CD97053D22DC6FC500132518 /* CameraConfigModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CameraConfigModel.h; sourceTree = "<group>"; };
-		CD97053E22DC6FC500132518 /* CameraConfigModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CameraConfigModel.m; sourceTree = "<group>"; };
-		DE18297039C239B21B8F0A55 /* Pods-CaptureDeviceProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureDeviceProject.release.xcconfig"; path = "Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +206,122 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		765FCACC22F51CBF00948374 /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				765FCACD22F51CBF00948374 /* Controller */,
+				765FCAD122F51CBF00948374 /* Model */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		765FCACD22F51CBF00948374 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				765FCAD022F51CBF00948374 /* CameraCatchViewController.h */,
+				765FCACE22F51CBF00948374 /* CameraCatchViewController.m */,
+				765FCACF22F51CBF00948374 /* CameraCatchViewController.xib */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		765FCAD122F51CBF00948374 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				765FCAD222F51CBF00948374 /* CameraCatchHandler.h */,
+				765FCAD322F51CBF00948374 /* CameraConfigModel.m */,
+				765FCAD422F51CBF00948374 /* CameraCatchHandler.m */,
+				765FCAD522F51CBF00948374 /* CameraConfigModel.h */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		765FCAD622F51CBF00948374 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				765FCADC22F51CF800948374 /* BaseViewController.h */,
+				765FCADD22F51CF800948374 /* BaseViewController.m */,
+				765FCAE422F523FD00948374 /* BaseNavigationController.h */,
+				765FCAE522F523FD00948374 /* BaseNavigationController.m */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		765FCADB22F51CDE00948374 /* ScreenCatch */ = {
+			isa = PBXGroup;
+			children = (
+				765FCAF722F533A000948374 /* Controller */,
+				765FCAFC22F533A000948374 /* Model */,
+				765FCAFB22F533A000948374 /* View */,
+			);
+			path = ScreenCatch;
+			sourceTree = "<group>";
+		};
+		765FCAE722F524F200948374 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				CD97050522DC6D9600132518 /* main.m */,
+				765FCAEC22F5265B00948374 /* captureInfo.plist */,
+				765FCAF322F52A0F00948374 /* PrefixHeader.pch */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		765FCAEE22F5290C00948374 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				7657732722F5E2410042A8FF /* UIViewExt.h */,
+				7657732822F5E2420042A8FF /* UIViewExt.m */,
+				765FCAF422F52B1D00948374 /* NavBgImage.h */,
+				765FCAF522F52B1D00948374 /* NavBgImage.m */,
+				765FCAEF22F5297100948374 /* CSConstants.h */,
+				765FCAF022F5297100948374 /* CSConstants.m */,
+				765FCB0922F5730200948374 /* UIView+HUD.h */,
+				765FCB0A22F5730200948374 /* UIView+HUD.m */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		765FCAF722F533A000948374 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				765FCAF822F533A000948374 /* ScreenCatchViewController.h */,
+				765FCAFA22F533A000948374 /* ScreenCatchViewController.m */,
+				765FCAF922F533A000948374 /* ScreenCatchViewController.xib */,
+				765FCB0422F5376100948374 /* SetPushUrlViewController.h */,
+				765FCB0522F5376100948374 /* SetPushUrlViewController.m */,
+				765FCB0622F5376100948374 /* SetPushUrlViewController.xib */,
+				7647931E22F5B413005B622E /* SelectListViewController.h */,
+				7647931F22F5B413005B622E /* SelectListViewController.m */,
+				7647932022F5B413005B622E /* SelectListViewController.xib */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		765FCAFB22F533A000948374 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				765FCAFF22F5340300948374 /* ClickJumpTableViewCell.h */,
+				765FCB0022F5340300948374 /* ClickJumpTableViewCell.m */,
+				765FCB0122F5340300948374 /* ClickJumpTableViewCell.xib */,
+				7657731D22F5D3C50042A8FF /* ScreenCatchTableFooterView.h */,
+				7657731E22F5D3C50042A8FF /* ScreenCatchTableFooterView.m */,
+				7657732022F5D3D10042A8FF /* ScreenCatchTableFooterView.xib */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		765FCAFC22F533A000948374 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				76C9072822F5C1A8006BA6E5 /* SelectListModel.h */,
+				76C9072922F5C1A8006BA6E5 /* SelectListModel.m */,
+				7676F0D222F6D155003EF940 /* TestTimer.h */,
+				7676F0D322F6D155003EF940 /* TestTimer.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		CD93A6DE22F1374D009190E2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -215,14 +383,15 @@
 			isa = PBXGroup;
 			children = (
 				CD93A70022F13E3C009190E2 /* CaptureDeviceProject.entitlements */,
-				CD97053122DC6F0D00132518 /* camera */,
-				CD97052D22DC6F0D00132518 /* screen */,
+				765FCACC22F51CBF00948374 /* Camera */,
+				765FCADB22F51CDE00948374 /* ScreenCatch */,
+				765FCAD622F51CBF00948374 /* Base */,
+				765FCAEE22F5290C00948374 /* Utils */,
 				CD9704F622DC6D9500132518 /* AppDelegate.h */,
 				CD9704F722DC6D9500132518 /* AppDelegate.m */,
 				CD9704FF22DC6D9600132518 /* Assets.xcassets */,
 				CD97050122DC6D9600132518 /* LaunchScreen.storyboard */,
-				CD97050422DC6D9600132518 /* Info.plist */,
-				CD97050522DC6D9600132518 /* main.m */,
+				765FCAE722F524F200948374 /* Supporting Files */,
 			);
 			path = CaptureDeviceProject;
 			sourceTree = "<group>";
@@ -245,80 +414,11 @@
 			path = CaptureDeviceProjectUITests;
 			sourceTree = "<group>";
 		};
-		CD97052D22DC6F0D00132518 /* screen */ = {
-			isa = PBXGroup;
-			children = (
-				CD97052E22DC6F0D00132518 /* controller */,
-				CD97052F22DC6F0D00132518 /* model */,
-				CD97053022DC6F0D00132518 /* view */,
-			);
-			path = screen;
-			sourceTree = "<group>";
-		};
-		CD97052E22DC6F0D00132518 /* controller */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = controller;
-			sourceTree = "<group>";
-		};
-		CD97052F22DC6F0D00132518 /* model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = model;
-			sourceTree = "<group>";
-		};
-		CD97053022DC6F0D00132518 /* view */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = view;
-			sourceTree = "<group>";
-		};
-		CD97053122DC6F0D00132518 /* camera */ = {
-			isa = PBXGroup;
-			children = (
-				CD97053222DC6F0D00132518 /* controller */,
-				CD97053622DC6F0D00132518 /* model */,
-				CD97053722DC6F0D00132518 /* view */,
-			);
-			path = camera;
-			sourceTree = "<group>";
-		};
-		CD97053222DC6F0D00132518 /* controller */ = {
-			isa = PBXGroup;
-			children = (
-				CD97053522DC6F0D00132518 /* CameraCatchViewController.h */,
-				CD97053322DC6F0D00132518 /* CameraCatchViewController.m */,
-				CD97053422DC6F0D00132518 /* CameraCatchViewController.xib */,
-			);
-			path = controller;
-			sourceTree = "<group>";
-		};
-		CD97053622DC6F0D00132518 /* model */ = {
-			isa = PBXGroup;
-			children = (
-				CD97053A22DC6F9200132518 /* CameraCatchHandler.h */,
-				CD97053B22DC6F9200132518 /* CameraCatchHandler.m */,
-				CD97053D22DC6FC500132518 /* CameraConfigModel.h */,
-				CD97053E22DC6FC500132518 /* CameraConfigModel.m */,
-			);
-			path = model;
-			sourceTree = "<group>";
-		};
-		CD97053722DC6F0D00132518 /* view */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = view;
-			sourceTree = "<group>";
-		};
 		D71758EE4C55551FD4152902 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				83E51EBA627AED0ED6A98E7B /* Pods-CaptureDeviceProject.debug.xcconfig */,
-				DE18297039C239B21B8F0A55 /* Pods-CaptureDeviceProject.release.xcconfig */,
+				7F0FDCEB97630057A8FC3AD7 /* Pods-CaptureDeviceProject.debug.xcconfig */,
+				96A4689A7507BFC71587A013 /* Pods-CaptureDeviceProject.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -497,9 +597,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD97053922DC6F0D00132518 /* CameraCatchViewController.xib in Resources */,
+				7647932222F5B413005B622E /* SelectListViewController.xib in Resources */,
+				765FCB0322F5340300948374 /* ClickJumpTableViewCell.xib in Resources */,
+				765FCAD822F51CBF00948374 /* CameraCatchViewController.xib in Resources */,
 				CD97050322DC6D9600132518 /* LaunchScreen.storyboard in Resources */,
+				7657732122F5D3D10042A8FF /* ScreenCatchTableFooterView.xib in Resources */,
+				765FCAED22F5265B00948374 /* captureInfo.plist in Resources */,
+				765FCAFD22F533A000948374 /* ScreenCatchViewController.xib in Resources */,
 				CD97050022DC6D9600132518 /* Assets.xcassets in Resources */,
+				765FCB0822F5376100948374 /* SetPushUrlViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -567,6 +673,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD93A6E422F1374D009190E2 /* SampleHandler.m in Sources */,
+				7676F0D522F6D155003EF940 /* TestTimer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -582,11 +689,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7647932122F5B413005B622E /* SelectListViewController.m in Sources */,
 				CD97050622DC6D9600132518 /* main.m in Sources */,
-				CD97053C22DC6F9200132518 /* CameraCatchHandler.m in Sources */,
-				CD97053F22DC6FC500132518 /* CameraConfigModel.m in Sources */,
+				765FCADE22F51CF800948374 /* BaseViewController.m in Sources */,
+				765FCB0B22F5730200948374 /* UIView+HUD.m in Sources */,
+				7657732922F5E2420042A8FF /* UIViewExt.m in Sources */,
+				7676F0D422F6D155003EF940 /* TestTimer.m in Sources */,
 				CD9704F822DC6D9500132518 /* AppDelegate.m in Sources */,
-				CD97053822DC6F0D00132518 /* CameraCatchViewController.m in Sources */,
+				765FCB0722F5376100948374 /* SetPushUrlViewController.m in Sources */,
+				76C9072A22F5C1A8006BA6E5 /* SelectListModel.m in Sources */,
+				765FCAE622F523FD00948374 /* BaseNavigationController.m in Sources */,
+				765FCAD922F51CBF00948374 /* CameraConfigModel.m in Sources */,
+				765FCAD722F51CBF00948374 /* CameraCatchViewController.m in Sources */,
+				765FCAF122F5297100948374 /* CSConstants.m in Sources */,
+				765FCAF622F52B1E00948374 /* NavBgImage.m in Sources */,
+				7657731F22F5D3C50042A8FF /* ScreenCatchTableFooterView.m in Sources */,
+				765FCAFE22F533A000948374 /* ScreenCatchViewController.m in Sources */,
+				765FCADA22F51CBF00948374 /* CameraCatchHandler.m in Sources */,
+				765FCB0222F5340300948374 /* ClickJumpTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -681,7 +801,6 @@
 		};
 		CD93A6FD22F1374D009190E2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 83E51EBA627AED0ED6A98E7B /* Pods-CaptureDeviceProject.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ScreenCapture/ScreenCapture.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -701,7 +820,6 @@
 		};
 		CD93A6FE22F1374D009190E2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE18297039C239B21B8F0A55 /* Pods-CaptureDeviceProject.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ScreenCapture/ScreenCapture.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -721,6 +839,7 @@
 		};
 		CD97051D22DC6D9600132518 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7F0FDCEB97630057A8FC3AD7 /* Pods-CaptureDeviceProject.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -770,7 +889,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -780,6 +899,7 @@
 		};
 		CD97051E22DC6D9600132518 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 96A4689A7507BFC71587A013 /* Pods-CaptureDeviceProject.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -823,7 +943,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -833,14 +953,15 @@
 		};
 		CD97052022DC6D9600132518 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 83E51EBA627AED0ED6A98E7B /* Pods-CaptureDeviceProject.debug.xcconfig */;
+			baseConfigurationReference = 7F0FDCEB97630057A8FC3AD7 /* Pods-CaptureDeviceProject.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = CaptureDeviceProject/CaptureDeviceProject.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7233V8552Q;
-				INFOPLIST_FILE = CaptureDeviceProject/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/CaptureDeviceProject/Supporting Files/PrefixHeader.pch";
+				INFOPLIST_FILE = "$(SRCROOT)/CaptureDeviceProject/Supporting Files/captureInfo.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -853,14 +974,15 @@
 		};
 		CD97052122DC6D9600132518 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE18297039C239B21B8F0A55 /* Pods-CaptureDeviceProject.release.xcconfig */;
+			baseConfigurationReference = 96A4689A7507BFC71587A013 /* Pods-CaptureDeviceProject.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = CaptureDeviceProject/CaptureDeviceProject.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7233V8552Q;
-				INFOPLIST_FILE = CaptureDeviceProject/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/CaptureDeviceProject/Supporting Files/PrefixHeader.pch";
+				INFOPLIST_FILE = "$(SRCROOT)/CaptureDeviceProject/Supporting Files/captureInfo.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -3,5 +3,7 @@ use_frameworks!
 target 'CaptureDeviceProject' do
 
 pod 'LFLiveKit'
+pod 'Toast'
+pod 'IQKeyboardManager'
 
 end
