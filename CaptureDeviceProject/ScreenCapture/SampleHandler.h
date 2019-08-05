@@ -7,7 +7,6 @@
 //
 
 #import <ReplayKit/ReplayKit.h>
-#import "TestTimer.h"
 
 @interface SampleHandler : RPBroadcastSampleHandler
 

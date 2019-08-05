@@ -9,7 +9,6 @@
 
 #import "SampleHandler.h"
 #import <LFLiveKit/LFLiveKit.h>
-#import <UIKit/UIKit.h>
 
 @interface SampleHandler () <LFStreamSocketDelegate, LFVideoEncodingDelegate>
 
@@ -69,6 +68,7 @@
     if (!_videoEncoder) {
         _videoEncoder = [[LFHardwareVideoEncoder alloc] initWithVideoStreamConfiguration:self.videoConfiguration];
         [_videoEncoder setDelegate:self];
+        NSLog(@"self.videoConfiguration d方向：%ld", (long)self.videoConfiguration.outputImageOrientation);
     }
     return _videoEncoder;
 }
@@ -78,6 +78,7 @@
         _videoConfiguration = [LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_High3 outputImageOrientation:self.encoderOrientation];
     }
     return _videoConfiguration;
+
 }
 
 - (UIInterfaceOrientation)encoderOrientation {
@@ -85,10 +86,10 @@
     UIInterfaceOrientation orientationValue = UIInterfaceOrientationPortrait;
     switch (screenOrientationValue) {
         case 1:
-            orientationValue = UIInterfaceOrientationLandscapeRight;
+            orientationValue = UIInterfaceOrientationLandscapeLeft;
             break;
         case 2:
-            orientationValue = UIInterfaceOrientationLandscapeLeft;
+            orientationValue = UIInterfaceOrientationLandscapeRight;
             break;
         default:
             break;
@@ -114,6 +115,14 @@
 
 
 - (void)broadcastStartedWithSetupInfo:(NSDictionary<NSString *,NSObject *> *)setupInfo {
+    _videoConfiguration = nil;
+    _videoEncoder = nil;
+    _streamInfo = nil;
+    
+    if (_socket) {
+        [_socket stop];
+        _socket = nil;
+    }
     
     self.userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.gunmm.CaptureDeviceProject"];
     self.rotateQueue = dispatch_queue_create("rotateQueue", nil);
@@ -289,11 +298,13 @@
     self.lastCIImage = ciimage;
     self.lastWidth = width;
     self.lastHeight = height;
-    NSLog(@"----%zu,   %zu", width, height);
     
     if (self.rotateOrientation == kCGImagePropertyOrientationUp) {
+        NSLog(@"不旋转----%zu,   %zu", width, height);
         [self.videoEncoder encodeVideoData:pixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
     } else {
+        NSLog(@"旋转----%zu,   %zu", width, height);
+
         // 旋转的方法
         CIImage *wImage = [ciimage imageByApplyingCGOrientation:self.rotateOrientation];
         
@@ -312,14 +323,19 @@
     // 旋转的方法
     NSLog(@"------------------补帧方法---------------------");
     CIImage *wImage;
-    if (self.rotateOrientation == kCGImagePropertyOrientationUp) {
+    size_t width, height;
+    if (self.rotateOrientation != kCGImagePropertyOrientationUp) {
         wImage = [lastCIImage imageByApplyingCGOrientation:self.rotateOrientation];
+        width = self.lastHeight;
+        height = self.lastWidth;
     } else {
         wImage = lastCIImage;
+        width = self.lastWidth;
+        height = self.lastHeight;
     }
     CIImage *newImage = [wImage imageByApplyingTransform:CGAffineTransformMakeScale(1, 1)];
     CVPixelBufferRef newPixcelBuffer = nil;
-    CVPixelBufferCreate(kCFAllocatorDefault, self.lastHeight, self.lastWidth, kCVPixelFormatType_32BGRA, nil, &newPixcelBuffer);
+    CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, nil, &newPixcelBuffer);
     [_ciContext render:newImage toCVPixelBuffer:newPixcelBuffer];
     [self.videoEncoder encodeVideoData:newPixcelBuffer timeStamp:(CACurrentMediaTime()*1000)];
     CVPixelBufferRelease(newPixcelBuffer);
