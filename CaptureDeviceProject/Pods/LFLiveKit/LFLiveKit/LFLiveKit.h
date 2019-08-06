@@ -19,6 +19,7 @@
 #import "LFLiveDebug.h"
 #import "LFStreamRTMPSocket.h"
 #import "LFHardwareVideoEncoder.h"
+#import "LFHardwareAudioEncoder.h"
 
 
 
