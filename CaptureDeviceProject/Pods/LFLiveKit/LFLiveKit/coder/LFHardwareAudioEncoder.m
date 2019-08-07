@@ -38,7 +38,8 @@
         
         
 #ifdef DEBUG
-        enabledWriteVideoFile = NO;
+        NSLog(@"*******************laile");
+        enabledWriteVideoFile = YES;
         [self initForFilePath];
 #endif
     }
@@ -124,11 +125,14 @@
         [self.aacDeleage audioEncoder:self audioFrame:audioFrame];
     }
     
-    if (self->enabledWriteVideoFile) {
+//    if (self->enabledWriteVideoFile) {
         NSData *adts = [self adtsData:_configuration.numberOfChannels rawDataLength:audioFrame.data.length];
         fwrite(adts.bytes, 1, adts.length, self->fp);
         fwrite(audioFrame.data.bytes, 1, audioFrame.data.length, self->fp);
-    }
+//    NSData *aa = [[NSFileManager defaultManager] contentsAtPath:[self GetFilePathByfileName:@"IOSCamDemo_HW.aac"]];
+//    NSLog(@"1----- %lu", (unsigned long)aa.length);
+
+//    }
     
 }
 
@@ -207,6 +211,7 @@ OSStatus inputDataProc(AudioConverterRef inConverter, UInt32 *ioNumberDataPacket
  *  Also: http://wiki.multimedia.cx/index.php?title=MPEG-4_Audio#Channel_Configurations
  **/
 - (NSData *)adtsData:(NSInteger)channel rawDataLength:(NSInteger)rawDataLength {
+//    NSLog(@"写了");
     int adtsLength = 7;
     char *packet = malloc(sizeof(char) * adtsLength);
     // Variables Recycled by addADTStoPacket

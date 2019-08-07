@@ -21,8 +21,6 @@ const double kSessionBufDuration    = 0.005;
     AudioUnit      _mMixer;
     AudioUnit      _mOutput;
     AudioStreamBasicDescription _mAudioFormat; //输入到文件和录音和混音后的pcm数据的格式
-
-
 }
 
 @property (nonatomic, strong) NSUserDefaults *userDefaults;
@@ -48,6 +46,8 @@ const double kSessionBufDuration    = 0.005;
 @property (nonatomic, assign) BOOL canUpload;
 
 @property (nonatomic, strong) dispatch_queue_t rotateQueue;
+@property (nonatomic, strong) dispatch_queue_t audioQueue;
+
 @property (nonatomic, strong) CIContext *ciContext;
 
 @property (nonatomic, strong) LFVideoFrame *lastRecordFrame;
@@ -103,12 +103,18 @@ const double kSessionBufDuration    = 0.005;
 
 - (id<LFAudioEncoding>)audioEncoder {
     if (!_audioEncoder) {
-        _audioEncoder = [[LFHardwareAudioEncoder alloc] initWithAudioStreamConfiguration:[LFLiveAudioConfiguration defaultConfiguration]];
+        _audioEncoder = [[LFHardwareAudioEncoder alloc] initWithAudioStreamConfiguration:self.audioConfiguration];
         [_audioEncoder setDelegate:self];
     }
     return _audioEncoder;
 }
 
+- (LFLiveAudioConfiguration *)audioConfiguration {
+    if (!_audioConfiguration) {
+        _audioConfiguration = [LFLiveAudioConfiguration defaultConfiguration];
+    }
+    return _audioConfiguration;
+}
 
 - (UIInterfaceOrientation)encoderOrientation {
     NSInteger screenOrientationValue = [[_userDefaults objectForKey:@"screenOrientationValue"] integerValue];
@@ -155,13 +161,14 @@ const double kSessionBufDuration    = 0.005;
     
     self.userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.gunmm.CaptureDeviceProject"];
     self.rotateQueue = dispatch_queue_create("rotateQueue", nil);
+    self.audioQueue = dispatch_queue_create("audioQueue", nil);
+
     [self.socket start];
     _ciContext = [CIContext contextWithOptions:nil];
     
     __weak typeof(self) weakSelf = self;
     CADisplayLink *_link = [CADisplayLink displayLinkWithTarget:weakSelf selector:@selector(checkFPS:)];
     [_link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
-    
     
 //    [self mixer];
 }
@@ -209,6 +216,7 @@ const double kSessionBufDuration    = 0.005;
     NSLog(@"------Finished-------");
 }
 
+
 - (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer withType:(RPSampleBufferType)sampleBufferType {
     switch (sampleBufferType) {
         case RPSampleBufferTypeVideo:
@@ -224,38 +232,57 @@ const double kSessionBufDuration    = 0.005;
         }
             break;
         case RPSampleBufferTypeAudioApp:
+        {
+            CFRetain(sampleBuffer);
+            dispatch_async(self.audioQueue, ^{
+                //从samplebuffer中获取blockbuffer
+                CMBlockBufferRef blockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer);
+                size_t pcmLength = 0;
+                char *pcmData = NULL;
+                //获取blockbuffer中的pcm数据的指针和长度
+                OSStatus status = CMBlockBufferGetDataPointer(blockBuffer, 0, NULL, &pcmLength, &pcmData);
+                if (status != noErr) {
+                    NSLog(@"从block中获取pcm数据失败");
+                    CFRelease(sampleBuffer);
+                    return;
+                } else {
+                    //在堆区分配内存用来保存编码后的aac数据
+                    NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
+                    [self.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000)];
+                }
+                CFRelease(sampleBuffer);
+            });
+//
+            break;
+        }
+          
+            
+            
 //            if (self.canUpload) {
 //                NSLog(@"111111111");
 //                self.applicationBuffer = sampleBuffer;
-        {
-            CFRetain(sampleBuffer);
-            
-            CMBlockBufferRef buffer = CMSampleBufferGetDataBuffer(sampleBuffer);
-            CMItemCount numSamplesInBuffer = CMSampleBufferGetNumSamples(sampleBuffer);
-            AudioBufferList audioBufferList;
-            
-            CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer,
-                                                                    NULL,
-                                                                    &audioBufferList,
-                                                                    sizeof(audioBufferList),
-                                                                    NULL,
-                                                                    NULL,
-                                                                    kCMSampleBufferFlag_AudioBufferList_Assure16ByteAlignment,
-                                                                    &buffer
-                                                                    );
-            NSLog(@"mData:  ---- %u",  (unsigned int)audioBufferList.mBuffers[0].mDataByteSize);
-            
-            ;
-            [self.audioEncoder encodeAudioData:[NSData dataWithBytes:audioBufferList.mBuffers[0].mData length:audioBufferList.mBuffers[0].mDataByteSize] timeStamp:(CACurrentMediaTime()*1000)];
-            CFRelease(sampleBuffer);
-            
-        }
-            
-
-            
-            
-//            }
-            break;
+//        {
+//            CFRetain(sampleBuffer);
+//
+//            CMBlockBufferRef buffer = CMSampleBufferGetDataBuffer(sampleBuffer);
+//            CMItemCount numSamplesInBuffer = CMSampleBufferGetNumSamples(sampleBuffer);
+//            AudioBufferList audioBufferList;
+//
+//            CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer,
+//                                                                    NULL,
+//                                                                    &audioBufferList,
+//                                                                    sizeof(audioBufferList),
+//                                                                    NULL,
+//                                                                    NULL,
+//                                                                    kCMSampleBufferFlag_AudioBufferList_Assure16ByteAlignment,
+//                                                                    &buffer
+//                                                                    );
+//            NSLog(@"mData:  ---- %u",  (unsigned int)audioBufferList.mBuffers[0].mDataByteSize);
+//
+//            ;
+//            [self.audioEncoder encodeAudioData:[NSData dataWithBytes:audioBufferList.mBuffers[0].mData length:audioBufferList.mBuffers[0].mDataByteSize] timeStamp:(CACurrentMediaTime()*1000)];
+//            CFRelease(sampleBuffer);
+//        }
         case RPSampleBufferTypeAudioMic:
 //            if (self.canUpload) {
                 NSLog(@"22222");
@@ -292,9 +319,16 @@ const double kSessionBufDuration    = 0.005;
 }
 
 - (void)audioEncoder:(nullable id<LFAudioEncoding>)encoder audioFrame:(nullable LFAudioFrame *)frame {
+//    NSLog(@"audioInfo -- %lu", (unsigned long)frame.audioInfo.length);
+//    NSLog(@"data -- %lu", (unsigned long)frame.data.length);
+//    NSLog(@"header -- %lu", (unsigned long)frame.header.length);
+
+//    NSLog(@"--  %@", frame.audioInfo);
     if (self.canUpload){
+        NSLog(@"*********************");
         [self pushSendBuffer:frame];
     }
+
 }
 
 #pragma mark -- PrivateMethod
@@ -368,10 +402,10 @@ const double kSessionBufDuration    = 0.005;
     self.lastHeight = height;
     
     if (self.rotateOrientation == kCGImagePropertyOrientationUp) {
-        NSLog(@"不旋转----%zu,   %zu", width, height);
+//        NSLog(@"不旋转----%zu,   %zu", width, height);
         [self.videoEncoder encodeVideoData:pixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
     } else {
-        NSLog(@"旋转----%zu,   %zu", width, height);
+//        NSLog(@"旋转----%zu,   %zu", width, height);
 
         // 旋转的方法
         CIImage *wImage = [ciimage imageByApplyingCGOrientation:self.rotateOrientation];
