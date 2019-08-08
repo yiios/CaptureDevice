@@ -259,6 +259,8 @@ OSStatus EncodeConverterComplexInputDataProc(AudioConverterRef              inAu
             completeHandler(audioFrame);
         }
     }
+    free(fillBufferList.mBuffers[0].mData);
+    
 }
 
 - (void)writeChannelLayoutWithConverter:(AudioConverterRef)converter sourceFile:(AudioFileID)sourceFileID destinationFile:(AudioFileID)destinationFileID {

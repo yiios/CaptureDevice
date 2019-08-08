@@ -65,60 +65,6 @@
         return;
     }
     
-    ///<  发送
-    NSInteger totalSize = leftLength + audioData.length;
-    NSInteger encodeCount = totalSize/self.configuration.bufferLength;
-    char *totalBuf = malloc(totalSize);
-    char *p = totalBuf;
-    
-    char *leftBuf2 = malloc(totalSize);
-    
-    char *aacBuf2 = malloc(totalSize);
-    
-    memset(totalBuf, (int)totalSize, 0);
-    memcpy(totalBuf, leftBuf2, leftLength);
-    memcpy(totalBuf + leftLength, audioData.bytes, audioData.length);
-    
-    
-    AudioBuffer inBuffer;
-    inBuffer.mNumberChannels = 1;
-    inBuffer.mData = p;
-    inBuffer.mDataByteSize = (UInt32)totalSize;
-    
-    AudioBufferList buffers;
-    buffers.mNumberBuffers = 1;
-    buffers.mBuffers[0] = inBuffer;
-
-   
-    
-    // 初始化一个输出缓冲列表
-    AudioBufferList outBufferList;
-    outBufferList.mNumberBuffers = 1;
-    outBufferList.mBuffers[0].mNumberChannels = inBuffer.mNumberChannels;
-    outBufferList.mBuffers[0].mDataByteSize = inBuffer.mDataByteSize;   // 设置缓冲区大小
-    outBufferList.mBuffers[0].mData = aacBuf2;           // 设置AAC缓冲区
-    UInt32 outputDataPacketSize = 1;
-    if (AudioConverterFillComplexBuffer(m_converter, inputDataProc, &buffers, &outputDataPacketSize, &outBufferList, NULL) != noErr) {
-        return;
-    }
-    
-    LFAudioFrame *audioFrame = [LFAudioFrame new];
-    audioFrame.timestamp = timeStamp;
-    audioFrame.data = [NSData dataWithBytes:aacBuf2 length:outBufferList.mBuffers[0].mDataByteSize];
-    
-    char exeData[2];
-    exeData[0] = _configuration.asc[0];
-    exeData[1] = _configuration.asc[1];
-    audioFrame.audioInfo = [NSData dataWithBytes:exeData length:2];
-    if (self.aacDeleage && [self.aacDeleage respondsToSelector:@selector(audioEncoder:audioFrame:)]) {
-        [self.aacDeleage audioEncoder:self audioFrame:audioFrame];
-    }
-    
-    
-    free(totalBuf);
-    
-    return;
-    
     if(leftLength + audioData.length >= self.configuration.bufferLength){
         ///<  发送
         NSInteger totalSize = leftLength + audioData.length;
