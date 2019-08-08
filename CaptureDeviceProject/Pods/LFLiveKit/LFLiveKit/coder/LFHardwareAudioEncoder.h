@@ -17,4 +17,6 @@
 - (nullable instancetype)init UNAVAILABLE_ATTRIBUTE;
 + (nullable instancetype)new UNAVAILABLE_ATTRIBUTE;
 
+@property (nonatomic, assign) AudioStreamBasicDescription childCustomInputFormat;
+
 @end

@@ -30,6 +30,7 @@
 		765FCB0822F5376100948374 /* SetPushUrlViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 765FCB0622F5376100948374 /* SetPushUrlViewController.xib */; };
 		765FCB0B22F5730200948374 /* UIView+HUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 765FCB0A22F5730200948374 /* UIView+HUD.m */; };
 		76C9072A22F5C1A8006BA6E5 /* SelectListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C9072922F5C1A8006BA6E5 /* SelectListModel.m */; };
+		CD5A637322FBF3AD00D6A5B1 /* XDXAduioEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = CD5A637122FBF3AD00D6A5B1 /* XDXAduioEncoder.m */; };
 		CD93A6E022F1374D009190E2 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD93A6DF22F1374D009190E2 /* ReplayKit.framework */; };
 		CD93A6E422F1374D009190E2 /* SampleHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = CD93A6E322F1374D009190E2 /* SampleHandler.m */; };
 		CD93A6EB22F1374D009190E2 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD93A6DF22F1374D009190E2 /* ReplayKit.framework */; };
@@ -133,6 +134,8 @@
 		76C9072922F5C1A8006BA6E5 /* SelectListModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelectListModel.m; sourceTree = "<group>"; };
 		7F0FDCEB97630057A8FC3AD7 /* Pods-CaptureDeviceProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureDeviceProject.debug.xcconfig"; path = "Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject.debug.xcconfig"; sourceTree = "<group>"; };
 		96A4689A7507BFC71587A013 /* Pods-CaptureDeviceProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureDeviceProject.release.xcconfig"; path = "Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject.release.xcconfig"; sourceTree = "<group>"; };
+		CD5A637122FBF3AD00D6A5B1 /* XDXAduioEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XDXAduioEncoder.m; sourceTree = "<group>"; };
+		CD5A637222FBF3AD00D6A5B1 /* XDXAduioEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XDXAduioEncoder.h; sourceTree = "<group>"; };
 		CD93A6DD22F1374D009190E2 /* ScreenCapture.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ScreenCapture.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD93A6DF22F1374D009190E2 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		CD93A6E222F1374D009190E2 /* SampleHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SampleHandler.h; sourceTree = "<group>"; };
@@ -329,6 +332,8 @@
 		CD93A6E122F1374D009190E2 /* ScreenCapture */ = {
 			isa = PBXGroup;
 			children = (
+				CD5A637222FBF3AD00D6A5B1 /* XDXAduioEncoder.h */,
+				CD5A637122FBF3AD00D6A5B1 /* XDXAduioEncoder.m */,
 				CD93A70122F13E4F009190E2 /* ScreenCapture.entitlements */,
 				CD93A6E222F1374D009190E2 /* SampleHandler.h */,
 				CD93A6E322F1374D009190E2 /* SampleHandler.m */,
@@ -666,6 +671,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD5A637322FBF3AD00D6A5B1 /* XDXAduioEncoder.m in Sources */,
 				CD93A6E422F1374D009190E2 /* SampleHandler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

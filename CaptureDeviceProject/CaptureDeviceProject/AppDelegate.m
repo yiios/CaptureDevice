@@ -28,6 +28,30 @@
     manager.shouldToolbarUsesTextFieldTintColor = YES;
     manager.enableAutoToolbar = YES;
     
+    
+    AVAuthorizationStatus videoAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+    if (videoAuthStatus == AVAuthorizationStatusNotDetermined) {// 未询问用户是否授权
+        //第一次询问用户是否进行授权
+        [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
+            // CALL YOUR METHOD HERE - as this assumes being called only once from user interacting with permission alert!
+            if (granted) {
+                // Microphone enabled code
+            }
+            else {
+                // Microphone disabled code
+            }
+        }];
+    }
+    else if(videoAuthStatus == AVAuthorizationStatusRestricted || videoAuthStatus == AVAuthorizationStatusDenied) {// 未授权
+        //        [self showSetAlertView];
+        NSLog(@"1111111");
+    }
+    else{// 已授权
+        //        [self recordVoiceStart];
+    }
+    
+    
+    
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     [self.window makeKeyAndVisible];
     ScreenCatchViewController *screenCatchViewController = [[ScreenCatchViewController alloc] init];

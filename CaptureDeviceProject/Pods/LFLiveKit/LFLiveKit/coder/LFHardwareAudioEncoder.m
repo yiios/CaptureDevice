@@ -56,10 +56,68 @@
     _aacDeleage = delegate;
 }
 
+- (void)setCustomInputFormat:(AudioStreamBasicDescription)customInputFormat {
+    _childCustomInputFormat = customInputFormat;
+}
+
 - (void)encodeAudioData:(nullable NSData*)audioData timeStamp:(uint64_t)timeStamp {
     if (![self createAudioConvert]) {
         return;
     }
+    
+    ///<  发送
+    NSInteger totalSize = leftLength + audioData.length;
+    NSInteger encodeCount = totalSize/self.configuration.bufferLength;
+    char *totalBuf = malloc(totalSize);
+    char *p = totalBuf;
+    
+    char *leftBuf2 = malloc(totalSize);
+    
+    char *aacBuf2 = malloc(totalSize);
+    
+    memset(totalBuf, (int)totalSize, 0);
+    memcpy(totalBuf, leftBuf2, leftLength);
+    memcpy(totalBuf + leftLength, audioData.bytes, audioData.length);
+    
+    
+    AudioBuffer inBuffer;
+    inBuffer.mNumberChannels = 1;
+    inBuffer.mData = p;
+    inBuffer.mDataByteSize = (UInt32)totalSize;
+    
+    AudioBufferList buffers;
+    buffers.mNumberBuffers = 1;
+    buffers.mBuffers[0] = inBuffer;
+
+   
+    
+    // 初始化一个输出缓冲列表
+    AudioBufferList outBufferList;
+    outBufferList.mNumberBuffers = 1;
+    outBufferList.mBuffers[0].mNumberChannels = inBuffer.mNumberChannels;
+    outBufferList.mBuffers[0].mDataByteSize = inBuffer.mDataByteSize;   // 设置缓冲区大小
+    outBufferList.mBuffers[0].mData = aacBuf2;           // 设置AAC缓冲区
+    UInt32 outputDataPacketSize = 1;
+    if (AudioConverterFillComplexBuffer(m_converter, inputDataProc, &buffers, &outputDataPacketSize, &outBufferList, NULL) != noErr) {
+        return;
+    }
+    
+    LFAudioFrame *audioFrame = [LFAudioFrame new];
+    audioFrame.timestamp = timeStamp;
+    audioFrame.data = [NSData dataWithBytes:aacBuf2 length:outBufferList.mBuffers[0].mDataByteSize];
+    
+    char exeData[2];
+    exeData[0] = _configuration.asc[0];
+    exeData[1] = _configuration.asc[1];
+    audioFrame.audioInfo = [NSData dataWithBytes:exeData length:2];
+    if (self.aacDeleage && [self.aacDeleage respondsToSelector:@selector(audioEncoder:audioFrame:)]) {
+        [self.aacDeleage audioEncoder:self audioFrame:audioFrame];
+    }
+    
+    
+    free(totalBuf);
+    
+    return;
     
     if(leftLength + audioData.length >= self.configuration.bufferLength){
         ///<  发送
@@ -125,14 +183,11 @@
         [self.aacDeleage audioEncoder:self audioFrame:audioFrame];
     }
     
-//    if (self->enabledWriteVideoFile) {
+    if (self->enabledWriteVideoFile) {
         NSData *adts = [self adtsData:_configuration.numberOfChannels rawDataLength:audioFrame.data.length];
         fwrite(adts.bytes, 1, adts.length, self->fp);
         fwrite(audioFrame.data.bytes, 1, audioFrame.data.length, self->fp);
-//    NSData *aa = [[NSFileManager defaultManager] contentsAtPath:[self GetFilePathByfileName:@"IOSCamDemo_HW.aac"]];
-//    NSLog(@"1----- %lu", (unsigned long)aa.length);
-
-//    }
+    }
     
 }
 
@@ -145,16 +200,28 @@
     if (m_converter != nil) {
         return TRUE;
     }
-    
     AudioStreamBasicDescription inputFormat = {0};
-    inputFormat.mSampleRate = _configuration.audioSampleRate;
-    inputFormat.mFormatID = kAudioFormatLinearPCM;
-    inputFormat.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
-    inputFormat.mChannelsPerFrame = (UInt32)_configuration.numberOfChannels;
-    inputFormat.mFramesPerPacket = 1;
-    inputFormat.mBitsPerChannel = 16;
-    inputFormat.mBytesPerFrame = inputFormat.mBitsPerChannel / 8 * inputFormat.mChannelsPerFrame;
-    inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket;
+
+    if (_childCustomInputFormat.mBitsPerChannel > 0 ) {
+        inputFormat.mSampleRate = _childCustomInputFormat.mSampleRate;
+        inputFormat.mFormatID = _childCustomInputFormat.mFormatID;
+        inputFormat.mFormatFlags = _childCustomInputFormat.mFormatFlags;
+        inputFormat.mChannelsPerFrame = (UInt32)_configuration.numberOfChannels;
+        inputFormat.mFramesPerPacket = 1;
+        inputFormat.mBitsPerChannel = 16;
+        inputFormat.mBytesPerFrame = inputFormat.mBitsPerChannel / 8 * inputFormat.mChannelsPerFrame;
+        inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket;
+
+    } else {
+        inputFormat.mSampleRate = _configuration.audioSampleRate;
+        inputFormat.mFormatID = kAudioFormatLinearPCM;
+        inputFormat.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
+        inputFormat.mChannelsPerFrame = (UInt32)_configuration.numberOfChannels;
+        inputFormat.mFramesPerPacket = 1;
+        inputFormat.mBitsPerChannel = 16;
+        inputFormat.mBytesPerFrame = inputFormat.mBitsPerChannel / 8 * inputFormat.mChannelsPerFrame;
+        inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket;
+    }
     
     AudioStreamBasicDescription outputFormat; // 这里开始是输出音频格式
     memset(&outputFormat, 0, sizeof(outputFormat));
