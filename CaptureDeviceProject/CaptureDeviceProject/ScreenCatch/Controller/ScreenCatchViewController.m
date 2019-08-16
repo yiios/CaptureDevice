@@ -48,37 +48,7 @@
     
     [self initData];
     [self initView];
-    
-    [[NSUserDefaults standardUserDefaults] setObject:@"11111" forKey:@"1111112"];
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    NSString *writablePath = [documentsDirectory stringByAppendingPathComponent:@"qwqwqwqw.123"];
-    NSLog(@"&&&&&&&&&&&&&");
-    NSLog(@"%@", writablePath);
-    NSLog(@"&&&&&&&&&&&&&");
-//    [self saveTextByNSFileManager];
 
-}
-
-- (BOOL)saveTextByNSFileManager
-{
-    NSError *err = nil;
-    NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:@"group.gunmm.CaptureDeviceProject"];
-    containerURL = [containerURL URLByAppendingPathComponent:@"Library/Caches/good"];
-    
-    NSString *value = @"12123000000000";
-    BOOL result = [value writeToURL:containerURL atomically:YES encoding:NSUTF8StringEncoding error:&err];
-    if (!result) {
-        NSLog(@"11  %@",err);
-    } else {
-        NSLog(@"save value:%@ success.",value);
-    }
-    
-    
-  
-    
-    return result;
 }
 
 - (void)initData {

@@ -27,7 +27,6 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="150" id="IHd-Aw-4Pb"/>
                     </constraints>
-                    <string key="text">rtmp://send3.douyu.com/live/5194892r4AEz0FEt?wsSecret=7d8f4a9b98755b86c688dd469ae40b38&amp;wsTime=5d4d9807&amp;wsSeek=off&amp;wm=0&amp;tw=0&amp;roirecognition=0</string>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>

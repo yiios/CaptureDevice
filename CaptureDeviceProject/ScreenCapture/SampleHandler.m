@@ -307,7 +307,6 @@ const double kSessionBufDuration    = 0.005;
                                     exeData[1] = self.audioConfiguration.asc[1];
                                     frame.audioInfo = [NSData dataWithBytes:exeData length:2];
                                     [self.socket sendFrame:frame];
-                                    NSLog(@"tuile");
                                 }
                             }
                         }];
