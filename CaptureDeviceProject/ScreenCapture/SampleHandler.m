@@ -66,6 +66,13 @@ const double kSessionBufDuration    = 0.005;
 @property (nonatomic, assign) CMSampleBufferRef applicationBuffer;
 @property (nonatomic, assign) CMSampleBufferRef micBuffer;
 
+/// 音视频是否对齐
+@property (nonatomic, assign) BOOL AVAlignment;
+/// 当前是否采集到了音频
+@property (nonatomic, assign) BOOL hasCaptureAudio;
+/// 当前是否采集到了关键帧
+@property (nonatomic, assign) BOOL hasKeyFrameVideo;
+
 @end
 
 @implementation SampleHandler
@@ -225,156 +232,23 @@ const double kSessionBufDuration    = 0.005;
         case RPSampleBufferTypeVideo:
         {
             if (self.canUpload) {
-                __weak typeof(self) wSelf = self;
+                __weak typeof(self) weakSelf = self;
                 CFRetain(sampleBuffer);
-                dispatch_async(wSelf.rotateQueue, ^{
-                    [wSelf dealWithSampleBuffer:sampleBuffer];
+                dispatch_async(weakSelf.rotateQueue, ^{
+                    [weakSelf dealWithSampleBuffer:sampleBuffer];
                     CFRelease(sampleBuffer);
                 });
             }
         }
             break;
         case RPSampleBufferTypeAudioApp:
-//        {
-//            CFRetain(sampleBuffer);
-//            dispatch_async(self.audioQueue, ^{
-//                //获取audioformat的描述信息
-//                CMAudioFormatDescriptionRef audioFormatDes =  (CMAudioFormatDescriptionRef)CMSampleBufferGetFormatDescription(sampleBuffer);
-//                //获取输入的asbd的信息
-//                AudioStreamBasicDescription inAudioStreamBasicDescription = *(CMAudioFormatDescriptionGetStreamBasicDescription(audioFormatDes));
-//                [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
-//
-//                AudioBufferList audioBufferList;
-//                CMBlockBufferRef blockBuffer;
-//                OSStatus status = CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer, NULL, &audioBufferList, sizeof(audioBufferList), NULL, NULL, 0, &blockBuffer);
-//                if (status != noErr) {
-//                    NSLog(@"从block中获取pcm数据失败");
-//                    CFRelease(sampleBuffer);
-//                    return;
-//                } else {
-//                    Float64 currentTime = CMTimeGetSeconds(CMClockMakeHostTimeFromSystemUnits(CACurrentMediaTime()));
-//                    int64_t pts = (int64_t)((currentTime - 100) * 1000);
-//
-//                    void    *bufferData = audioBufferList.mBuffers[0].mData;
-//                    UInt32   bufferSize = audioBufferList.mBuffers[0].mDataByteSize;
-//                    CMAudioFormatDescriptionRef audioFormatDes =  (CMAudioFormatDescriptionRef)CMSampleBufferGetFormatDescription(sampleBuffer);
-//                    //获取输入的asbd的信息
-//                    AudioStreamBasicDescription inAudioStreamBasicDescription = *(CMAudioFormatDescriptionGetStreamBasicDescription(audioFormatDes));
-//
-//                    if (!self.audioEncoder2) {
-//                        AudioStreamBasicDescription inputFormat = {0};
-//
-//                        inputFormat.mSampleRate = 44100;
-//                        inputFormat.mFormatID = kAudioFormatLinearPCM;
-//                        inputFormat.mFormatFlags = inAudioStreamBasicDescription.mFormatFlags;
-//                        inputFormat.mChannelsPerFrame = 1;
-//                        inputFormat.mFramesPerPacket = 1;
-//                        inputFormat.mBitsPerChannel = 16;
-//                        inputFormat.mBytesPerFrame = inputFormat.mBitsPerChannel / 8 * inputFormat.mChannelsPerFrame;
-//                        inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket;
-//                        self.audioEncoder2 = [[XDXAduioEncoder alloc] initWithSourceFormat:inputFormat
-//                                                                              destFormatID:kAudioFormatMPEG4AAC
-//                                                                                sampleRate:44100
-//                                                                       isUseHardwareEncode:YES];
-//                    }
-//                    [self.audioEncoder2 encodeAudioWithSourceBuffer:bufferData sourceBufferSize:bufferSize pts:pts completeHandler:^(LFAudioFrame * _Nonnull frame) {
-//                        NSLog(@"audioInfo -- %lu", (unsigned long)frame.audioInfo.length);
-//                        NSLog(@"data -- %lu", (unsigned long)frame.data.length);
-//                        NSLog(@"header -- %lu", (unsigned long)frame.header.length);
-//
-//                        if(self.relativeTimestamps == 0){
-//                            self.relativeTimestamps = frame.timestamp;
-//                        }
-//                        frame.timestamp = [self uploadTimestamp:frame.timestamp];
-//                        [self.socket sendFrame:frame];
-//                    }];
-//
-//
-//                    //                    for( int y = 0; y < audioBufferList.mNumberBuffers; y++) {
-//                    //                        AudioBuffer audioBuffer = audioBufferList.mBuffers[y];
-//                    //                        void* audio = audioBuffer.mData;//这里获取
-//                    //                        [self.audioEncoder encodeAudioData:[NSData dataWithBytes:audio length:audioBuffer.mDataByteSize] timeStamp:(CACurrentMediaTime()*1000)];
-//                    //
-//                    //                    }
-//                }
-//                CFRelease(sampleBuffer);
-//            });
-//            break;
-//        }
-//        {
-//            CFRetain(sampleBuffer);
-//            dispatch_async(self.audioQueue, ^{
-//                //获取audioformat的描述信息
-//                CMAudioFormatDescriptionRef audioFormatDes =  (CMAudioFormatDescriptionRef)CMSampleBufferGetFormatDescription(sampleBuffer);
-//                //获取输入的asbd的信息
-//                AudioStreamBasicDescription inAudioStreamBasicDescription = *(CMAudioFormatDescriptionGetStreamBasicDescription(audioFormatDes));
-//                [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
-//
-//                AudioBufferList audioBufferList;
-//                CMBlockBufferRef blockBuffer;
-//                OSStatus status = CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer, NULL, &audioBufferList, sizeof(audioBufferList), NULL, NULL, 0, &blockBuffer);
-//                if (status != noErr) {
-//                    NSLog(@"从block中获取pcm数据失败");
-//                    CFRelease(sampleBuffer);
-//                    return;
-//                } else {
-//                    for( int y = 0; y < audioBufferList.mNumberBuffers; y++) {
-//                        AudioBuffer audioBuffer = audioBufferList.mBuffers[y];
-//                        void* audio = audioBuffer.mData;//这里获取
-//                        [self.audioEncoder encodeAudioData:[NSData dataWithBytes:audio length:audioBuffer.mDataByteSize] timeStamp:(CACurrentMediaTime()*1000)];
-//
-////                        [self.audioEncoder2 encodeAudioWithSourceBuffer:audioBuffer.mData sourceBufferSize:audioBuffer.mDataByteSize pts:(CACurrentMediaTime()*1000) completeHandler:^(LFAudioFrame * _Nonnull frame) {
-////                            NSLog(@"audioInfo -- %lu", (unsigned long)frame.audioInfo.length);
-////                            NSLog(@"data -- %lu", (unsigned long)frame.data.length);
-////                            NSLog(@"header -- %lu", (unsigned long)frame.header.length);
-////
-////
-////                            if(self.relativeTimestamps == 0){
-////                                self.relativeTimestamps = frame.timestamp;
-////                            }
-////                            frame.timestamp = [self uploadTimestamp:frame.timestamp];
-////                            [self.socket sendFrame:frame];
-////                        }];
-//                    }
-//                }
-//                CFRelease(sampleBuffer);
-//            });
-//            break;
-//        }
-        {
-//            NSLog(@"----------s音频来了");
-//            CFRetain(sampleBuffer);
-//            dispatch_async(self.audioQueue, ^{
-//                //从samplebuffer中获取blockbuffer
-//                CMBlockBufferRef blockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer);
-//                size_t pcmLength = 0;
-//                char *pcmData = NULL;
-//                //获取blockbuffer中的pcm数据的指针和长度
-//                OSStatus status = CMBlockBufferGetDataPointer(blockBuffer, 0, NULL, &pcmLength, &pcmData);
-//                if (status != noErr) {
-//                    NSLog(@"从block中获取pcm数据失败");
-//                    CFRelease(sampleBuffer);
-//                    return;
-//                } else {
-//                    CMAudioFormatDescriptionRef audioFormatDes =  (CMAudioFormatDescriptionRef)CMSampleBufferGetFormatDescription(sampleBuffer);
-//                    //获取输入的asbd的信息
-//                    AudioStreamBasicDescription inAudioStreamBasicDescription = *(CMAudioFormatDescriptionGetStreamBasicDescription(audioFormatDes));
-//                    [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
-//                    //在堆区分配内存用来保存编码后的aac数据
-//                    NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
-////                    [self.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000)];
-//                }
-//                CFRelease(sampleBuffer);
-//            });
-//
             break;
-        }
-          
         case RPSampleBufferTypeAudioMic:
         {
-            NSLog(@"----------mic音频来了");
             if (self.canUpload) {
                 CFRetain(sampleBuffer);
+//                __weak typeof(self) weakSelf = self;
+
                 dispatch_async(self.audioQueue, ^{
                     //从samplebuffer中获取blockbuffer
                     CMBlockBufferRef blockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer);
@@ -419,17 +293,25 @@ const double kSessionBufDuration    = 0.005;
 
                         int64_t pts = (int64_t)((currentTime - 100) * 1000);
                         [self.audioEncoder2 encodeAudioWithSourceBuffer:buffers.mBuffers[0].mData sourceBufferSize:buffers.mBuffers[0].mDataByteSize pts:pts completeHandler:^(LFAudioFrame * _Nonnull frame) {
-                            NSLog(@"audioInfo -- %lu", (unsigned long)frame.audioInfo.length);
-                            NSLog(@"data -- %lu", (unsigned long)frame.data.length);
-                            NSLog(@"header -- %lu", (unsigned long)frame.header.length);
-
-                            if(self.relativeTimestamps == 0){
-                                self.relativeTimestamps = frame.timestamp;
+                            if (self.canUpload) {
+                                if (self.hasKeyFrameVideo) {
+                                    self.hasCaptureAudio = YES;
+                                }
+                                if(self.AVAlignment){
+                                    if(self.relativeTimestamps == 0){
+                                        self.relativeTimestamps = frame.timestamp;
+                                    }
+                                    frame.timestamp = [self uploadTimestamp:frame.timestamp];
+                                    char exeData[2];
+                                    exeData[0] = self.audioConfiguration.asc[0];
+                                    exeData[1] = self.audioConfiguration.asc[1];
+                                    frame.audioInfo = [NSData dataWithBytes:exeData length:2];
+                                    [self.socket sendFrame:frame];
+                                    NSLog(@"tuile");
+                                }
                             }
-                            frame.timestamp = [self uploadTimestamp:frame.timestamp];
-                            [self.socket sendFrame:frame];
                         }];
-                        
+
 //                        [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
 //                        //在堆区分配内存用来保存编码后的aac数据
 //                        NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
@@ -462,17 +344,24 @@ const double kSessionBufDuration    = 0.005;
 }
 
 - (void)videoEncoder:(nullable id<LFVideoEncoding>)encoder videoFrame:(nullable LFVideoFrame *)frame {
-    if (self.canUpload){
-        [self pushSendBuffer:frame];
-        self.lastRecordFrame = frame;
+    if (self.canUpload) {
+        if(frame.isKeyFrame) self.hasKeyFrameVideo = YES;
+        if(self.AVAlignment) {
+            [self pushSendBuffer:frame];
+            self.lastRecordFrame = frame;
+        }
     }
 }
 
 - (void)audioEncoder:(nullable id<LFAudioEncoding>)encoder audioFrame:(nullable LFAudioFrame *)frame {
     if (self.canUpload){
-        [self pushSendBuffer:frame];
+        if (self.hasKeyFrameVideo == YES) {
+            self.hasCaptureAudio = YES;
+        }
+        if(self.AVAlignment){
+            [self pushSendBuffer:frame];
+        }
     }
-
 }
 
 #pragma mark -- PrivateMethod
@@ -492,10 +381,18 @@ const double kSessionBufDuration    = 0.005;
     }
     
     if (status == LFLiveStart) {
-        self.canUpload = YES;
-    } else {
+        if (!self.canUpload) {
+            self.AVAlignment = NO;
+            self.hasCaptureAudio = NO;
+            self.hasKeyFrameVideo = NO;
+            self.relativeTimestamps = 0;
+            self.canUpload = YES;
+        }
+    } else if(status == LFLiveStop || status == LFLiveError){
         self.canUpload = NO;
     }
+
+    
 }
 
 - (void)socketDidError:(nullable id<LFStreamSocket>)socket errorCode:(LFLiveSocketErrorCode)errorCode {
@@ -504,9 +401,12 @@ const double kSessionBufDuration    = 0.005;
     //            [self.delegate liveSession:self errorCode:errorCode];
     //        }
     //    });
+//    NSLog(@"errorCode == %lu", (unsigned long)errorCode);
+
 }
 
 - (void)socketDebug:(nullable id<LFStreamSocket>)socket debugInfo:(nullable LFLiveDebug *)debugInfo {
+//    NSLog(@"debugInfo == %@", debugInfo);
     //    self.debugInfo = debugInfo;
     //    if (self.showDebugInfo) {
     //        dispatch_async(dispatch_get_main_queue(), ^{
@@ -518,19 +418,21 @@ const double kSessionBufDuration    = 0.005;
 }
 
 - (void)socketBufferStatus:(nullable id<LFStreamSocket>)socket status:(LFLiveBuffferState)status {
-    NSLog(@"LFLiveBuffferState---  %ld", status);
-    NSUInteger videoBitRate = [self.videoEncoder videoBitRate];
-    if (status == LFLiveBuffferDecline) {
-        if (videoBitRate < _videoConfiguration.videoMaxBitRate) {
-            videoBitRate = videoBitRate + 50 * 1000;
-            [self.videoEncoder setVideoBitRate:videoBitRate];
-            NSLog(@"Increase bitrate %@", @(videoBitRate));
-        }
-    } else {
-        if (videoBitRate > self.videoConfiguration.videoMinBitRate) {
-            videoBitRate = videoBitRate - 100 * 1000;
-            [self.videoEncoder setVideoBitRate:videoBitRate];
-            NSLog(@"Decline bitrate %@", @(videoBitRate));
+    if (self.canUpload) {
+        NSLog(@"LFLiveBuffferState---  %ld", status);
+        NSUInteger videoBitRate = [self.videoEncoder videoBitRate];
+        if (status == LFLiveBuffferDecline) {
+            if (videoBitRate < _videoConfiguration.videoMaxBitRate) {
+                videoBitRate = videoBitRate + 50 * 1000;
+                [self.videoEncoder setVideoBitRate:videoBitRate];
+                NSLog(@"Increase bitrate %@", @(videoBitRate));
+            }
+        } else {
+            if (videoBitRate > self.videoConfiguration.videoMinBitRate) {
+                videoBitRate = videoBitRate - 100 * 1000;
+                [self.videoEncoder setVideoBitRate:videoBitRate];
+                NSLog(@"Decline bitrate %@", @(videoBitRate));
+            }
         }
     }
 }
@@ -902,5 +804,10 @@ static OSStatus playUnitInputCallback(void *inRefCon,
     return noErr;
 }
 
+
+- (BOOL)AVAlignment{
+    if(self.hasCaptureAudio && self.hasKeyFrameVideo) return YES;
+    else  return NO;
+}
 
 @end

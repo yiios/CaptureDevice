@@ -64,11 +64,14 @@
     if (![self createAudioConvert]) {
         return;
     }
-    
+    NSLog(@"length--------  %zu", audioData.length);
+
     if(leftLength + audioData.length >= self.configuration.bufferLength){
         ///<  发送
         NSInteger totalSize = leftLength + audioData.length;
         NSInteger encodeCount = totalSize/self.configuration.bufferLength;
+        NSLog(@"encodeCount--------  %ld", encodeCount);
+
         char *totalBuf = malloc(totalSize);
         char *p = totalBuf;
         

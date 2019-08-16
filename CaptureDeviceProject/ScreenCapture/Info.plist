@@ -8,10 +8,10 @@
 		<true/>
 	</dict>
     
-    <key>NSCameraUsageDescription</key>
-    <string>需要访问你的相机，以便你正常使用上传头像、直播间传图等功能</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>需要访问你的麦克风，以便你正常使用直播间语音沟通功能</string>
+<!--    <key>NSCameraUsageDescription</key>-->
+<!--    <string>需要访问你的相机，以便你正常使用上传头像、直播间传图等功能</string>-->
+<!--    <key>NSMicrophoneUsageDescription</key>-->
+<!--    <string>需要访问你的麦克风，以便你正常使用直播间语音沟通功能</string>-->
  
     
 	<key>CFBundleDevelopmentRegion</key>
