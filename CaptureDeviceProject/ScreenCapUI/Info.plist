@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>屏幕推流</string>
+	<string>ScreenCapUI</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -20,19 +20,20 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
 	<key>NSExtension</key>
 	<dict>
+		<key>NSExtensionAttributes</key>
+		<dict>
+			<key>NSExtensionActivationRule</key>
+			<dict>
+				<key>NSExtensionActivationSupportsReplayKitStreaming</key>
+				<true/>
+			</dict>
+		</dict>
 		<key>NSExtensionPointIdentifier</key>
-		<string>com.apple.broadcast-services-upload</string>
+		<string>com.apple.broadcast-services-setupui</string>
 		<key>NSExtensionPrincipalClass</key>
-		<string>SampleHandler</string>
-		<key>RPBroadcastProcessMode</key>
-		<string>RPBroadcastProcessModeSampleBuffer</string>
+		<string>BroadcastSetupViewController</string>
 	</dict>
 </dict>
 </plist>

@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		74F304F39BD212AB75E03124 /* Pods_CaptureDeviceProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70DC69F188720B81DC66933C /* Pods_CaptureDeviceProject.framework */; };
+		761AB8E3230977AF00B97B0C /* appicon1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 761AB8E2230977AF00B97B0C /* appicon1024.png */; };
+		761AB8E923099CCD00B97B0C /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD93A6DF22F1374D009190E2 /* ReplayKit.framework */; };
+		761AB8EA23099CCD00B97B0C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD93A6EC22F1374D009190E2 /* UIKit.framework */; };
+		761AB8EE23099CCD00B97B0C /* BroadcastSetupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 761AB8ED23099CCD00B97B0C /* BroadcastSetupViewController.m */; };
+		761AB8F223099CCD00B97B0C /* ScreenCapUI.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 761AB8E823099CCD00B97B0C /* ScreenCapUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7647932122F5B413005B622E /* SelectListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7647931F22F5B413005B622E /* SelectListViewController.m */; };
 		7647932222F5B413005B622E /* SelectListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7647932022F5B413005B622E /* SelectListViewController.xib */; };
 		7657731F22F5D3C50042A8FF /* ScreenCatchTableFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7657731E22F5D3C50042A8FF /* ScreenCatchTableFooterView.m */; };
@@ -33,10 +38,6 @@
 		CD5A637322FBF3AD00D6A5B1 /* XDXAduioEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = CD5A637122FBF3AD00D6A5B1 /* XDXAduioEncoder.m */; };
 		CD93A6E022F1374D009190E2 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD93A6DF22F1374D009190E2 /* ReplayKit.framework */; };
 		CD93A6E422F1374D009190E2 /* SampleHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = CD93A6E322F1374D009190E2 /* SampleHandler.m */; };
-		CD93A6EB22F1374D009190E2 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD93A6DF22F1374D009190E2 /* ReplayKit.framework */; };
-		CD93A6ED22F1374D009190E2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD93A6EC22F1374D009190E2 /* UIKit.framework */; };
-		CD93A6F122F1374D009190E2 /* BroadcastSetupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD93A6F022F1374D009190E2 /* BroadcastSetupViewController.m */; };
-		CD93A6F522F1374D009190E2 /* ScreenCaptureSetupUI.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = CD93A6EA22F1374D009190E2 /* ScreenCaptureSetupUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CD93A6F822F1374D009190E2 /* ScreenCapture.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = CD93A6DD22F1374D009190E2 /* ScreenCapture.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CD9704F822DC6D9500132518 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CD9704F722DC6D9500132518 /* AppDelegate.m */; };
 		CD97050022DC6D9600132518 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD9704FF22DC6D9600132518 /* Assets.xcassets */; };
@@ -47,12 +48,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		CD93A6F322F1374D009190E2 /* PBXContainerItemProxy */ = {
+		761AB8F023099CCD00B97B0C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CD9704EB22DC6D9500132518 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CD93A6E922F1374D009190E2;
-			remoteInfo = ScreenCaptureSetupUI;
+			remoteGlobalIDString = 761AB8E723099CCD00B97B0C;
+			remoteInfo = ScreenCapUI;
 		};
 		CD93A6F622F1374D009190E2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -84,8 +85,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				CD93A6F522F1374D009190E2 /* ScreenCaptureSetupUI.appex in Embed App Extensions */,
 				CD93A6F822F1374D009190E2 /* ScreenCapture.appex in Embed App Extensions */,
+				761AB8F223099CCD00B97B0C /* ScreenCapUI.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -94,6 +95,11 @@
 
 /* Begin PBXFileReference section */
 		70DC69F188720B81DC66933C /* Pods_CaptureDeviceProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CaptureDeviceProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		761AB8E2230977AF00B97B0C /* appicon1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = appicon1024.png; sourceTree = "<group>"; };
+		761AB8E823099CCD00B97B0C /* ScreenCapUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ScreenCapUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		761AB8EC23099CCD00B97B0C /* BroadcastSetupViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BroadcastSetupViewController.h; sourceTree = "<group>"; };
+		761AB8ED23099CCD00B97B0C /* BroadcastSetupViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BroadcastSetupViewController.m; sourceTree = "<group>"; };
+		761AB8EF23099CCD00B97B0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7647931E22F5B413005B622E /* SelectListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelectListViewController.h; sourceTree = "<group>"; };
 		7647931F22F5B413005B622E /* SelectListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelectListViewController.m; sourceTree = "<group>"; };
 		7647932022F5B413005B622E /* SelectListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelectListViewController.xib; sourceTree = "<group>"; };
@@ -141,11 +147,7 @@
 		CD93A6E222F1374D009190E2 /* SampleHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SampleHandler.h; sourceTree = "<group>"; };
 		CD93A6E322F1374D009190E2 /* SampleHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SampleHandler.m; sourceTree = "<group>"; };
 		CD93A6E522F1374D009190E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CD93A6EA22F1374D009190E2 /* ScreenCaptureSetupUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ScreenCaptureSetupUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD93A6EC22F1374D009190E2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		CD93A6EF22F1374D009190E2 /* BroadcastSetupViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BroadcastSetupViewController.h; sourceTree = "<group>"; };
-		CD93A6F022F1374D009190E2 /* BroadcastSetupViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BroadcastSetupViewController.m; sourceTree = "<group>"; };
-		CD93A6F222F1374D009190E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CD93A70022F13E3C009190E2 /* CaptureDeviceProject.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CaptureDeviceProject.entitlements; sourceTree = "<group>"; };
 		CD93A70122F13E4F009190E2 /* ScreenCapture.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ScreenCapture.entitlements; sourceTree = "<group>"; };
 		CD9704F322DC6D9500132518 /* CaptureDeviceProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CaptureDeviceProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -163,20 +165,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		761AB8E523099CCD00B97B0C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				761AB8E923099CCD00B97B0C /* ReplayKit.framework in Frameworks */,
+				761AB8EA23099CCD00B97B0C /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CD93A6DA22F1374D009190E2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				CD93A6E022F1374D009190E2 /* ReplayKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CD93A6E722F1374D009190E2 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CD93A6EB22F1374D009190E2 /* ReplayKit.framework in Frameworks */,
-				CD93A6ED22F1374D009190E2 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,6 +207,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		761AB8EB23099CCD00B97B0C /* ScreenCapUI */ = {
+			isa = PBXGroup;
+			children = (
+				761AB8EC23099CCD00B97B0C /* BroadcastSetupViewController.h */,
+				761AB8ED23099CCD00B97B0C /* BroadcastSetupViewController.m */,
+				761AB8EF23099CCD00B97B0C /* Info.plist */,
+			);
+			path = ScreenCapUI;
+			sourceTree = "<group>";
+		};
 		765FCACC22F51CBF00948374 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
@@ -259,6 +271,7 @@
 		765FCAE722F524F200948374 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				761AB8E2230977AF00B97B0C /* appicon1024.png */,
 				CD97050522DC6D9600132518 /* main.m */,
 				765FCAEC22F5265B00948374 /* captureInfo.plist */,
 				765FCAF322F52A0F00948374 /* PrefixHeader.pch */,
@@ -342,16 +355,6 @@
 			path = ScreenCapture;
 			sourceTree = "<group>";
 		};
-		CD93A6EE22F1374D009190E2 /* ScreenCaptureSetupUI */ = {
-			isa = PBXGroup;
-			children = (
-				CD93A6EF22F1374D009190E2 /* BroadcastSetupViewController.h */,
-				CD93A6F022F1374D009190E2 /* BroadcastSetupViewController.m */,
-				CD93A6F222F1374D009190E2 /* Info.plist */,
-			);
-			path = ScreenCaptureSetupUI;
-			sourceTree = "<group>";
-		};
 		CD9704EA22DC6D9500132518 = {
 			isa = PBXGroup;
 			children = (
@@ -359,7 +362,7 @@
 				CD97050E22DC6D9600132518 /* CaptureDeviceProjectTests */,
 				CD97051922DC6D9600132518 /* CaptureDeviceProjectUITests */,
 				CD93A6E122F1374D009190E2 /* ScreenCapture */,
-				CD93A6EE22F1374D009190E2 /* ScreenCaptureSetupUI */,
+				761AB8EB23099CCD00B97B0C /* ScreenCapUI */,
 				CD93A6DE22F1374D009190E2 /* Frameworks */,
 				CD9704F422DC6D9500132518 /* Products */,
 				D71758EE4C55551FD4152902 /* Pods */,
@@ -373,7 +376,7 @@
 				CD97050B22DC6D9600132518 /* CaptureDeviceProjectTests.xctest */,
 				CD97051622DC6D9600132518 /* CaptureDeviceProjectUITests.xctest */,
 				CD93A6DD22F1374D009190E2 /* ScreenCapture.appex */,
-				CD93A6EA22F1374D009190E2 /* ScreenCaptureSetupUI.appex */,
+				761AB8E823099CCD00B97B0C /* ScreenCapUI.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -425,6 +428,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		761AB8E723099CCD00B97B0C /* ScreenCapUI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 761AB8F323099CCD00B97B0C /* Build configuration list for PBXNativeTarget "ScreenCapUI" */;
+			buildPhases = (
+				761AB8E423099CCD00B97B0C /* Sources */,
+				761AB8E523099CCD00B97B0C /* Frameworks */,
+				761AB8E623099CCD00B97B0C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ScreenCapUI;
+			productName = ScreenCapUI;
+			productReference = 761AB8E823099CCD00B97B0C /* ScreenCapUI.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		CD93A6DC22F1374D009190E2 /* ScreenCapture */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CD93A6FC22F1374D009190E2 /* Build configuration list for PBXNativeTarget "ScreenCapture" */;
@@ -442,23 +462,6 @@
 			productReference = CD93A6DD22F1374D009190E2 /* ScreenCapture.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		CD93A6E922F1374D009190E2 /* ScreenCaptureSetupUI */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CD93A6F922F1374D009190E2 /* Build configuration list for PBXNativeTarget "ScreenCaptureSetupUI" */;
-			buildPhases = (
-				CD93A6E622F1374D009190E2 /* Sources */,
-				CD93A6E722F1374D009190E2 /* Frameworks */,
-				CD93A6E822F1374D009190E2 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = ScreenCaptureSetupUI;
-			productName = ScreenCaptureSetupUI;
-			productReference = CD93A6EA22F1374D009190E2 /* ScreenCaptureSetupUI.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		CD9704F222DC6D9500132518 /* CaptureDeviceProject */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CD97051F22DC6D9600132518 /* Build configuration list for PBXNativeTarget "CaptureDeviceProject" */;
@@ -473,8 +476,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				CD93A6F422F1374D009190E2 /* PBXTargetDependency */,
 				CD93A6F722F1374D009190E2 /* PBXTargetDependency */,
+				761AB8F123099CCD00B97B0C /* PBXTargetDependency */,
 			);
 			name = CaptureDeviceProject;
 			productName = CaptureDeviceProject;
@@ -526,6 +529,9 @@
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = minzhe;
 				TargetAttributes = {
+					761AB8E723099CCD00B97B0C = {
+						CreatedOnToolsVersion = 10.2;
+					};
 					CD93A6DC22F1374D009190E2 = {
 						CreatedOnToolsVersion = 10.2;
 						SystemCapabilities = {
@@ -533,9 +539,6 @@
 								enabled = 1;
 							};
 						};
-					};
-					CD93A6E922F1374D009190E2 = {
-						CreatedOnToolsVersion = 10.2;
 					};
 					CD9704F222DC6D9500132518 = {
 						CreatedOnToolsVersion = 10.2;
@@ -572,20 +575,20 @@
 				CD97050A22DC6D9600132518 /* CaptureDeviceProjectTests */,
 				CD97051522DC6D9600132518 /* CaptureDeviceProjectUITests */,
 				CD93A6DC22F1374D009190E2 /* ScreenCapture */,
-				CD93A6E922F1374D009190E2 /* ScreenCaptureSetupUI */,
+				761AB8E723099CCD00B97B0C /* ScreenCapUI */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		CD93A6DB22F1374D009190E2 /* Resources */ = {
+		761AB8E623099CCD00B97B0C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CD93A6E822F1374D009190E2 /* Resources */ = {
+		CD93A6DB22F1374D009190E2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -605,6 +608,7 @@
 				765FCAFD22F533A000948374 /* ScreenCatchViewController.xib in Resources */,
 				CD97050022DC6D9600132518 /* Assets.xcassets in Resources */,
 				765FCB0822F5376100948374 /* SetPushUrlViewController.xib in Resources */,
+				761AB8E3230977AF00B97B0C /* appicon1024.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -667,20 +671,20 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		761AB8E423099CCD00B97B0C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				761AB8EE23099CCD00B97B0C /* BroadcastSetupViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CD93A6D922F1374D009190E2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				CD5A637322FBF3AD00D6A5B1 /* XDXAduioEncoder.m in Sources */,
 				CD93A6E422F1374D009190E2 /* SampleHandler.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CD93A6E622F1374D009190E2 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CD93A6F122F1374D009190E2 /* BroadcastSetupViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -727,10 +731,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		CD93A6F422F1374D009190E2 /* PBXTargetDependency */ = {
+		761AB8F123099CCD00B97B0C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CD93A6E922F1374D009190E2 /* ScreenCaptureSetupUI */;
-			targetProxy = CD93A6F322F1374D009190E2 /* PBXContainerItemProxy */;
+			target = 761AB8E723099CCD00B97B0C /* ScreenCapUI */;
+			targetProxy = 761AB8F023099CCD00B97B0C /* PBXContainerItemProxy */;
 		};
 		CD93A6F722F1374D009190E2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -761,39 +765,47 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		CD93A6FA22F1374D009190E2 /* Debug */ = {
+		761AB8F423099CCD00B97B0C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7233V8552Q;
-				INFOPLIST_FILE = ScreenCaptureSetupUI/Info.plist;
+				INFOPLIST_FILE = ScreenCapUI/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject.ScreenCaptureSetupUI;
+				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject.ScreenCapUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
-		CD93A6FB22F1374D009190E2 /* Release */ = {
+		761AB8F523099CCD00B97B0C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7233V8552Q;
-				INFOPLIST_FILE = ScreenCaptureSetupUI/Info.plist;
+				INFOPLIST_FILE = ScreenCapUI/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject.ScreenCaptureSetupUI;
+				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject.ScreenCapUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -801,6 +813,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ScreenCapture/ScreenCapture.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7233V8552Q;
 				INFOPLIST_FILE = ScreenCapture/Info.plist;
@@ -811,8 +824,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject.ScreenCapture;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -820,6 +834,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ScreenCapture/ScreenCapture.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7233V8552Q;
 				INFOPLIST_FILE = ScreenCapture/Info.plist;
@@ -830,8 +845,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject.ScreenCapture;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -955,6 +971,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = CaptureDeviceProject/CaptureDeviceProject.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7233V8552Q;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/CaptureDeviceProject/Supporting Files/PrefixHeader.pch";
@@ -966,7 +983,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -976,6 +994,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = CaptureDeviceProject/CaptureDeviceProject.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7233V8552Q;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/CaptureDeviceProject/Supporting Files/PrefixHeader.pch";
@@ -987,7 +1006,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -1068,11 +1088,11 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CD93A6F922F1374D009190E2 /* Build configuration list for PBXNativeTarget "ScreenCaptureSetupUI" */ = {
+		761AB8F323099CCD00B97B0C /* Build configuration list for PBXNativeTarget "ScreenCapUI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CD93A6FA22F1374D009190E2 /* Debug */,
-				CD93A6FB22F1374D009190E2 /* Release */,
+				761AB8F423099CCD00B97B0C /* Debug */,
+				761AB8F523099CCD00B97B0C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
