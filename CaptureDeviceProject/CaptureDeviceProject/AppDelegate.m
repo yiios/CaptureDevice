@@ -11,6 +11,7 @@
 #import "ScreenCatchViewController.h"
 #import "BaseNavigationController.h"
 #import <IQKeyboardManager/IQKeyboardManager.h>
+#import <UserNotifications/UserNotifications.h>
 
 @interface AppDelegate ()
 
@@ -28,28 +29,34 @@
     manager.shouldToolbarUsesTextFieldTintColor = YES;
     manager.enableAutoToolbar = YES;
     
-    
+    //音频权限
     AVAuthorizationStatus videoAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
-    if (videoAuthStatus == AVAuthorizationStatusNotDetermined) {// 未询问用户是否授权
-        //第一次询问用户是否进行授权
+    if (videoAuthStatus == AVAuthorizationStatusNotDetermined) {
         [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
-            // CALL YOUR METHOD HERE - as this assumes being called only once from user interacting with permission alert!
             if (granted) {
-                // Microphone enabled code
             }
             else {
-                // Microphone disabled code
             }
         }];
     }
     else if(videoAuthStatus == AVAuthorizationStatusRestricted || videoAuthStatus == AVAuthorizationStatusDenied) {// 未授权
-        //        [self showSetAlertView];
-        NSLog(@"1111111");
     }
-    else{// 已授权
-        //        [self recordVoiceStart];
+    else{
     }
     
+    //视频权限
+    videoAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    if (videoAuthStatus == AVAuthorizationStatusNotDetermined) {// 未询问用户是否授权
+        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+            if (granted) {
+                
+            }
+        }];
+    }
+    else if(videoAuthStatus == AVAuthorizationStatusRestricted || videoAuthStatus == AVAuthorizationStatusDenied) {// 未授权
+    }
+    else{
+    }
     
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -61,7 +68,18 @@
     [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:@"https://www.baidu.com"] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSLog(@"");
     }] resume];
+    
+    [self registerAPN];
+    
     return YES;
+}
+
+// 注册通知
+- (void)registerAPN {
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    [center requestAuthorizationWithOptions:(UNAuthorizationOptionAlert + UNAuthorizationOptionSound) completionHandler:^(BOOL granted, NSError * _Nullable error) {
+        
+    }];
 }
 
 

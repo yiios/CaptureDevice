@@ -10,6 +10,7 @@
 #import "SampleHandler.h"
 #import <LFLiveKit/LFLiveKit.h>
 #import "XDXAduioEncoder.h"
+#import <UserNotifications/UserNotifications.h>
 
 //输出音频的采样率(也是session设置的采样率)，
 const double kGraphSampleRate = 44100.0;
@@ -179,8 +180,27 @@ const double kSessionBufDuration    = 0.005;
     __weak typeof(self) weakSelf = self;
     CADisplayLink *_link = [CADisplayLink displayLinkWithTarget:weakSelf selector:@selector(checkFPS:)];
     [_link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
-    
 //    [self mixer];
+}
+
+- (void)sendLocalNotificationToHostAppWithTitle:(NSString*)title msg:(NSString*)msg userInfo:(NSDictionary*)userInfo
+{
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
+    content.title = [NSString localizedUserNotificationStringForKey:title arguments:nil];
+    content.body = [NSString localizedUserNotificationStringForKey:msg  arguments:nil];
+    content.sound = [UNNotificationSound defaultSound];
+    content.userInfo = userInfo;
+    
+    // 在设定时间后推送本地推送
+    UNTimeIntervalNotificationTrigger *trigger = [UNTimeIntervalNotificationTrigger
+                                                  triggerWithTimeInterval:0.1f repeats:NO];
+    
+    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:@"gunmm.CaptureDeviceProject"
+                                                                          content:content trigger:trigger];
+    //添加推送成功后的处理！
+    [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+    }];
 }
 
 - (void)checkFPS:(CADisplayLink *)link {
@@ -211,18 +231,19 @@ const double kSessionBufDuration    = 0.005;
 
 - (void)broadcastPaused {
     // User has requested to pause the broadcast. Samples will stop being delivered.
+    [self sendLocalNotificationToHostAppWithTitle:@"屏幕推流" msg:@"录屏暂停" userInfo:nil];
     NSLog(@"------Paused-------");
-
 }
 
 - (void)broadcastResumed {
     // User has requested to resume the broadcast. Samples delivery will resume.
+    [self sendLocalNotificationToHostAppWithTitle:@"屏幕推流" msg:@"录屏重新开始" userInfo:nil];
     NSLog(@"------Resumed-------");
-
 }
 
 - (void)broadcastFinished {
     // User has requested to finish the broadcast.
+    [self sendLocalNotificationToHostAppWithTitle:@"屏幕推流" msg:@"录屏已结束" userInfo:nil];
     NSLog(@"------Finished-------");
 }
 
@@ -375,9 +396,6 @@ const double kSessionBufDuration    = 0.005;
 #pragma mark -- LFStreamTcpSocketDelegate
 - (void)socketStatus:(nullable id<LFStreamSocket>)socket status:(LFLiveState)status {
     NSLog(@"--------%lu", status);
-    if (status == LFLiveError) {
-        NSLog(@"111");
-    }
     
     if (status == LFLiveStart) {
         if (!self.canUpload) {
@@ -389,6 +407,7 @@ const double kSessionBufDuration    = 0.005;
         }
     } else if(status == LFLiveStop || status == LFLiveError){
         self.canUpload = NO;
+        [self sendLocalNotificationToHostAppWithTitle:@"屏幕推流" msg:@"连接错误，推流已停止" userInfo:nil];
     }
 
     
