@@ -1,0 +1,44 @@
+//
+//  BaseDeviceManager.m
+//  CaptureDeviceProject
+//
+//  Created by gunmm on 2019/8/24.
+//  Copyright © 2019 minzhe. All rights reserved.
+//
+
+#import "BaseDeviceManager.h"
+#import "NetWorking.h"
+
+@implementation BaseDeviceManager
+
++ (void)uploadDeviceInfo {
+    NSString *urlStr = @"updatePingMuUser";
+    
+    UIDevice *device = [[UIDevice alloc] init];
+    NSString *deviceId = [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceId"];
+    if (deviceId.length == 0) {
+        urlStr = @"addPingMuUser";
+        deviceId = [[NSUUID UUID] UUIDString];
+    }
+    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+    NSString *currentVersion = [NSString stringWithFormat:@"%@.%@", version, build];
+    
+    NSMutableDictionary *param = [NSMutableDictionary dictionary];
+    [param setObject:deviceId forKey:@"deviceId"];
+    [param setObject:currentVersion forKey:@"pingMuVersion"];
+    [param setObject:device.systemVersion forKey:@"systemVersion"];
+    [param setObject:device.name forKey:@"name"];
+    [param setObject:device.model forKey:@"model"];
+    [param setObject:device.localizedModel forKey:@"localizedModel"];
+    [param setObject:device.systemName forKey:@"systemName"];
+    
+    [NetWorking bgPostDataWithParameters:param withUrl:urlStr withBlock:^(id result) {
+        [[NSUserDefaults standardUserDefaults] setObject:deviceId forKey:@"deviceId"];
+    } withFailedBlock:^(NSString *errorResult) {
+        [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"deviceId"];
+    }];
+    
+}
+
+@end

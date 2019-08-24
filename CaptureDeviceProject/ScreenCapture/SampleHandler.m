@@ -106,7 +106,7 @@ const double kSessionBufDuration    = 0.005;
 
 - (LFLiveVideoConfiguration *)videoConfiguration {
     if (!_videoConfiguration) {
-        _videoConfiguration = [LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_High3 outputImageOrientation:self.encoderOrientation];
+        _videoConfiguration = [LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_High3 outputImageOrientation:self.encoderOrientation width:self.lastWidth height:self.lastHeight];
     }
     return _videoConfiguration;
 

@@ -13,6 +13,8 @@
 #import "SelectListModel.h"
 #import "ScreenCatchTableFooterView.h"
 #import <UserNotifications/UserNotifications.h>
+#import "PushFailGuidanceController.h"
+#import "NetWorking.h"
 
 @interface ScreenCatchViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -49,7 +51,17 @@
     
     [self initData];
     [self initView];
+    [self loadData];
+}
 
+- (void)loadData {
+    [NetWorking bgPostDataWithParameters:@{} withUrl:@"getBaiDuDictionary" withBlock:^(id result) {
+        if ([[result objectForKey:@"object"] isEqualToString:@"1"]) {
+            NSLog(@"111");
+        }
+    } withFailedBlock:^(NSString *errorResult) {
+    }];
+    
 }
 
 - (void)initData {
@@ -156,7 +168,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (section == 1) {
-        return 154;
+        return 300;
     }
     return 0.001f;
 }
@@ -221,6 +233,10 @@
 - (ScreenCatchTableFooterView *)footerView {
     if (!_footerView) {
         _footerView = [ScreenCatchTableFooterView loadScreenCatchTableFooterView];
+        __weak typeof(self) weakSelf = self;
+        _footerView.failedBtnActBlock = ^{
+            [weakSelf.navigationController pushViewController:[PushFailGuidanceController new] animated:YES];
+        };
     }
     return _footerView;
 }

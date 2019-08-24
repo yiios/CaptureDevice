@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet RPSystemBroadcastPickerView *prView;
 
 @property (nonatomic, assign) BOOL showBtn;
+@property (nonatomic, copy) void(^failedBtnActBlock)(void);
+
 
 + (ScreenCatchTableFooterView *)loadScreenCatchTableFooterView;
 

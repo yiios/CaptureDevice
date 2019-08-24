@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1100"
+   LastUpgradeVersion = "0930"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6A8E933EBD5035A7E7776778245A4BA4"
+               BlueprintIdentifier = "0E2A4AA43A2579E89DCE6337D1692C18"
                BuildableName = "LFLiveKit.framework"
                BlueprintName = "LFLiveKit"
                ReferencedContainer = "container:Pods.xcodeproj">

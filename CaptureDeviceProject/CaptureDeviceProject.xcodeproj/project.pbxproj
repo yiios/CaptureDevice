@@ -34,6 +34,10 @@
 		765FCB0722F5376100948374 /* SetPushUrlViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 765FCB0522F5376100948374 /* SetPushUrlViewController.m */; };
 		765FCB0822F5376100948374 /* SetPushUrlViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 765FCB0622F5376100948374 /* SetPushUrlViewController.xib */; };
 		765FCB0B22F5730200948374 /* UIView+HUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 765FCB0A22F5730200948374 /* UIView+HUD.m */; };
+		769E25DC2311230B00D39537 /* BaseDeviceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 769E25DB2311230B00D39537 /* BaseDeviceManager.m */; };
+		769E25DF231125A200D39537 /* NetWorking.m in Sources */ = {isa = PBXBuildFile; fileRef = 769E25DE231125A200D39537 /* NetWorking.m */; };
+		769E25E32311483900D39537 /* PushFailGuidanceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 769E25E12311483900D39537 /* PushFailGuidanceController.m */; };
+		769E25E42311483900D39537 /* PushFailGuidanceController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 769E25E22311483900D39537 /* PushFailGuidanceController.xib */; };
 		76C9072A22F5C1A8006BA6E5 /* SelectListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C9072922F5C1A8006BA6E5 /* SelectListModel.m */; };
 		CD5A637322FBF3AD00D6A5B1 /* XDXAduioEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = CD5A637122FBF3AD00D6A5B1 /* XDXAduioEncoder.m */; };
 		CD93A6E022F1374D009190E2 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD93A6DF22F1374D009190E2 /* ReplayKit.framework */; };
@@ -136,6 +140,13 @@
 		765FCB0622F5376100948374 /* SetPushUrlViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SetPushUrlViewController.xib; sourceTree = "<group>"; };
 		765FCB0922F5730200948374 /* UIView+HUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+HUD.h"; sourceTree = "<group>"; };
 		765FCB0A22F5730200948374 /* UIView+HUD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+HUD.m"; sourceTree = "<group>"; };
+		769E25DA2311230B00D39537 /* BaseDeviceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseDeviceManager.h; sourceTree = "<group>"; };
+		769E25DB2311230B00D39537 /* BaseDeviceManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseDeviceManager.m; sourceTree = "<group>"; };
+		769E25DD231125A200D39537 /* NetWorking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetWorking.h; sourceTree = "<group>"; };
+		769E25DE231125A200D39537 /* NetWorking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetWorking.m; sourceTree = "<group>"; };
+		769E25E02311483900D39537 /* PushFailGuidanceController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PushFailGuidanceController.h; sourceTree = "<group>"; };
+		769E25E12311483900D39537 /* PushFailGuidanceController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PushFailGuidanceController.m; sourceTree = "<group>"; };
+		769E25E22311483900D39537 /* PushFailGuidanceController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PushFailGuidanceController.xib; sourceTree = "<group>"; };
 		76C9072822F5C1A8006BA6E5 /* SelectListModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelectListModel.h; sourceTree = "<group>"; };
 		76C9072922F5C1A8006BA6E5 /* SelectListModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelectListModel.m; sourceTree = "<group>"; };
 		7F0FDCEB97630057A8FC3AD7 /* Pods-CaptureDeviceProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureDeviceProject.debug.xcconfig"; path = "Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject.debug.xcconfig"; sourceTree = "<group>"; };
@@ -254,6 +265,8 @@
 				765FCADD22F51CF800948374 /* BaseViewController.m */,
 				765FCAE422F523FD00948374 /* BaseNavigationController.h */,
 				765FCAE522F523FD00948374 /* BaseNavigationController.m */,
+				769E25DA2311230B00D39537 /* BaseDeviceManager.h */,
+				769E25DB2311230B00D39537 /* BaseDeviceManager.m */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -282,6 +295,8 @@
 		765FCAEE22F5290C00948374 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				769E25DD231125A200D39537 /* NetWorking.h */,
+				769E25DE231125A200D39537 /* NetWorking.m */,
 				7657732722F5E2410042A8FF /* UIViewExt.h */,
 				7657732822F5E2420042A8FF /* UIViewExt.m */,
 				765FCAF422F52B1D00948374 /* NavBgImage.h */,
@@ -306,6 +321,9 @@
 				7647931E22F5B413005B622E /* SelectListViewController.h */,
 				7647931F22F5B413005B622E /* SelectListViewController.m */,
 				7647932022F5B413005B622E /* SelectListViewController.xib */,
+				769E25E02311483900D39537 /* PushFailGuidanceController.h */,
+				769E25E12311483900D39537 /* PushFailGuidanceController.m */,
+				769E25E22311483900D39537 /* PushFailGuidanceController.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -604,6 +622,7 @@
 			files = (
 				7647932222F5B413005B622E /* SelectListViewController.xib in Resources */,
 				765FCB0322F5340300948374 /* ClickJumpTableViewCell.xib in Resources */,
+				769E25E42311483900D39537 /* PushFailGuidanceController.xib in Resources */,
 				765FCAD822F51CBF00948374 /* CameraCatchViewController.xib in Resources */,
 				CD97050322DC6D9600132518 /* LaunchScreen.storyboard in Resources */,
 				7657732122F5D3D10042A8FF /* ScreenCatchTableFooterView.xib in Resources */,
@@ -662,9 +681,18 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/IQKeyboardManager/IQKeyboardManager.framework",
+				"${BUILT_PRODUCTS_DIR}/LFLiveKit/LFLiveKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Toast/Toast.framework",
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -695,8 +723,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				769E25DF231125A200D39537 /* NetWorking.m in Sources */,
 				7647932122F5B413005B622E /* SelectListViewController.m in Sources */,
 				CD97050622DC6D9600132518 /* main.m in Sources */,
+				769E25DC2311230B00D39537 /* BaseDeviceManager.m in Sources */,
 				765FCADE22F51CF800948374 /* BaseViewController.m in Sources */,
 				765FCB0B22F5730200948374 /* UIView+HUD.m in Sources */,
 				7657732922F5E2420042A8FF /* UIViewExt.m in Sources */,
@@ -708,6 +738,7 @@
 				765FCAD722F51CBF00948374 /* CameraCatchViewController.m in Sources */,
 				765FCAF122F5297100948374 /* CSConstants.m in Sources */,
 				765FCAF622F52B1E00948374 /* NavBgImage.m in Sources */,
+				769E25E32311483900D39537 /* PushFailGuidanceController.m in Sources */,
 				7657731F22F5D3C50042A8FF /* ScreenCatchTableFooterView.m in Sources */,
 				765FCAFE22F533A000948374 /* ScreenCatchViewController.m in Sources */,
 				765FCADA22F51CBF00948374 /* CameraCatchHandler.m in Sources */,
@@ -814,6 +845,7 @@
 		};
 		CD93A6FD22F1374D009190E2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7F0FDCEB97630057A8FC3AD7 /* Pods-CaptureDeviceProject.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ScreenCapture/ScreenCapture.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -836,6 +868,7 @@
 		};
 		CD93A6FE22F1374D009190E2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 96A4689A7507BFC71587A013 /* Pods-CaptureDeviceProject.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ScreenCapture/ScreenCapture.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -989,7 +1022,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -1012,7 +1045,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

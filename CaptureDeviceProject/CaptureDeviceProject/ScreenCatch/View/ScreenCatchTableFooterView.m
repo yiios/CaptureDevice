@@ -47,4 +47,11 @@ CGFloat const ScreenCatchTableFooterViewHeight = 94;
     }
 }
 
+- (IBAction)failed:(id)sender {
+    if (self.failedBtnActBlock) {
+        self.failedBtnActBlock();
+    }
+}
+
+
 @end

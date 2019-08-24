@@ -12,6 +12,7 @@
 #import "BaseNavigationController.h"
 #import <IQKeyboardManager/IQKeyboardManager.h>
 #import <UserNotifications/UserNotifications.h>
+#import "BaseDeviceManager.h"
 
 @interface AppDelegate ()
 
@@ -70,7 +71,7 @@
     }] resume];
     
     [self registerAPN];
-    
+    [BaseDeviceManager uploadDeviceInfo];
     return YES;
 }
 
