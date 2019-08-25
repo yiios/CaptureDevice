@@ -123,7 +123,7 @@
             configuration.videoBitRate = 1200 * 1000;
             configuration.videoMaxBitRate = 1440 * 1000;
             configuration.videoMinBitRate = 500 * 1000;
-            configuration.videoSize = CGSizeMake(750, 1000);
+            configuration.videoSize = CGSizeMake(720, 1280);
         }
             break;
         default:

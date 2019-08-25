@@ -61,6 +61,9 @@ const double kSessionBufDuration    = 0.005;
 @property (nonatomic, assign) size_t lastHeight;
 @property (nonatomic, assign) uint64_t lastTime;
 
+@property (nonatomic, assign) size_t videoWidth;
+@property (nonatomic, assign) size_t videoHeight;
+
 @property (nonatomic, assign) UIInterfaceOrientation encoderOrientation;
 @property (nonatomic, assign) CGImagePropertyOrientation rotateOrientation;
 
@@ -106,7 +109,9 @@ const double kSessionBufDuration    = 0.005;
 
 - (LFLiveVideoConfiguration *)videoConfiguration {
     if (!_videoConfiguration) {
-        _videoConfiguration = [LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_High3 outputImageOrientation:self.encoderOrientation width:self.lastWidth height:self.lastHeight];
+        _videoConfiguration = [LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_High3 outputImageOrientation:self.encoderOrientation width:self.videoWidth height:self.videoHeight];
+//        _videoConfiguration = [LFLiveVideoConfiguration defaultConfigurationForQuality:LFLiveVideoQuality_High3 outputImageOrientation:self.encoderOrientation];
+
     }
     return _videoConfiguration;
 
@@ -462,19 +467,48 @@ const double kSessionBufDuration    = 0.005;
     size_t width = CVPixelBufferGetWidth(pixelBuffer);
     size_t height = CVPixelBufferGetHeight(pixelBuffer);
     self.lastCIImage = ciimage;
-    self.lastWidth = width;
-    self.lastHeight = height;
+    
+    CGFloat widthScale = width/720.0;
+    CGFloat heightScale = height/1280.0;
+    CGFloat realWidthScale = 1;
+    CGFloat realHeightScale = 1;
+    
+    if (widthScale > 1 || heightScale > 1) {
+        if (widthScale < heightScale) {
+            realHeightScale = 1280.0/height;
+            CGFloat nowWidth = width * 1280 / height;
+            height = 1280;
+            realWidthScale = nowWidth/width;
+            width = nowWidth;
+        } else {
+            realWidthScale = 720.0/width;
+            CGFloat nowHeight = 720 * height / width;
+            width = 720;
+            realHeightScale = nowHeight/height;
+            height = nowHeight;
+        }
+    }
+    self.videoWidth = width;
+    self.videoHeight = height;
     
     if (self.rotateOrientation == kCGImagePropertyOrientationUp) {
-//        NSLog(@"不旋转----%zu,   %zu", width, height);
-        [self.videoEncoder encodeVideoData:pixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+        if (realWidthScale == 1 && realHeightScale == 1) {
+            [self.videoEncoder encodeVideoData:pixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+        } else {
+            CIImage *newImage = [ciimage imageByApplyingTransform:CGAffineTransformMakeScale(realWidthScale, realHeightScale)];
+            CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+            CVPixelBufferRef newPixcelBuffer = nil;
+            CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, nil, &newPixcelBuffer);
+            [_ciContext render:newImage toCVPixelBuffer:newPixcelBuffer];
+            CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+            [self.videoEncoder encodeVideoData:newPixcelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+            CVPixelBufferRelease(newPixcelBuffer);
+        }
     } else {
-//        NSLog(@"旋转----%zu,   %zu", width, height);
-
         // 旋转的方法
         CIImage *wImage = [ciimage imageByApplyingCGOrientation:self.rotateOrientation];
         
-        CIImage *newImage = [wImage imageByApplyingTransform:CGAffineTransformMakeScale(1, 1)];
+        CIImage *newImage = [wImage imageByApplyingTransform:CGAffineTransformMakeScale(realWidthScale, realHeightScale)];
         CVPixelBufferLockBaseAddress(pixelBuffer, 0);
         CVPixelBufferRef newPixcelBuffer = nil;
         CVPixelBufferCreate(kCFAllocatorDefault, height, width, kCVPixelFormatType_32BGRA, nil, &newPixcelBuffer);
@@ -483,6 +517,9 @@ const double kSessionBufDuration    = 0.005;
         [self.videoEncoder encodeVideoData:newPixcelBuffer timeStamp:(CACurrentMediaTime()*1000)];
         CVPixelBufferRelease(newPixcelBuffer);
     }
+    self.lastWidth = width;
+    self.lastHeight = height;
+    
 }
 
 - (void)dealWithLastCIImage:(CIImage *)lastCIImage {

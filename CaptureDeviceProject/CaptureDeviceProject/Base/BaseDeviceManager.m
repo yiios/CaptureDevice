@@ -8,6 +8,7 @@
 
 #import "BaseDeviceManager.h"
 #import "NetWorking.h"
+#import "sys/utsname.h"
 
 @implementation BaseDeviceManager
 
@@ -32,7 +33,11 @@
     [param setObject:device.model forKey:@"model"];
     [param setObject:device.localizedModel forKey:@"localizedModel"];
     [param setObject:device.systemName forKey:@"systemName"];
-    
+    struct utsname systemInfo;
+    uname(&systemInfo);
+    NSString *deviceString = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+    [param setObject:deviceString forKey:@"deviceString"];
+
     [NetWorking bgPostDataWithParameters:param withUrl:urlStr withBlock:^(id result) {
         [[NSUserDefaults standardUserDefaults] setObject:deviceId forKey:@"deviceId"];
     } withFailedBlock:^(NSString *errorResult) {
