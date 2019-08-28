@@ -8,18 +8,22 @@
 
 #import <Foundation/Foundation.h>
 #import <AudioToolbox/AudioToolbox.h>
+#import "MixAudioModel.h"
+
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol MixAudioManagerDelegate <NSObject>
+
+- (void)mixDidOutputModel:(MixAudioModel *)mixAudioModel;
+
+@end
 @interface MixAudioManager : NSObject
 
-- (instancetype)initWithInputFormat:(AudioStreamBasicDescription)inputFormat;
+@property (nonatomic, assign) id<MixAudioManagerDelegate> delegate;
 
--(void)stopAUGraph;
--(void)startAUGraph;
-
-- (void)pushAppData:(NSData*)audioData;
-- (void)pushMicData:(NSData*)audioData;
+- (void)sendMicBufferList:(AudioBuffer)buffer timeStamp:(uint64_t)timeStamp;
+- (void)sendAppBufferList:(NSData*)audioData;
 
 @end
 
