@@ -19,7 +19,7 @@
 
 + (instancetype)defaultConfigurationForQuality:(LFLiveAudioQuality)audioQuality {
     LFLiveAudioConfiguration *audioConfig = [LFLiveAudioConfiguration new];
-    audioConfig.numberOfChannels = 2;
+    audioConfig.numberOfChannels = 1;
     switch (audioQuality) {
     case LFLiveAudioQuality_Low: {
         audioConfig.audioBitrate = audioConfig.numberOfChannels == 1 ? LFLiveAudioBitRate_32Kbps : LFLiveAudioBitRate_64Kbps;

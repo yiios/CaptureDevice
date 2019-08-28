@@ -49,6 +49,7 @@
 		CD97050622DC6D9600132518 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CD97050522DC6D9600132518 /* main.m */; };
 		CD97051022DC6D9600132518 /* CaptureDeviceProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD97050F22DC6D9600132518 /* CaptureDeviceProjectTests.m */; };
 		CD97051B22DC6D9600132518 /* CaptureDeviceProjectUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD97051A22DC6D9600132518 /* CaptureDeviceProjectUITests.m */; };
+		CDAF89A2231671E000E74B81 /* MixAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CDAF89A1231671E000E74B81 /* MixAudioManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -173,6 +174,8 @@
 		CD97051622DC6D9600132518 /* CaptureDeviceProjectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CaptureDeviceProjectUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD97051A22DC6D9600132518 /* CaptureDeviceProjectUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CaptureDeviceProjectUITests.m; sourceTree = "<group>"; };
 		CD97051C22DC6D9600132518 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CDAF89A0231671E000E74B81 /* MixAudioManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MixAudioManager.h; sourceTree = "<group>"; };
+		CDAF89A1231671E000E74B81 /* MixAudioManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MixAudioManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -365,6 +368,8 @@
 			children = (
 				CD5A637222FBF3AD00D6A5B1 /* XDXAduioEncoder.h */,
 				CD5A637122FBF3AD00D6A5B1 /* XDXAduioEncoder.m */,
+				CDAF89A0231671E000E74B81 /* MixAudioManager.h */,
+				CDAF89A1231671E000E74B81 /* MixAudioManager.m */,
 				CD93A70122F13E4F009190E2 /* ScreenCapture.entitlements */,
 				CD93A6E222F1374D009190E2 /* SampleHandler.h */,
 				CD93A6E322F1374D009190E2 /* SampleHandler.m */,
@@ -716,6 +721,7 @@
 			files = (
 				CD5A637322FBF3AD00D6A5B1 /* XDXAduioEncoder.m in Sources */,
 				CD93A6E422F1374D009190E2 /* SampleHandler.m in Sources */,
+				CDAF89A2231671E000E74B81 /* MixAudioManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
