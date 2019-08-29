@@ -7,6 +7,7 @@
 //
 
 #import "MixAudioManager.h"
+#import <AVFoundation/AVFoundation.h>
 
 const NSInteger kLength = 2048;
 
@@ -38,23 +39,14 @@ const NSInteger kLength = 2048;
     }
 }
 
-- (void)sendMicBufferList:(AudioBuffer)buffer timeStamp:(uint64_t)timeStamp {
+- (void)sendMicBufferList:(NSData *)audioData timeStamp:(uint64_t)timeStamp {
     MixAudioModel *model = [[MixAudioModel alloc] init];
-    model.buffer = buffer;
+    model.videoData = audioData;
     model.timeStamp = timeStamp;
-//    if (self.delegate && [self.delegate respondsToSelector:@selector(mixDidOutputModel:)]) {
-//        [self.delegate mixDidOutputModel:model];
-//    }
     [_micModelArray addObject:model];
 }
 
-- (void)sendAppBufferList:(NSData *)audioData {
-//    for (MixAudioModel *model in _micModelArray) {
-//        if (self.delegate && [self.delegate respondsToSelector:@selector(mixDidOutputModel:)]) {
-//                    [self.delegate mixDidOutputModel:model];
-//                }
-//    }
-    
+- (void)sendAppBufferList:(NSData *)audioData timeStamp:(uint64_t)timeStamp {
     if(leftLength + audioData.length >= kLength){
         ///<  发送
         NSInteger totalSize = leftLength + audioData.length;
@@ -86,7 +78,7 @@ const NSInteger kLength = 2048;
 
 }
 
-- (void)addBuffer:(char*)buf index:(NSInteger)index {
+- (void)addBuffer:(char *)buf index:(NSInteger)index {
     if (_micModelArray.count > index) {
         AudioBuffer inBuffer;
         inBuffer.mNumberChannels = 1;
@@ -97,22 +89,33 @@ const NSInteger kLength = 2048;
         buffers.mNumberBuffers = 1;
         buffers.mBuffers[0] = inBuffer;
         
+        
         MixAudioModel *model = _micModelArray[index];
-        AudioBuffer buffer = model.buffer;
-        for (int i = 0; i < buffer.mDataByteSize; i++)
+        char *totalModelBuf = malloc(kLength);
+        memcpy(totalModelBuf, model.videoData.bytes, kLength);
+        
+        AudioBuffer modelBuffer;
+        modelBuffer.mNumberChannels = 1;
+        modelBuffer.mData = totalModelBuf;
+        modelBuffer.mDataByteSize = kLength;
+        
+        AudioBufferList modelBuffers;
+        modelBuffers.mNumberBuffers = 1;
+        modelBuffers.mBuffers[0] = modelBuffer;
+        
+        
+        for (int i = 0; i < modelBuffer.mDataByteSize; i++)
         {
-            ((Byte *)buffer.mData)[i] = ((Byte *)buffer.mData)[i] + ((Byte *)inBuffer.mData)[i];
+            ((Byte *)modelBuffer.mData)[i] = ((Byte *)modelBuffer.mData)[i] + ((Byte *)inBuffer.mData)[i];
         }
+        model.videoData = [[NSData alloc] initWithBytes:modelBuffer.mData length:modelBuffer.mDataByteSize];
+//        model.buffer = buffer;
+//        NSLog(@"%ld", index);
         
-        model.buffer = buffer;
-        NSLog(@"%ld", index);
-        
-        MixAudioModel *model2 = [[MixAudioModel alloc] init];
-        model2.buffer = inBuffer;
-        model2.timeStamp = model.timeStamp;
+
         
         if (self.delegate && [self.delegate respondsToSelector:@selector(mixDidOutputModel:)]) {
-            [self.delegate mixDidOutputModel:model2];
+            [self.delegate mixDidOutputModel:model];
         }
     }
 }

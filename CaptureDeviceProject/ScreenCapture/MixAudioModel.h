@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MixAudioModel : NSObject
 
-@property (nonatomic, assign) AudioBuffer buffer;
+@property (nonatomic, strong) NSData *videoData;
 @property (nonatomic, assign) uint64_t timeStamp;
 
 @end

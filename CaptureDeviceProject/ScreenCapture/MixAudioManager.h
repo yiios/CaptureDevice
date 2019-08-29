@@ -22,8 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) id<MixAudioManagerDelegate> delegate;
 
-- (void)sendMicBufferList:(AudioBuffer)buffer timeStamp:(uint64_t)timeStamp;
-- (void)sendAppBufferList:(NSData*)audioData;
+- (void)sendMicBufferList:(NSData *)audioData timeStamp:(uint64_t)timeStamp;
+- (void)sendAppBufferList:(NSData *)audioData timeStamp:(uint64_t)timeStamp;
 
 @end
 

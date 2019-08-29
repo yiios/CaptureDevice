@@ -13,6 +13,9 @@
 #import <UserNotifications/UserNotifications.h>
 #import "MixAudioManager.h"
 
+#import <sys/sysctl.h>
+#import <mach/mach.h>
+
 //输出音频的采样率(也是session设置的采样率)，
 const double kGraphSampleRate = 44100.0;
 //每次回调提供多长时间的数据,结合采样率 0.005 = x*1/44100, x = 220.5, 因为回调函数中的inNumberFrames是2的幂，所以x应该是256
@@ -259,6 +262,9 @@ const double kSessionBufDuration    = 0.005;
 
 
 - (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer withType:(RPSampleBufferType)sampleBufferType {
+    if ([self usedMemory] > 45) {
+        return;
+    }
     switch (sampleBufferType) {
         case RPSampleBufferTypeVideo:
         {
@@ -301,9 +307,9 @@ const double kSessionBufDuration    = 0.005;
                         AudioBufferList buffers;
                         buffers.mNumberBuffers = 1;
                         buffers.mBuffers[0] = inBuffer;
-                        [self.mixAudioManager sendAppBufferList:[[NSData alloc] initWithBytes:pcmData length:pcmLength]];
+                        [self.mixAudioManager sendAppBufferList:[[NSData alloc] initWithBytes:pcmData length:pcmLength] timeStamp:(CACurrentMediaTime()*1000)];
 
-//                        [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
+                        [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
 //                        //在堆区分配内存用来保存编码后的aac数据
 //                        NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
 //                        [self.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000)];
@@ -361,7 +367,7 @@ const double kSessionBufDuration    = 0.005;
                         AudioBufferList buffers;
                         buffers.mNumberBuffers = 1;
                         buffers.mBuffers[0] = inBuffer;
-                        [self.mixAudioManager sendMicBufferList:inBuffer timeStamp:(CACurrentMediaTime()*1000)];
+                        [self.mixAudioManager sendMicBufferList:[[NSData alloc] initWithBytes:pcmData length:pcmLength] timeStamp:(CACurrentMediaTime()*1000)];
                         
                         
 //                        Float64 currentTime = CMTimeGetSeconds(CMClockMakeHostTimeFromSystemUnits(CACurrentMediaTime()));
@@ -386,7 +392,7 @@ const double kSessionBufDuration    = 0.005;
 //                            }
 //                        }];
 //
-//                        [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
+                        [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
 //                        //在堆区分配内存用来保存编码后的aac数据
 //
 //                        NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
@@ -599,29 +605,44 @@ const double kSessionBufDuration    = 0.005;
     else  return NO;
 }
 
+- (double)usedMemory
+{
+    task_basic_info_data_t taskInfo;
+    mach_msg_type_number_t infoCount = TASK_BASIC_INFO_COUNT;
+    kern_return_t kernReturn = task_info(mach_task_self(),
+                                         TASK_BASIC_INFO,
+                                         (task_info_t)&taskInfo,
+                                         &infoCount);
+    if (kernReturn != KERN_SUCCESS) {
+        return NSNotFound;
+    }
+    return taskInfo.resident_size / 1024.0 / 1024.0;
+}
 - (void)mixDidOutputModel:(MixAudioModel *)mixAudioModel {
-    NSLog(@"mixAudioModel.===  %u", (unsigned int)mixAudioModel.buffer.mDataByteSize);
-    Float64 currentTime = CMTimeGetSeconds(CMClockMakeHostTimeFromSystemUnits(CACurrentMediaTime()));
-    int64_t pts = (int64_t)((currentTime - 100) * 1000);
-    [self.audioEncoder2 encodeAudioWithSourceBuffer:mixAudioModel.buffer.mData sourceBufferSize:mixAudioModel.buffer.mDataByteSize pts:pts completeHandler:^(LFAudioFrame * _Nonnull frame) {
-        frame.timestamp = mixAudioModel.timeStamp;
-        if (self.canUpload) {
-            if (self.hasKeyFrameVideo) {
-                self.hasCaptureAudio = YES;
-            }
-            if(self.AVAlignment){
-                if(self.relativeTimestamps == 0){
-                    self.relativeTimestamps = frame.timestamp;
-                }
-                frame.timestamp = [self uploadTimestamp:frame.timestamp];
-                char exeData[2];
-                exeData[0] = self.audioConfiguration.asc[0];
-                exeData[1] = self.audioConfiguration.asc[1];
-                frame.audioInfo = [NSData dataWithBytes:exeData length:2];
-                [self.socket sendFrame:frame];
-            }
-        }
-    }];
+    
+    
+     [self.audioEncoder encodeAudioData:mixAudioModel.videoData timeStamp:(CACurrentMediaTime()*1000)];
+//    Float64 currentTime = CMTimeGetSeconds(CMClockMakeHostTimeFromSystemUnits(CACurrentMediaTime()));
+//    int64_t pts = (int64_t)((currentTime - 100) * 1000);
+//    [self.audioEncoder2 encodeAudioWithSourceBuffer:mixAudioModel.buffer.mData sourceBufferSize:mixAudioModel.buffer.mDataByteSize pts:pts completeHandler:^(LFAudioFrame * _Nonnull frame) {
+//        frame.timestamp = mixAudioModel.timeStamp;
+//        if (self.canUpload) {
+//            if (self.hasKeyFrameVideo) {
+//                self.hasCaptureAudio = YES;
+//            }
+//            if(self.AVAlignment){
+//                if(self.relativeTimestamps == 0){
+//                    self.relativeTimestamps = frame.timestamp;
+//                }
+//                frame.timestamp = [self uploadTimestamp:frame.timestamp];
+//                char exeData[2];
+//                exeData[0] = self.audioConfiguration.asc[0];
+//                exeData[1] = self.audioConfiguration.asc[1];
+//                frame.audioInfo = [NSData dataWithBytes:exeData length:2];
+//                [self.socket sendFrame:frame];
+//            }
+//        }
+//    }];
 }
 
 @end
