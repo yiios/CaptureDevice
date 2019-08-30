@@ -298,18 +298,9 @@ const double kSessionBufDuration    = 0.005;
                         CMAudioFormatDescriptionRef audioFormatDes =  (CMAudioFormatDescriptionRef)CMSampleBufferGetFormatDescription(sampleBuffer);
 //                        //获取输入的asbd的信息
                         AudioStreamBasicDescription inAudioStreamBasicDescription = *(CMAudioFormatDescriptionGetStreamBasicDescription(audioFormatDes));
-                        ///<  发送
-                        AudioBuffer inBuffer;
-                        inBuffer.mNumberChannels = 1;
-                        inBuffer.mData = pcmData;
-                        inBuffer.mDataByteSize = (UInt32)pcmLength;
-                        
-                        AudioBufferList buffers;
-                        buffers.mNumberBuffers = 1;
-                        buffers.mBuffers[0] = inBuffer;
-                        [self.mixAudioManager sendAppBufferList:[[NSData alloc] initWithBytes:pcmData length:pcmLength] timeStamp:(CACurrentMediaTime()*1000)];
-
+                        inAudioStreamBasicDescription.mFormatFlags = 0xe;
                         [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
+                        [self.mixAudioManager sendAppBufferList:[[NSData alloc] initWithBytes:pcmData length:pcmLength] timeStamp:(CACurrentMediaTime()*1000)];
 //                        //在堆区分配内存用来保存编码后的aac数据
 //                        NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
 //                        [self.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000)];
@@ -322,7 +313,7 @@ const double kSessionBufDuration    = 0.005;
         {
             if (self.canUpload) {
                 CFRetain(sampleBuffer);
-//                __weak typeof(self) weakSelf = self;
+                __weak typeof(self) weakSelf = self;
 
                 dispatch_async(self.audioQueue, ^{
                     //从samplebuffer中获取blockbuffer
@@ -336,15 +327,19 @@ const double kSessionBufDuration    = 0.005;
                         CFRelease(sampleBuffer);
                         return;
                     } else {
-            
                         
-
+                        
+                        
                         CMAudioFormatDescriptionRef audioFormatDes =  (CMAudioFormatDescriptionRef)CMSampleBufferGetFormatDescription(sampleBuffer);
                         //获取输入的asbd的信息
                         AudioStreamBasicDescription inAudioStreamBasicDescription = *(CMAudioFormatDescriptionGetStreamBasicDescription(audioFormatDes));
+                        
+                        inAudioStreamBasicDescription.mFormatFlags = 0xe;
+                        [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
+//                        [self.mixAudioManager sendMicBufferList:[[NSData alloc] initWithBytes:pcmData length:pcmLength] timeStamp:(CACurrentMediaTime()*1000)];
+                        
                         if (!self.audioEncoder2) {
                             AudioStreamBasicDescription inputFormat = {0};
-
                             inputFormat.mSampleRate = 44100;
                             inputFormat.mFormatID = kAudioFormatLinearPCM;
                             inputFormat.mFormatFlags = inAudioStreamBasicDescription.mFormatFlags;
@@ -367,32 +362,15 @@ const double kSessionBufDuration    = 0.005;
                         AudioBufferList buffers;
                         buffers.mNumberBuffers = 1;
                         buffers.mBuffers[0] = inBuffer;
-                        [self.mixAudioManager sendMicBufferList:[[NSData alloc] initWithBytes:pcmData length:pcmLength] timeStamp:(CACurrentMediaTime()*1000)];
+
                         
-                        
-//                        Float64 currentTime = CMTimeGetSeconds(CMClockMakeHostTimeFromSystemUnits(CACurrentMediaTime()));
-//
-//                        int64_t pts = (int64_t)((currentTime - 100) * 1000);
-//                        [self.audioEncoder2 encodeAudioWithSourceBuffer:buffers.mBuffers[0].mData sourceBufferSize:buffers.mBuffers[0].mDataByteSize pts:pts completeHandler:^(LFAudioFrame * _Nonnull frame) {
-//                            if (self.canUpload) {
-//                                if (self.hasKeyFrameVideo) {
-//                                    self.hasCaptureAudio = YES;
-//                                }
-//                                if(self.AVAlignment){
-//                                    if(self.relativeTimestamps == 0){
-//                                        self.relativeTimestamps = frame.timestamp;
-//                                    }
-//                                    frame.timestamp = [self uploadTimestamp:frame.timestamp];
-//                                    char exeData[2];
-//                                    exeData[0] = self.audioConfiguration.asc[0];
-//                                    exeData[1] = self.audioConfiguration.asc[1];
-//                                    frame.audioInfo = [NSData dataWithBytes:exeData length:2];
-//                                    [self.socket sendFrame:frame];
-//                                }
-//                            }
-//                        }];
-//
-                        [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
+                        Float64 currentTime = CMTimeGetSeconds(CMClockMakeHostTimeFromSystemUnits(CACurrentMediaTime()));
+
+                        int64_t pts = (int64_t)((currentTime - 100) * 1000);
+                        [self.audioEncoder2 encodeAudioWithSourceBuffer:buffers.mBuffers[0].mData sourceBufferSize:buffers.mBuffers[0].mDataByteSize pts:pts completeHandler:^(LFAudioFrame * _Nonnull frame) {
+                            [weakSelf.mixAudioManager sendMicBufferList:frame.data timeStamp:(CACurrentMediaTime()*1000)];
+                        }];
+                       
 //                        //在堆区分配内存用来保存编码后的aac数据
 //
 //                        NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];

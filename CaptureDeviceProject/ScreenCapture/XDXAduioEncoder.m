@@ -75,22 +75,48 @@ OSStatus EncodeConverterComplexInputDataProc(AudioConverterRef              inAu
     UInt32 size;
     
     AudioStreamBasicDescription destinationFormat = {};
-    destinationFormat.mSampleRate = sampleRate;
-    if (destFormatID == kAudioFormatLinearPCM) {
-        NSLog(@"Not get PCM format after encoding !");
+//    destinationFormat.mSampleRate = sampleRate;
+//
+//
+//    destinationFormat.mFormatID = destFormatID;
+//    destinationFormat.mFormatFlags =
+//    // For iLBC, the number of channels must be 1.
+//    destinationFormat.mChannelsPerFrame = (destFormatID == kAudioFormatiLBC ? 1 : sourceFormat.mChannelsPerFrame);
+    
+    destinationFormat.mSampleRate = 44100;
+    destinationFormat.mFormatID = kAudioFormatLinearPCM;
+    destinationFormat.mFormatFlags = 0xc;
+    destinationFormat.mChannelsPerFrame = 1;
+    destinationFormat.mFramesPerPacket = 1;
+    destinationFormat.mBitsPerChannel = 16;
+    destinationFormat.mBytesPerFrame = destinationFormat.mBitsPerChannel / 8 * destinationFormat.mChannelsPerFrame;
+    destinationFormat.mBytesPerPacket = destinationFormat.mBytesPerFrame * destinationFormat.mFramesPerPacket;
+    
+    
+    
+    
+    // Use AudioFormat API to fill out the rest of the description.
+    size = sizeof(destinationFormat);
+    if (![self checkError:AudioFormatGetProperty(kAudioFormatProperty_FormatInfo, 0, NULL, &size, &destinationFormat) withErrorString:@"AudioFormatGetProperty couldn't fill out the destination data format"]) {
         return NULL;
-    } else {
-        destinationFormat.mFormatID = destFormatID;
-        
-        // For iLBC, the number of channels must be 1.
-        destinationFormat.mChannelsPerFrame = (destFormatID == kAudioFormatiLBC ? 1 : sourceFormat.mChannelsPerFrame);
-        
-        // Use AudioFormat API to fill out the rest of the description.
-        size = sizeof(destinationFormat);
-        if (![self checkError:AudioFormatGetProperty(kAudioFormatProperty_FormatInfo, 0, NULL, &size, &destinationFormat) withErrorString:@"AudioFormatGetProperty couldn't fill out the destination data format"]) {
-            return NULL;
-        }
     }
+    
+    
+//    if (destFormatID == kAudioFormatLinearPCM) {
+//        NSLog(@"Not get PCM format after encoding !");
+//        return NULL;
+//    } else {
+//        destinationFormat.mFormatID = destFormatID;
+//
+//        // For iLBC, the number of channels must be 1.
+//        destinationFormat.mChannelsPerFrame = (destFormatID == kAudioFormatiLBC ? 1 : sourceFormat.mChannelsPerFrame);
+//
+//        // Use AudioFormat API to fill out the rest of the description.
+//        size = sizeof(destinationFormat);
+//        if (![self checkError:AudioFormatGetProperty(kAudioFormatProperty_FormatInfo, 0, NULL, &size, &destinationFormat) withErrorString:@"AudioFormatGetProperty couldn't fill out the destination data format"]) {
+//            return NULL;
+//        }
+//    }
     memcpy(destFormat, &destinationFormat, sizeof(AudioStreamBasicDescription));
     
     printf("Source File format:\n");
@@ -225,12 +251,13 @@ OSStatus EncodeConverterComplexInputDataProc(AudioConverterRef              inAu
     
     // Convert data
     UInt32 ioOutputDataPackets = numberOutputPackets;
-    OSStatus status = AudioConverterFillComplexBuffer(audioConverter,
-                                                      EncodeConverterComplexInputDataProc,
-                                                      &userInfo,
-                                                      &ioOutputDataPackets,
-                                                      &fillBufferList,
-                                                      &outputPacketDescriptions);
+    OSStatus status = AudioConverterConvertBuffer(audioConverter, sourceBufferSize, sourceBuffer, &fillBufferList.mBuffers[0].mDataByteSize, fillBufferList.mBuffers[0].mData);
+//    OSStatus status = AudioConverterFillComplexBuffer(audioConverter,
+//                                                      EncodeConverterComplexInputDataProc,
+//                                                      &userInfo,
+//                                                      &ioOutputDataPackets,
+//                                                      &fillBufferList,
+//                                                      &outputPacketDescriptions);
     
     
     
@@ -244,10 +271,10 @@ OSStatus EncodeConverterComplexInputDataProc(AudioConverterRef              inAu
             }
         }
     } else {
-        if (ioOutputDataPackets == 0) {
-            // This is the EOF condition.
-            status = noErr;
-        }
+//        if (ioOutputDataPackets == 0) {
+//            // This is the EOF condition.
+//            status = noErr;
+//        }
         
         
         LFAudioFrame *audioFrame = [LFAudioFrame new];
