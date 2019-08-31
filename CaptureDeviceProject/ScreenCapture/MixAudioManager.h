@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)mixDidOutputModel:(MixAudioModel *)mixAudioModel;
 
 @end
+
 @interface MixAudioManager : NSObject
 
 @property (nonatomic, assign) id<MixAudioManagerDelegate> delegate;

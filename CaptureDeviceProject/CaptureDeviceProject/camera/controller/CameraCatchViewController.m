@@ -48,7 +48,6 @@
 }
 
 - (IBAction)beginBtnAct:(id)sender {
-    NSLog(@"111");
 
     if (@available(iOS 12.0, *)) {
         RPSystemBroadcastPickerView *_broadPickerView = [[RPSystemBroadcastPickerView alloc] initWithFrame:self.view.bounds];

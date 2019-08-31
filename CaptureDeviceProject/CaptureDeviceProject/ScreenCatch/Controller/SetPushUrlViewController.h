@@ -15,7 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void(^savePushUrlBlock)(NSString *pushUrl);
 @property (nonatomic, copy) NSString *urlStr;
 
-
 @end
 
 NS_ASSUME_NONNULL_END

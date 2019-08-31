@@ -39,7 +39,6 @@
 
 @property (nonatomic, strong) ScreenCatchTableFooterView *footerView;
 
-
 @end
 
 @implementation ScreenCatchViewController
@@ -226,7 +225,6 @@
         }
     }
 }
-
 
 #pragma mark -- get
 
