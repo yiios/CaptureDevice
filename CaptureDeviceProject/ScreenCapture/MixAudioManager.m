@@ -53,19 +53,21 @@ const NSInteger kLength = 2048;
     memcpy(totalBuf, audioData.bytes, audioData.length);
     
     if (_micModelArray.count > 0) {
+        BOOL isInReceiver = [self isInReceiverPluggedIn];
         for (NSInteger i = 0;i < _micModelArray.count;i++) {
             MixAudioModel *model = _micModelArray[i];
-            char *totalModelBuf = malloc(kLength);
-            memcpy(totalModelBuf, model.videoData.bytes, kLength);
+            char *totalModelBuf = malloc(model.videoData.length);
+            memcpy(totalModelBuf, model.videoData.bytes, model.videoData.length);
             signed short low1 = 0, low2 = 0;
             signed int newData = 0;
             int const MAX = 32767;
             int const MIN = -32768;
+            
             for (int j = 0; j < model.videoData.length; j++) {
                 low1 = totalModelBuf[j];
-                low2 = p[j];
-                if (i < encodeCount) {
-                    newData = (short)(low1 + low2*0.2);
+                if (i < encodeCount && !isInReceiver) {
+                    low2 = p[j] * 0.2;
+                    newData = (short)(low1 + low2);
                 } else {
                     newData = low1;
                 }
@@ -79,7 +81,7 @@ const NSInteger kLength = 2048;
                 }
                 totalModelBuf[j] = newData;
             }
-            model.videoData = [[NSData alloc] initWithBytes:totalModelBuf length:kLength];
+            model.videoData = [[NSData alloc] initWithBytes:totalModelBuf length:model.videoData.length];
             free(totalModelBuf);
             if (self.delegate && [self.delegate respondsToSelector:@selector(mixDidOutputModel:)]) {
                 [self.delegate mixDidOutputModel:model];
@@ -104,6 +106,16 @@ const NSInteger kLength = 2048;
     }
     free(totalBuf);
     [_micModelArray removeAllObjects];
+}
+
+- (BOOL)isInReceiverPluggedIn {
+    AVAudioSessionRouteDescription* route = [[AVAudioSession sharedInstance] currentRoute];
+    for (AVAudioSessionPortDescription* desc in [route outputs]) {
+
+        if ([[desc portType] isEqualToString:AVAudioSessionPortBuiltInReceiver] || [[desc portType] isEqualToString:AVAudioSessionPortBuiltInSpeaker])
+            return YES;
+    }
+    return NO;
 }
 
 @end

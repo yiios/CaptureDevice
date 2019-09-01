@@ -334,6 +334,10 @@
 }
 
 - (void)checkFPS:(CADisplayLink *)link {
+    if ([self getMemoryUsage] > 45) {
+        return;
+    }
+    
     if (!self.canUpload) {
         return;
     }
@@ -385,6 +389,9 @@
     
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(buffer);
     CIImage *ciimage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
+    if (!ciimage) {
+        return;
+    }
     size_t width = CVPixelBufferGetWidth(pixelBuffer);
     size_t height = CVPixelBufferGetHeight(pixelBuffer);
     self.lastCIImage = ciimage;
@@ -420,22 +427,25 @@
             CVPixelBufferLockBaseAddress(pixelBuffer, 0);
             CVPixelBufferRef newPixcelBuffer = nil;
             CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, nil, &newPixcelBuffer);
-            [_ciContext render:newImage toCVPixelBuffer:newPixcelBuffer];
+            if (newPixcelBuffer && newImage) {
+                [_ciContext render:newImage toCVPixelBuffer:newPixcelBuffer];
+                [self.videoEncoder encodeVideoData:newPixcelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+            }
             CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-            [self.videoEncoder encodeVideoData:newPixcelBuffer timeStamp:(CACurrentMediaTime()*1000)];
             CVPixelBufferRelease(newPixcelBuffer);
         }
     } else {
         // 旋转的方法
         CIImage *wImage = [ciimage imageByApplyingCGOrientation:self.rotateOrientation];
-        
         CIImage *newImage = [wImage imageByApplyingTransform:CGAffineTransformMakeScale(realWidthScale, realHeightScale)];
         CVPixelBufferLockBaseAddress(pixelBuffer, 0);
         CVPixelBufferRef newPixcelBuffer = nil;
         CVPixelBufferCreate(kCFAllocatorDefault, height, width, kCVPixelFormatType_32BGRA, nil, &newPixcelBuffer);
-        [_ciContext render:newImage toCVPixelBuffer:newPixcelBuffer];
+        if (newPixcelBuffer && newImage) {
+            [_ciContext render:newImage toCVPixelBuffer:newPixcelBuffer];
+            [self.videoEncoder encodeVideoData:newPixcelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+        }
         CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-        [self.videoEncoder encodeVideoData:newPixcelBuffer timeStamp:(CACurrentMediaTime()*1000)];
         CVPixelBufferRelease(newPixcelBuffer);
     }
     self.lastWidth = width;
@@ -444,6 +454,9 @@
 }
 
 - (void)dealWithLastCIImage:(CIImage *)lastCIImage {
+    if ([self getMemoryUsage] > 45) {
+        return;
+    }
     // 旋转的方法
     NSLog(@"------------------补帧方法---------------------");
     CIImage *wImage;
@@ -460,8 +473,10 @@
     CIImage *newImage = [wImage imageByApplyingTransform:CGAffineTransformMakeScale(1, 1)];
     CVPixelBufferRef newPixcelBuffer = nil;
     CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, nil, &newPixcelBuffer);
-    [_ciContext render:newImage toCVPixelBuffer:newPixcelBuffer];
-    [self.videoEncoder encodeVideoData:newPixcelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+    if (newPixcelBuffer && newImage) {
+        [_ciContext render:newImage toCVPixelBuffer:newPixcelBuffer];
+        [self.videoEncoder encodeVideoData:newPixcelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+    }
     CVPixelBufferRelease(newPixcelBuffer);
 }
 
@@ -482,11 +497,17 @@
 
 #pragma mark -- MixAudioManagerDelegate
 - (void)mixDidOutputModel:(MixAudioModel *)mixAudioModel {
+    if ([self getMemoryUsage] > 45) {
+        return;
+    }
     [self.audioEncoder encodeAudioData:mixAudioModel.videoData timeStamp:mixAudioModel.timeStamp];
 }
 
 #pragma mark -- LFVideoEncodingDelegate
 - (void)videoEncoder:(nullable id<LFVideoEncoding>)encoder videoFrame:(nullable LFVideoFrame *)frame {
+    if ([self getMemoryUsage] > 45) {
+        return;
+    }
     if (self.canUpload) {
         if(frame.isKeyFrame) self.hasKeyFrameVideo = YES;
         if(self.AVAlignment) {
@@ -497,6 +518,9 @@
 }
 #pragma mark -- LFAudioEncodingDelegate
 - (void)audioEncoder:(nullable id<LFAudioEncoding>)encoder audioFrame:(nullable LFAudioFrame *)frame {
+    if ([self getMemoryUsage] > 45) {
+        return;
+    }
     if (self.canUpload){
         if (self.hasKeyFrameVideo == YES) {
             self.hasCaptureAudio = YES;
@@ -535,7 +559,6 @@
 
 - (void)socketBufferStatus:(nullable id<LFStreamSocket>)socket status:(LFLiveBuffferState)status {
     if (self.canUpload) {
-        NSLog(@"LFLiveBuffferState---  %ld", status);
         NSUInteger videoBitRate = [self.videoEncoder videoBitRate];
         if (status == LFLiveBuffferDecline) {
             if (videoBitRate < _videoConfiguration.videoMaxBitRate) {

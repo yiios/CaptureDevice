@@ -8,9 +8,10 @@
 
 #import "PushFailGuidanceController.h"
 
-@interface PushFailGuidanceController ()
+@interface PushFailGuidanceController () <UITableViewDelegate, UITableViewDataSource>
 
-@property (weak, nonatomic) IBOutlet UILabel *contentLabel;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) NSArray *textArray;
 
 @end
 
@@ -20,10 +21,62 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     self.title = @"推流指引";
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.tableView.tableFooterView = [UIView new];
+    self.tableView.rowHeight = 55;
+    NSArray *section0Title = @[@"1. 开始推流后不建议频繁在多个应用之间切换", @"2. 个别对mic未处理好的游戏（比如某飞车）在游戏打开的前提下开始推流游戏会没声音，建议先开推流再开游戏"];
+    NSArray *section1Title = @[@"1. 插耳机并打开mic →→→ 输出100%麦克风声音+20%的扬声器声音", @"2. 插耳机未打开mic →→→ 输出100%的扬声器声音", @"3. 未插耳机打开mic →→→ 输出100%的mic声音（包含着扬声器中输出到mic的声音）", @"4. 未插耳机未打开mic →→→ 输出100%的扬声器声音"];
+    NSArray *section2Title = @[@"1. 确认rtmp推流地址正确", @"2. 确认给与了应用软件网络、麦克风、相机、通知权限", @"3. 确认推流页已开始计时", @"4. 以上步骤皆已确认无误请联系开发者（qq：924744097"];
+    _textArray = @[section1Title, section2Title];
     
-    self.contentLabel.text = @"1. 确认rtmp推流地址正确\n\n2. 确认给与了软件网络、麦克风、相机、通知权限\n\n3. 确认打开了开始直播弹窗的麦克风（麦克风颜色为红色即为打开）\n\n4. 以上步骤皆已确认无误请联系开发者（qq：924744097）\n\n";
+    
+    
+
 }
 
+#pragma mark -- UITableViewDataSource
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 2;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 4;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"identifier"];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"identifier"];
+        cell.textLabel.numberOfLines = 0;
+    }
+    cell.textLabel.text = _textArray[indexPath.section][indexPath.row];
+    return cell;
+}
+
+#pragma mark -- UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 0.01f;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return 50;
+    }
+    return 50;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    return @"";
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return @"声音相关（打开mic指推流开始页下面的话筒为红色）";
+    }
+    return @"操作相关";
+}
 
 @end
