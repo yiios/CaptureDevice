@@ -46,11 +46,10 @@
 @property (nonatomic, strong) dispatch_queue_t rotateQueue;
 @property (nonatomic, strong) dispatch_queue_t audioQueue;
 
-@property (nonatomic, strong) CIContext *ciContext;
+//@property (nonatomic, strong) CIContext *ciContext;
 
 @property (nonatomic, strong) LFVideoFrame *lastRecordFrame;
 @property (nonatomic, assign) uint64_t lastTimeSpace;
-@property (nonatomic, strong) CIImage *lastCIImage;
 @property (nonatomic, assign) size_t lastWidth;
 @property (nonatomic, assign) size_t lastHeight;
 @property (nonatomic, assign) uint64_t lastTime;
@@ -181,11 +180,6 @@
     self.audioQueue = dispatch_queue_create("audioQueue", nil);
 
     [self.socket start];
-    _ciContext = [CIContext contextWithOptions:nil];
-    
-    __weak typeof(self) weakSelf = self;
-    CADisplayLink *_link = [CADisplayLink displayLinkWithTarget:weakSelf selector:@selector(checkFPS:)];
-    [_link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
 }
 
 - (void)broadcastPaused {
@@ -207,7 +201,7 @@
 }
 
 - (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer withType:(RPSampleBufferType)sampleBufferType {
-    if ([self getMemoryUsage] > 45) {
+    if ([self getMemoryUsage] > 30) {
         return;
     }
     switch (sampleBufferType) {
@@ -333,35 +327,6 @@
     }];
 }
 
-- (void)checkFPS:(CADisplayLink *)link {
-    if ([self getMemoryUsage] > 45) {
-        return;
-    }
-    
-    if (!self.canUpload) {
-        return;
-    }
-    if (_lastTime == 0) {
-        _lastTime = link.timestamp;
-        return;
-    }
-    
-    NSTimeInterval delta = link.timestamp - _lastTime;
-    if (delta < 2) return;
-    _lastTime = link.timestamp;
-    if (_lastTimeSpace == 0) {
-        _lastTimeSpace = _lastRecordFrame.timestamp;
-        return;
-    }
-    if (_lastTimeSpace == _lastRecordFrame.timestamp) {
-        __weak typeof(self) wSelf = self;
-        dispatch_async(wSelf.rotateQueue, ^{
-            [wSelf dealWithLastCIImage:wSelf.lastCIImage];
-        });
-    }
-    _lastTimeSpace = _lastRecordFrame.timestamp;
-}
-
 - (uint64_t)uploadTimestamp:(uint64_t)captureTimestamp{
     dispatch_semaphore_wait(self.lock, DISPATCH_TIME_FOREVER);
     uint64_t currentts = 0;
@@ -394,7 +359,6 @@
     }
     size_t width = CVPixelBufferGetWidth(pixelBuffer);
     size_t height = CVPixelBufferGetHeight(pixelBuffer);
-    self.lastCIImage = ciimage;
     
     CGFloat widthScale = width/720.0;
     CGFloat heightScale = height/1280.0;
@@ -418,7 +382,7 @@
     }
     self.videoWidth = width;
     self.videoHeight = height;
-    
+    CIContext *_ciContext = [CIContext contextWithOptions:nil];
     if (self.rotateOrientation == kCGImagePropertyOrientationUp) {
         if (realWidthScale == 1 && realHeightScale == 1) {
             [self.videoEncoder encodeVideoData:pixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
@@ -451,33 +415,6 @@
     self.lastWidth = width;
     self.lastHeight = height;
     
-}
-
-- (void)dealWithLastCIImage:(CIImage *)lastCIImage {
-    if ([self getMemoryUsage] > 45) {
-        return;
-    }
-    // 旋转的方法
-    NSLog(@"------------------补帧方法---------------------");
-    CIImage *wImage;
-    size_t width, height;
-    if (self.rotateOrientation != kCGImagePropertyOrientationUp) {
-        wImage = [lastCIImage imageByApplyingCGOrientation:self.rotateOrientation];
-        width = self.lastHeight;
-        height = self.lastWidth;
-    } else {
-        wImage = lastCIImage;
-        width = self.lastWidth;
-        height = self.lastHeight;
-    }
-    CIImage *newImage = [wImage imageByApplyingTransform:CGAffineTransformMakeScale(1, 1)];
-    CVPixelBufferRef newPixcelBuffer = nil;
-    CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, nil, &newPixcelBuffer);
-    if (newPixcelBuffer && newImage) {
-        [_ciContext render:newImage toCVPixelBuffer:newPixcelBuffer];
-        [self.videoEncoder encodeVideoData:newPixcelBuffer timeStamp:(CACurrentMediaTime()*1000)];
-    }
-    CVPixelBufferRelease(newPixcelBuffer);
 }
 
 - (BOOL)AVAlignment{

@@ -50,6 +50,8 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"identifier"];
         cell.textLabel.numberOfLines = 0;
+        cell.textLabel.font = [UIFont systemFontOfSize:14];
+        cell.textLabel.textColor = mainColor;
     }
     cell.textLabel.text = _textArray[indexPath.section][indexPath.row];
     return cell;
