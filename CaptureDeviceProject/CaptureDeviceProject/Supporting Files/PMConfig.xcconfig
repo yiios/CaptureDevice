@@ -1,0 +1,15 @@
+//
+//  PMConfig.xcconfig
+//  CaptureDeviceProject
+//
+//  Created by gunmm on 2019/9/5.
+//  Copyright © 2019 minzhe. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+CAPTUREDEVICE_BUNDLE_NAME = 屏幕推流
+CAPTUREDEVICE_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject
+CAPTUREDEVICE_VERSION = 1.2.0
+CAPTUREDEVICE_BUILD = 7

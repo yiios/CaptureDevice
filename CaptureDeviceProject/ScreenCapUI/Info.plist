@@ -17,9 +17,9 @@
 	<key>CFBundlePackageType</key>
 	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.2.0</string>
+	<string>$(CAPTUREDEVICE_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>6</string>
+	<string>$(CAPTUREDEVICE_BUILD)</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>

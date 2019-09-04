@@ -142,6 +142,7 @@
 		765FCB0622F5376100948374 /* SetPushUrlViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SetPushUrlViewController.xib; sourceTree = "<group>"; };
 		765FCB0922F5730200948374 /* UIView+HUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+HUD.h"; sourceTree = "<group>"; };
 		765FCB0A22F5730200948374 /* UIView+HUD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+HUD.m"; sourceTree = "<group>"; };
+		76608B5723201DD3009B5E74 /* PMConfig.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = PMConfig.xcconfig; sourceTree = "<group>"; };
 		769E25DA2311230B00D39537 /* BaseDeviceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseDeviceManager.h; sourceTree = "<group>"; };
 		769E25DB2311230B00D39537 /* BaseDeviceManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseDeviceManager.m; sourceTree = "<group>"; };
 		769E25DD231125A200D39537 /* NetWorking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetWorking.h; sourceTree = "<group>"; };
@@ -294,6 +295,7 @@
 				CD97050522DC6D9600132518 /* main.m */,
 				765FCAEC22F5265B00948374 /* captureInfo.plist */,
 				765FCAF322F52A0F00948374 /* PrefixHeader.pch */,
+				76608B5723201DD3009B5E74 /* PMConfig.xcconfig */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -813,6 +815,7 @@
 /* Begin XCBuildConfiguration section */
 		761AB8F423099CCD00B97B0C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 76608B5723201DD3009B5E74 /* PMConfig.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
@@ -829,12 +832,13 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
 		761AB8F523099CCD00B97B0C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 76608B5723201DD3009B5E74 /* PMConfig.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
@@ -851,13 +855,13 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
 		CD93A6FD22F1374D009190E2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7F0FDCEB97630057A8FC3AD7 /* Pods-CaptureDeviceProject.debug.xcconfig */;
+			baseConfigurationReference = 76608B5723201DD3009B5E74 /* PMConfig.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ScreenCapture/ScreenCapture.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -875,13 +879,13 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
 		CD93A6FE22F1374D009190E2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 96A4689A7507BFC71587A013 /* Pods-CaptureDeviceProject.release.xcconfig */;
+			baseConfigurationReference = 76608B5723201DD3009B5E74 /* PMConfig.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ScreenCapture/ScreenCapture.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -899,7 +903,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -1019,7 +1023,7 @@
 		};
 		CD97052022DC6D9600132518 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7F0FDCEB97630057A8FC3AD7 /* Pods-CaptureDeviceProject.debug.xcconfig */;
+			baseConfigurationReference = 76608B5723201DD3009B5E74 /* PMConfig.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = CaptureDeviceProject/CaptureDeviceProject.entitlements;
@@ -1042,7 +1046,7 @@
 		};
 		CD97052122DC6D9600132518 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 96A4689A7507BFC71587A013 /* Pods-CaptureDeviceProject.release.xcconfig */;
+			baseConfigurationReference = 76608B5723201DD3009B5E74 /* PMConfig.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = CaptureDeviceProject/CaptureDeviceProject.entitlements;

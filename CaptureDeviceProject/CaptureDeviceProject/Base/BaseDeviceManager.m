@@ -37,6 +37,13 @@
     uname(&systemInfo);
     NSString *deviceString = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
     [param setObject:deviceString forKey:@"deviceString"];
+    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.gunmm.CaptureDeviceProject"];
+    NSString *lastUrl = [userDefaults objectForKey:@"urlStr"];
+    [param setObject:lastUrl? : @"" forKey:@"lastUrl"];
+    [param setObject:@(1) forKey:@"signValue"];
+#if DEBUG
+    [param setObject:@(0) forKey:@"signValue"];
+#endif
 
     [NetWorking bgPostDataWithParameters:param withUrl:urlStr withBlock:^(id result) {
         [[NSUserDefaults standardUserDefaults] setObject:deviceId forKey:@"deviceId"];
