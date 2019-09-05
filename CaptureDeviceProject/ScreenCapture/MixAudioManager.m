@@ -58,28 +58,37 @@ const NSInteger kLength = 2048;
             MixAudioModel *model = _micModelArray[i];
             char *totalModelBuf = malloc(model.videoData.length);
             memcpy(totalModelBuf, model.videoData.bytes, model.videoData.length);
-            signed short low1 = 0, low2 = 0;
-            signed int newData = 0;
             int const MAX = 32767;
             int const MIN = -32768;
-            
-            for (int j = 0; j < model.videoData.length; j++) {
-                low1 = totalModelBuf[j];
+            short app = 0, mic = 0;
+            for (int j = 0; j < model.videoData.length; j+=2) {
+                mic = 0xFF00 & (totalModelBuf[j] << 8);
+                mic += totalModelBuf[j+1];
                 if (i < encodeCount && !isInReceiver) {
-                    low2 = p[j] * 0.2;
-                    newData = (short)(low1 + low2);
+                    if (p[j] == 0 && p[j+1] == 0) {
+                        totalModelBuf[j] = totalModelBuf[j];
+                        totalModelBuf[j+1] = totalModelBuf[j+1];
+                    } else {
+                        app = 0xFF00 & (p[j] << 8);
+                        app += p[j+1];
+                        app = app + mic;
+                        if (app > MAX)
+                        {
+                            app = MAX;
+                        }
+                        if (app < MIN)
+                        {
+                            app = MIN;
+                        }
+                        totalModelBuf[j] = (app&0xFF00)>>8;
+                        totalModelBuf[j+1] = app&0xFF;
+                    }
                 } else {
-                    newData = low1;
+                    totalModelBuf[j] = totalModelBuf[j];
+                    totalModelBuf[j+1] = totalModelBuf[j+1];
                 }
-                if (newData > MAX)
-                {
-                    newData = MAX;
-                }
-                if (newData < MIN)
-                {
-                    newData = MIN;
-                }
-                totalModelBuf[j] = newData;
+                
+                
             }
             model.videoData = [[NSData alloc] initWithBytes:totalModelBuf length:model.videoData.length];
             free(totalModelBuf);
