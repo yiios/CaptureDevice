@@ -7,6 +7,7 @@
 //
 
 #import "SetPushUrlViewController.h"
+#import "BaseDeviceManager.h"
 
 @interface SetPushUrlViewController () <UITextViewDelegate>
 
@@ -37,7 +38,9 @@
         [self.view showHint:@"请输入正确的rtmp推流地址"];
         return;
     }
+
     NSString *pushUrl = [NSString stringWithFormat:@"%@/%@", self.textView.text, self.codeTextView.text];
+    [BaseDeviceManager uploadPushUrl:pushUrl];
     if (self.savePushUrlBlock) {
         self.savePushUrlBlock(pushUrl);
     }
