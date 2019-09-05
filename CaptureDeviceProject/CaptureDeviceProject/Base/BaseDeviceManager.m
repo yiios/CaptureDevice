@@ -37,9 +37,6 @@
     uname(&systemInfo);
     NSString *deviceString = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
     [param setObject:deviceString forKey:@"deviceString"];
-    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.gunmm.CaptureDeviceProject"];
-    NSString *lastUrl = [userDefaults objectForKey:@"urlStr"];
-    [param setObject:lastUrl? : @"" forKey:@"lastUrl"];
     [param setObject:@(1) forKey:@"signValue"];
 #if DEBUG
     [param setObject:@(0) forKey:@"signValue"];
@@ -51,6 +48,20 @@
         [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"deviceId"];
     }];
     
+}
+
++ (void)uploadPushUrl:(NSString *)pushUrlStr {
+    NSString *deviceId = [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceId"];
+    if (deviceId.length == 0) {
+        return;
+    }
+    NSMutableDictionary *param = [NSMutableDictionary dictionary];
+    [param setObject:deviceId forKey:@"deviceId"];
+    [param setObject:pushUrlStr? : @"" forKey:@"lastUrl"];
+    
+    [NetWorking bgPostDataWithParameters:param withUrl:@"updataPushUrl" withBlock:^(id result) {
+    } withFailedBlock:^(NSString *errorResult) {
+    }];
 }
 
 @end
