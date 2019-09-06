@@ -63,14 +63,14 @@ const NSInteger kLength = 2048;
             int const MIN = -32768;
             short app = 0, mic = 0;
             for (int j = 0; j < model.videoData.length; j+=2) {
-//                if (i < encodeCount && !isInReceiver) {
-                if (i < encodeCount) {
+                if (i < encodeCount && !isInReceiver) {
+//                if (i < encodeCount) {
 
                     mic = 0xFF00 & (totalModelBuf[j] << 8);
-                    mic += totalModelBuf[j+1];
+                    mic += (totalModelBuf[j+1] & 0x00FF);
                     app = 0xFF00 & (p[j] << 8);
-                    app += p[j+1];
-                    app = app*0.2;
+                    app += (p[j+1] & 0x00FF);
+                    app = app*0.2 + mic;
                     if (app > MAX)
                     {
                         app = MAX;
@@ -79,13 +79,9 @@ const NSInteger kLength = 2048;
                     {
                         app = MIN;
                     }
-
+                    
                     totalModelBuf[j] = ((short)((app&0xFF00)>>8));
                     totalModelBuf[j+1] = ((short)app&0x00FF);
-//                    totalModelBuf[j] = ((short)((app&0xFF00)>>8)) + totalModelBuf[j];
-//                    totalModelBuf[j+1] = ((short)app&0x00FF) + totalModelBuf[j+1];
-//                    totalModelBuf[j] = totalModelBuf[j];
-//                    totalModelBuf[j+1] = totalModelBuf[j+1];
                 } else {
                     totalModelBuf[j] = totalModelBuf[j];
                     totalModelBuf[j+1] = totalModelBuf[j+1];
