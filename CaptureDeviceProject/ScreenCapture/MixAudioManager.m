@@ -56,38 +56,40 @@ const NSInteger kLength = 2048;
         BOOL isInReceiver = [self isInReceiverPluggedIn];
         for (NSInteger i = 0;i < _micModelArray.count;i++) {
             MixAudioModel *model = _micModelArray[i];
+            
             char *totalModelBuf = malloc(model.videoData.length);
             memcpy(totalModelBuf, model.videoData.bytes, model.videoData.length);
             int const MAX = 32767;
             int const MIN = -32768;
             short app = 0, mic = 0;
             for (int j = 0; j < model.videoData.length; j+=2) {
-                mic = 0xFF00 & (totalModelBuf[j] << 8);
-                mic += totalModelBuf[j+1];
-                if (i < encodeCount && !isInReceiver) {
-                    if (p[j] == 0 && p[j+1] == 0) {
-                        totalModelBuf[j] = totalModelBuf[j];
-                        totalModelBuf[j+1] = totalModelBuf[j+1];
-                    } else {
-                        app = 0xFF00 & (p[j] << 8);
-                        app += p[j+1];
-                        app = app + mic;
-                        if (app > MAX)
-                        {
-                            app = MAX;
-                        }
-                        if (app < MIN)
-                        {
-                            app = MIN;
-                        }
-                        totalModelBuf[j] = (app&0xFF00)>>8;
-                        totalModelBuf[j+1] = app&0xFF;
+//                if (i < encodeCount && !isInReceiver) {
+                if (i < encodeCount) {
+
+                    mic = 0xFF00 & (totalModelBuf[j] << 8);
+                    mic += totalModelBuf[j+1];
+                    app = 0xFF00 & (p[j] << 8);
+                    app += p[j+1];
+                    app = app*0.2;
+                    if (app > MAX)
+                    {
+                        app = MAX;
                     }
+                    if (app < MIN)
+                    {
+                        app = MIN;
+                    }
+
+                    totalModelBuf[j] = ((short)((app&0xFF00)>>8));
+                    totalModelBuf[j+1] = ((short)app&0x00FF);
+//                    totalModelBuf[j] = ((short)((app&0xFF00)>>8)) + totalModelBuf[j];
+//                    totalModelBuf[j+1] = ((short)app&0x00FF) + totalModelBuf[j+1];
+//                    totalModelBuf[j] = totalModelBuf[j];
+//                    totalModelBuf[j+1] = totalModelBuf[j+1];
                 } else {
                     totalModelBuf[j] = totalModelBuf[j];
                     totalModelBuf[j+1] = totalModelBuf[j+1];
                 }
-                
                 
             }
             model.videoData = [[NSData alloc] initWithBytes:totalModelBuf length:model.videoData.length];
