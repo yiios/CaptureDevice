@@ -37,9 +37,9 @@
     uname(&systemInfo);
     NSString *deviceString = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
     [param setObject:deviceString forKey:@"deviceString"];
-    [param setObject:@(1) forKey:@"signValue"];
+    [param setObject:@"1" forKey:@"signValue"];
 #if DEBUG
-    [param setObject:@(0) forKey:@"signValue"];
+    [param setObject:@"0" forKey:@"signValue"];
 #endif
 
     [NetWorking bgPostDataWithParameters:param withUrl:urlStr withBlock:^(id result) {
