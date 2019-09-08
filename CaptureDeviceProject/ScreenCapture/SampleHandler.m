@@ -201,7 +201,7 @@
 }
 
 - (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer withType:(RPSampleBufferType)sampleBufferType {
-    if ([self getMemoryUsage] > 30) {
+    if ([self getMemoryUsage] > 35) {
         return;
     }
     switch (sampleBufferType) {
@@ -434,17 +434,17 @@
 
 #pragma mark -- MixAudioManagerDelegate
 - (void)mixDidOutputModel:(MixAudioModel *)mixAudioModel {
-    if ([self getMemoryUsage] > 30) {
-        return;
-    }
+//    if ([self getMemoryUsage] > 30) {
+//        return;
+//    }
     [self.audioEncoder encodeAudioData:mixAudioModel.videoData timeStamp:mixAudioModel.timeStamp];
 }
 
 #pragma mark -- LFVideoEncodingDelegate
 - (void)videoEncoder:(nullable id<LFVideoEncoding>)encoder videoFrame:(nullable LFVideoFrame *)frame {
-    if ([self getMemoryUsage] > 30) {
-        return;
-    }
+//    if ([self getMemoryUsage] > 30) {
+//        return;
+//    }
     if (self.canUpload) {
         if(frame.isKeyFrame) self.hasKeyFrameVideo = YES;
         if(self.AVAlignment) {
@@ -455,9 +455,9 @@
 }
 #pragma mark -- LFAudioEncodingDelegate
 - (void)audioEncoder:(nullable id<LFAudioEncoding>)encoder audioFrame:(nullable LFAudioFrame *)frame {
-    if ([self getMemoryUsage] > 30) {
-        return;
-    }
+//    if ([self getMemoryUsage] > 30) {
+//        return;
+//    }
     if (self.canUpload){
         if (self.hasKeyFrameVideo == YES) {
             self.hasCaptureAudio = YES;
