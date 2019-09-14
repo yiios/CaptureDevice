@@ -446,7 +446,10 @@
 //        return;
 //    }
     if (self.canUpload) {
-        if(frame.isKeyFrame) self.hasKeyFrameVideo = YES;
+        if (self.hasCaptureAudio == YES) {
+            if(frame.isKeyFrame) self.hasKeyFrameVideo = YES;
+        }
+        
         if(self.AVAlignment) {
             [self pushSendBuffer:frame];
             self.lastRecordFrame = frame;
@@ -459,9 +462,7 @@
 //        return;
 //    }
     if (self.canUpload){
-        if (self.hasKeyFrameVideo == YES) {
-            self.hasCaptureAudio = YES;
-        }
+        self.hasCaptureAudio = YES;
         if(self.AVAlignment){
             [self pushSendBuffer:frame];
         }
