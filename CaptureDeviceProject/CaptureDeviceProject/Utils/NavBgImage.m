@@ -65,37 +65,26 @@
 {
     UIViewController *currentVC;
     
-//    if ([rootVC presentedViewController]) {
-//        // 视图是被presented出来的
-//
-//        rootVC = [rootVC presentedViewController];
-//    }
-//
-//    if ([rootVC isKindOfClass:[UITabBarController class]]) {
-//        // 根视图为UITabBarController
-//
-//        currentVC = [self getCurrentVCFrom:[(UITabBarController *)rootVC selectedViewController]];
-//
-//    } else if ([rootVC isKindOfClass:[UINavigationController class]]){
-//        // 根视图为UINavigationController
-//
-//        currentVC = [self getCurrentVCFrom:[(UINavigationController *)rootVC visibleViewController]];
-//
-//    } else if ([rootVC isKindOfClass:[MMDrawerController class]]){
-//        // 根视图为MMDrawerController
-//        if (((MMDrawerController *)rootVC).openSide == MMDrawerSideNone) {
-//            currentVC = [self getCurrentVCFrom:((MMDrawerController *)rootVC).centerViewController];
-//        }else if (((MMDrawerController *)rootVC).openSide == MMDrawerSideLeft){
-//            currentVC = [self getCurrentVCFrom:((MMDrawerController *)rootVC).leftDrawerViewController];
-//        }else{
-//            currentVC = [self getCurrentVCFrom:((MMDrawerController *)rootVC).rightDrawerViewController];
-//        }
-//
-//    }else {
-//        // 根视图为非导航类
-//
-//        currentVC = rootVC;
-//    }
+    if ([rootVC presentedViewController]) {
+        // 视图是被presented出来的
+
+        rootVC = [rootVC presentedViewController];
+    }
+
+    if ([rootVC isKindOfClass:[UITabBarController class]]) {
+        // 根视图为UITabBarController
+
+        currentVC = [self getCurrentVCFrom:[(UITabBarController *)rootVC selectedViewController]];
+
+    } else if ([rootVC isKindOfClass:[UINavigationController class]]){
+        // 根视图为UINavigationController
+
+        currentVC = [self getCurrentVCFrom:[(UINavigationController *)rootVC visibleViewController]];
+
+    } else {
+        // 根视图为非导航类
+        currentVC = rootVC;
+    }
     
     return currentVC;
 }

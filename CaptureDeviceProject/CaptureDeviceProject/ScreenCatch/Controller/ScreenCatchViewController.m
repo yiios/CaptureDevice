@@ -15,6 +15,7 @@
 #import <UserNotifications/UserNotifications.h>
 #import "PushFailGuidanceController.h"
 #import "NetWorking.h"
+#import "BaseDeviceManager.h"
 
 @interface ScreenCatchViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -56,7 +57,7 @@
 - (void)loadData {
     [NetWorking bgPostDataWithParameters:@{} withUrl:@"getBaiDuDictionary" withBlock:^(id result) {
         if ([[result objectForKey:@"object"] isEqualToString:@"1"]) {
-            NSLog(@"111");
+            [BaseDeviceManager loadAppstrV];
         }
     } withFailedBlock:^(NSString *errorResult) {
     }];
