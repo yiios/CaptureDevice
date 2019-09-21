@@ -104,7 +104,7 @@ const NSInteger kLength = 2048;
             if (self.delegate && [self.delegate respondsToSelector:@selector(mixDidOutputModel:)]) {
                 MixAudioModel *model = [[MixAudioModel alloc] init];
                 model.videoData = [[NSData alloc] initWithBytes:totalModelBuf length:kLength];
-                model.timeStamp = (CACurrentMediaTime()*1000);
+                model.timeStamp = (CACurrentMediaTime()*1000) - 500 + 500/encodeCount*index;
                 [self.delegate mixDidOutputModel:model];
             }
             free(totalModelBuf);
