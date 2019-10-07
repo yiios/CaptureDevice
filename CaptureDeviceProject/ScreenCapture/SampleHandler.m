@@ -176,8 +176,8 @@
     }
     
     self.userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.gunmm.CaptureDeviceProject"];
-    self.rotateQueue = dispatch_queue_create("rotateQueue", nil);
-    self.audioQueue = dispatch_queue_create("audioQueue", nil);
+    self.rotateQueue = dispatch_queue_create("rotateQueue", DISPATCH_QUEUE_SERIAL);
+    self.audioQueue = dispatch_queue_create("audioQueue", DISPATCH_QUEUE_SERIAL);
 
     [self.socket start];
 }
@@ -201,12 +201,12 @@
 }
 
 - (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer withType:(RPSampleBufferType)sampleBufferType {
-    if ([self getMemoryUsage] > 35) {
-        return;
-    }
     switch (sampleBufferType) {
         case RPSampleBufferTypeVideo:
         {
+            if ([self getMemoryUsage] > 35) {
+                return;
+            }
             if (self.canUpload) {
                 __weak typeof(self) weakSelf = self;
                 CFRetain(sampleBuffer);
