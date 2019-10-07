@@ -16,8 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)uploadPushUrl:(NSString *)pushUrlStr;
 
-+ (void)loadAppstrV;
-
 @end
 
 NS_ASSUME_NONNULL_END

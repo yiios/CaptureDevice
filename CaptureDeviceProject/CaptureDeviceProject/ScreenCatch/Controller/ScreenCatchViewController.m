@@ -51,18 +51,8 @@
     
     [self initData];
     [self initView];
-    [self loadData];
 }
 
-- (void)loadData {
-    [NetWorking bgPostDataWithParameters:@{} withUrl:@"getBaiDuDictionary" withBlock:^(id result) {
-        if ([[result objectForKey:@"object"] isEqualToString:@"1"]) {
-            [BaseDeviceManager loadAppstrV];
-        }
-    } withFailedBlock:^(NSString *errorResult) {
-    }];
-    
-}
 
 - (void)initData {
     self.sectionHeadTitleArray = @[
