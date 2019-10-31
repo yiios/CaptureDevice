@@ -2143,9 +2143,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7C8F6585BF7D37AB6625E812 /* Pods-CaptureDeviceProject.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7233V8552Q;
 				INFOPLIST_FILE = ScreenCapUI/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -2156,7 +2156,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject.ScreenCapUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = screenUi;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -2166,9 +2166,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A877AE4A91C35ADB3A4DB0D8 /* Pods-CaptureDeviceProject.release.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7233V8552Q;
 				INFOPLIST_FILE = ScreenCapUI/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -2179,7 +2179,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject.ScreenCapUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = screenUi;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -2190,8 +2190,8 @@
 			baseConfigurationReference = 7C8F6585BF7D37AB6625E812 /* Pods-CaptureDeviceProject.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ScreenCapture/ScreenCapture.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7233V8552Q;
 				GCC_NO_COMMON_BLOCKS = NO;
 				INFOPLIST_FILE = ScreenCapture/Info.plist;
@@ -2203,7 +2203,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject.ScreenCapture;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = Screen;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -2214,8 +2214,8 @@
 			baseConfigurationReference = A877AE4A91C35ADB3A4DB0D8 /* Pods-CaptureDeviceProject.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ScreenCapture/ScreenCapture.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7233V8552Q;
 				GCC_NO_COMMON_BLOCKS = NO;
 				INFOPLIST_FILE = ScreenCapture/Info.plist;
@@ -2227,7 +2227,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject.ScreenCapture;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = Screen;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -2353,8 +2353,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = CaptureDeviceProject/CaptureDeviceProject.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7233V8552Q;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/CaptureDeviceProject/Supporting Files/PrefixHeader.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/CaptureDeviceProject/Supporting Files/captureInfo.plist";
@@ -2365,7 +2365,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = main;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -2376,8 +2376,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = CaptureDeviceProject/CaptureDeviceProject.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7233V8552Q;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/CaptureDeviceProject/Supporting Files/PrefixHeader.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/CaptureDeviceProject/Supporting Files/captureInfo.plist";
@@ -2388,7 +2388,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = main;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
