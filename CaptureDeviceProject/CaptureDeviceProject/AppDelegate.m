@@ -13,6 +13,8 @@
 #import <IQKeyboardManager/IQKeyboardManager.h>
 #import <UserNotifications/UserNotifications.h>
 #import "BaseDeviceManager.h"
+#import <AVFoundation/AVCaptureDevice.h>
+#import <AVFoundation/AVFAudio.h>
 
 @interface AppDelegate ()
 

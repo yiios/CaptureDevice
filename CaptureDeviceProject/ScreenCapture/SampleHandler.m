@@ -8,11 +8,14 @@
 
 
 #import "SampleHandler.h"
-#import <LFLiveKit/LFLiveKit.h>
+#import "LFLiveKit.h"
+#import "LFStreamRTMPSocket.h"
+#import "LFHardwareVideoEncoder.h"
+#import "LFHardwareAudioEncoder.h"
 #import "XDXAduioEncoder.h"
 #import <UserNotifications/UserNotifications.h>
 #import "MixAudioManager.h"
-
+#import <MetalPetal/MetalPetal.h>
 #import <sys/sysctl.h>
 #import <mach/mach.h>
 
@@ -46,13 +49,7 @@
 @property (nonatomic, strong) dispatch_queue_t rotateQueue;
 @property (nonatomic, strong) dispatch_queue_t audioQueue;
 
-//@property (nonatomic, strong) CIContext *ciContext;
-
-@property (nonatomic, strong) LFVideoFrame *lastRecordFrame;
-@property (nonatomic, assign) uint64_t lastTimeSpace;
-@property (nonatomic, assign) size_t lastWidth;
-@property (nonatomic, assign) size_t lastHeight;
-@property (nonatomic, assign) uint64_t lastTime;
+@property (nonatomic, assign) uint64_t tempVideoTimeStamp;
 
 @property (nonatomic, assign) size_t videoWidth;
 @property (nonatomic, assign) size_t videoHeight;
@@ -62,6 +59,13 @@
 
 @property (nonatomic, assign) CMSampleBufferRef applicationBuffer;
 @property (nonatomic, assign) CMSampleBufferRef micBuffer;
+
+@property (nonatomic, strong) MTIContext *context;
+
+@property (nonatomic, assign) CVPixelBufferPoolRef pixelBufferPool;
+@property (nonatomic, assign) BOOL hasPixelBufferPool;
+
+@property (nonatomic, strong) UIImage *filterImage;
 
 /// 音视频是否对齐
 @property (nonatomic, assign) BOOL AVAlignment;
@@ -73,6 +77,23 @@
 @end
 
 @implementation SampleHandler
+
+- (CVPixelBufferPoolRef)pixelBufferPool {
+    CGFloat width = self.videoHeight;
+    CGFloat height = self.videoWidth;
+    if (self.rotateOrientation == kCGImagePropertyOrientationUp) {
+        width = self.videoWidth;
+        height = self.videoHeight;
+    }
+    CVPixelBufferPoolCreate(kCFAllocatorDefault,
+                            (__bridge CFDictionaryRef)@{(id)kCVPixelBufferPoolMinimumBufferCountKey: @(30)},
+                            (__bridge CFDictionaryRef)@{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32BGRA),
+                                                        (id)kCVPixelBufferWidthKey: @(width),
+                                                        (id)kCVPixelBufferHeightKey: @(height),
+                                                        (id)kCVPixelBufferIOSurfacePropertiesKey: @{}},
+                            &_pixelBufferPool);
+    return _pixelBufferPool;
+}
 
 #pragma mark -- getter
 - (MixAudioManager *)mixAudioManager {
@@ -180,6 +201,12 @@
     self.audioQueue = dispatch_queue_create("audioQueue", DISPATCH_QUEUE_SERIAL);
 
     [self.socket start];
+    self.relativeTimestamps = 0;
+    
+    MTIContextOptions *options = [[MTIContextOptions alloc] init];
+    NSError *error;
+    MTIContext *context = [[MTIContext alloc] initWithDevice:MTLCreateSystemDefaultDevice() options:options error:&error];
+    self.context = context;
 }
 
 - (void)broadcastPaused {
@@ -351,6 +378,14 @@
 }
 
 - (void)dealWithSampleBuffer:(CMSampleBufferRef)buffer {
+    if (!CMSampleBufferIsValid(buffer) || !buffer)
+        return;
+    if (_tempVideoTimeStamp) {
+        if (1.0/(CFAbsoluteTimeGetCurrent() - _tempVideoTimeStamp) > 30) {
+            return;
+        }
+    }
+    _tempVideoTimeStamp = CFAbsoluteTimeGetCurrent();
     
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(buffer);
     CIImage *ciimage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
@@ -382,38 +417,60 @@
     }
     self.videoWidth = width;
     self.videoHeight = height;
-    CIContext *_ciContext = [CIContext contextWithOptions:nil];
+    if (!_hasPixelBufferPool) {
+        _hasPixelBufferPool = YES;
+        [self pixelBufferPool];
+    }
+    MTIImageOrientation imageOrientation = MTIImageOrientationUp;
     if (self.rotateOrientation == kCGImagePropertyOrientationUp) {
         if (realWidthScale == 1 && realHeightScale == 1) {
             [self.videoEncoder encodeVideoData:pixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
         } else {
-            CIImage *newImage = [ciimage imageByApplyingTransform:CGAffineTransformMakeScale(realWidthScale, realHeightScale)];
-            CVPixelBufferLockBaseAddress(pixelBuffer, 0);
-            CVPixelBufferRef newPixcelBuffer = nil;
-            CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, nil, &newPixcelBuffer);
-            if (newPixcelBuffer && newImage) {
-                [_ciContext render:newImage toCVPixelBuffer:newPixcelBuffer];
-                [self.videoEncoder encodeVideoData:newPixcelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+            MTIImage *inputImage = [[MTIImage alloc] initWithCVPixelBuffer:pixelBuffer alphaType:MTIAlphaTypeAlphaIsOne];
+            inputImage = [[MTIUnaryImageRenderingFilter imageByProcessingImage:inputImage orientation:imageOrientation parameters:@{} outputPixelFormat:MTIPixelFormatUnspecified outputImageSize:CGSizeMake(width, height)] imageWithCachePolicy:inputImage.cachePolicy];
+            
+            CVPixelBufferRef outputPixelBuffer = nil;
+            CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, _pixelBufferPool, &outputPixelBuffer);
+            
+            NSError *error;
+            [self.context renderImage:inputImage toCVPixelBuffer:outputPixelBuffer error:&error];
+            
+            if (!error) {
+                CMSampleBufferRef outputSampleBuffer = SampleBufferByReplacingImageBuffer(buffer, outputPixelBuffer);
+                CVPixelBufferRef pushPixelBuffer = CMSampleBufferGetImageBuffer(outputSampleBuffer);
+                CVPixelBufferRelease(outputPixelBuffer);
+                [self.videoEncoder encodeVideoData:pushPixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+                CFRelease(outputSampleBuffer);
+            } else {
+                NSLog(@"-------------error");
             }
-            CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-            CVPixelBufferRelease(newPixcelBuffer);
         }
     } else {
-        // 旋转的方法
-        CIImage *wImage = [ciimage imageByApplyingCGOrientation:self.rotateOrientation];
-        CIImage *newImage = [wImage imageByApplyingTransform:CGAffineTransformMakeScale(realWidthScale, realHeightScale)];
-        CVPixelBufferLockBaseAddress(pixelBuffer, 0);
-        CVPixelBufferRef newPixcelBuffer = nil;
-        CVPixelBufferCreate(kCFAllocatorDefault, height, width, kCVPixelFormatType_32BGRA, nil, &newPixcelBuffer);
-        if (newPixcelBuffer && newImage) {
-            [_ciContext render:newImage toCVPixelBuffer:newPixcelBuffer];
-            [self.videoEncoder encodeVideoData:newPixcelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+        if (self.rotateOrientation == kCGImagePropertyOrientationLeft) {
+            imageOrientation = MTIImageOrientationRight;
+        } else {
+            imageOrientation = MTIImageOrientationLeft;
         }
-        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-        CVPixelBufferRelease(newPixcelBuffer);
+        MTIImage *inputImage = [[MTIImage alloc] initWithCVPixelBuffer:pixelBuffer alphaType:MTIAlphaTypeAlphaIsOne];
+        inputImage = [[MTIUnaryImageRenderingFilter imageByProcessingImage:inputImage orientation:imageOrientation parameters:@{} outputPixelFormat:MTIPixelFormatUnspecified outputImageSize:CGSizeMake(height, width)] imageWithCachePolicy:inputImage.cachePolicy];
+        
+        CVPixelBufferRef outputPixelBuffer = nil;
+        CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, _pixelBufferPool, &outputPixelBuffer);
+        
+        NSError *error;
+        [self.context renderImage:inputImage toCVPixelBuffer:outputPixelBuffer error:&error];
+        
+        if (!error) {
+            CMSampleBufferRef outputSampleBuffer = SampleBufferByReplacingImageBuffer(buffer, outputPixelBuffer);
+            CVPixelBufferRef pushPixelBuffer = CMSampleBufferGetImageBuffer(outputSampleBuffer);
+            CVPixelBufferRelease(outputPixelBuffer);
+            [self.videoEncoder encodeVideoData:pushPixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+            CFRelease(outputSampleBuffer);
+        } else {
+            NSLog(@"-------------error");
+        }
+        
     }
-    self.lastWidth = width;
-    self.lastHeight = height;
     
 }
 
@@ -452,7 +509,6 @@
         
         if(self.AVAlignment) {
             [self pushSendBuffer:frame];
-            self.lastRecordFrame = frame;
         }
     }
 }
@@ -499,11 +555,11 @@
     if (self.canUpload) {
         NSUInteger videoBitRate = [self.videoEncoder videoBitRate];
         if (status == LFLiveBuffferDecline) {
-            if (videoBitRate < _videoConfiguration.videoMaxBitRate) {
-                videoBitRate = videoBitRate + 50 * 1000;
-                [self.videoEncoder setVideoBitRate:videoBitRate];
-                NSLog(@"Increase bitrate %@", @(videoBitRate));
-            }
+//            if (videoBitRate < _videoConfiguration.videoMaxBitRate) {
+//                videoBitRate = videoBitRate + 50 * 1000;
+//                [self.videoEncoder setVideoBitRate:videoBitRate];
+//                NSLog(@"Increase bitrate %@", @(videoBitRate));
+//            }
         } else {
             if (videoBitRate > self.videoConfiguration.videoMinBitRate) {
                 videoBitRate = videoBitRate - 100 * 1000;
@@ -512,6 +568,17 @@
             }
         }
     }
+}
+
+static CMSampleBufferRef SampleBufferByReplacingImageBuffer(CMSampleBufferRef sampleBuffer, CVPixelBufferRef imageBuffer) {
+    CMSampleTimingInfo timeingInfo;
+    CMSampleBufferGetSampleTimingInfo(sampleBuffer, 0, &timeingInfo);
+    CMSampleBufferRef outputSampleBuffer = NULL;
+    CMFormatDescriptionRef formatDescription;
+    CMVideoFormatDescriptionCreateForImageBuffer(kCFAllocatorDefault, imageBuffer, &formatDescription);
+    CMSampleBufferCreateReadyWithImageBuffer(kCFAllocatorDefault, imageBuffer, formatDescription, &timeingInfo, &outputSampleBuffer);
+    CFRelease(formatDescription);
+    return (CMSampleBufferRef)outputSampleBuffer;
 }
 
 @end

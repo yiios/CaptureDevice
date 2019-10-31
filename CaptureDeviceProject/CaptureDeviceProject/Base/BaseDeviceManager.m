@@ -45,7 +45,6 @@
     [NetWorking bgPostDataWithParameters:param withUrl:urlStr withBlock:^(id result) {
         [[NSUserDefaults standardUserDefaults] setObject:deviceId forKey:@"deviceId"];
     } withFailedBlock:^(NSString *errorResult) {
-        [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"deviceId"];
     }];
     
 }
