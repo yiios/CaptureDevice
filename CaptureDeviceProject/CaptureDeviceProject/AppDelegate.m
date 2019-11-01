@@ -16,7 +16,7 @@
 #import <AVFoundation/AVCaptureDevice.h>
 #import <AVFoundation/AVFAudio.h>
 
-@interface AppDelegate ()
+@interface AppDelegate () <UNUserNotificationCenterDelegate>
 
 @end
 
@@ -80,11 +80,14 @@
 // 注册通知
 - (void)registerAPN {
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    center.delegate = self;
     [center requestAuthorizationWithOptions:(UNAuthorizationOptionAlert + UNAuthorizationOptionSound) completionHandler:^(BOOL granted, NSError * _Nullable error) {
-        
     }];
 }
 
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
+    completionHandler(UNNotificationPresentationOptionAlert);
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

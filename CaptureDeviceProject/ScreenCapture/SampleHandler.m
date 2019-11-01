@@ -107,7 +107,11 @@
 - (LFLiveStreamInfo *)streamInfo {
     if (!_streamInfo) {
         _streamInfo = [[LFLiveStreamInfo alloc] init];
-        _streamInfo.url = [_userDefaults objectForKey:@"urlStr"];
+        NSString *urlStr = [_userDefaults objectForKey:@"urlStr"];
+        if ([urlStr hasSuffix:@"/"]) {
+            urlStr = [urlStr substringToIndex:urlStr.length-1];
+        }
+        _streamInfo.url = urlStr;
     }
     
     return _streamInfo;
@@ -406,13 +410,13 @@
             CGFloat nowWidth = width * 1280 / height;
             height = 1280;
             realWidthScale = nowWidth/width;
-            width = nowWidth;
+            width = nowWidth + 1;
         } else {
             realWidthScale = 720.0/width;
             CGFloat nowHeight = 720 * height / width;
             width = 720;
             realHeightScale = nowHeight/height;
-            height = nowHeight;
+            height = nowHeight + 1;
         }
     }
     self.videoWidth = width;
@@ -530,6 +534,7 @@
     NSLog(@"--------%lu", status);
     
     if (status == LFLiveStart) {
+        [self sendLocalNotificationToHostAppWithTitle:@"屏幕推流" msg:@"推流开始" userInfo:nil];
         if (!self.canUpload) {
             self.AVAlignment = NO;
             self.hasCaptureAudio = NO;
