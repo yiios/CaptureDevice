@@ -67,6 +67,11 @@
 
 @property (nonatomic, strong) UIImage *filterImage;
 
+@property (nonatomic, strong) NSMutableArray *videoFrameArray;
+
+@property (nonatomic, assign) BOOL isBStatus;
+
+
 /// 音视频是否对齐
 @property (nonatomic, assign) BOOL AVAlignment;
 /// 当前是否采集到了音频
@@ -211,6 +216,10 @@
     NSError *error;
     MTIContext *context = [[MTIContext alloc] initWithDevice:MTLCreateSystemDefaultDevice() options:options error:&error];
     self.context = context;
+    
+    _videoFrameArray = [NSMutableArray array];
+    NSString *urlStr = [_userDefaults objectForKey:@"urlStr"];
+    _isBStatus = [urlStr containsString:@"js.live-send.acg.tv"];
 }
 
 - (void)broadcastPaused {
@@ -249,6 +258,9 @@
         }
             break;
         case RPSampleBufferTypeAudioApp:
+            if (_isBStatus) {
+                return;
+            }
             if (self.canUpload) {
                 CFRetain(sampleBuffer);
                 dispatch_async(self.audioQueue, ^{
@@ -292,39 +304,51 @@
                     } else {
                         CMAudioFormatDescriptionRef audioFormatDes =  (CMAudioFormatDescriptionRef)CMSampleBufferGetFormatDescription(sampleBuffer);
                         AudioStreamBasicDescription inAudioStreamBasicDescription = *(CMAudioFormatDescriptionGetStreamBasicDescription(audioFormatDes));
-                        inAudioStreamBasicDescription.mFormatFlags = 0xe;
-                        [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
-                        if (!self.audioEncoder2) {
-                            AudioStreamBasicDescription inputFormat = {0};
-                            inputFormat.mSampleRate = 44100;
-                            inputFormat.mFormatID = kAudioFormatLinearPCM;
-                            inputFormat.mFormatFlags = inAudioStreamBasicDescription.mFormatFlags;
-                            inputFormat.mChannelsPerFrame = 1;
-                            inputFormat.mFramesPerPacket = 1;
-                            inputFormat.mBitsPerChannel = 16;
-                            inputFormat.mBytesPerFrame = inputFormat.mBitsPerChannel / 8 * inputFormat.mChannelsPerFrame;
-                            inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket;
-                            self.audioEncoder2 = [[XDXAduioEncoder alloc] initWithSourceFormat:inputFormat
-                                                                                  destFormatID:kAudioFormatMPEG4AAC
-                                                                                    sampleRate:44100
-                                                                           isUseHardwareEncode:YES];
+//                        mFormatFlags: 0xc
+                        if (weakSelf.isBStatus) {
+                            [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
+                            NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
+                            [self.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000 + 500)];
+                        } else {
+                            inAudioStreamBasicDescription.mFormatFlags = 0xe;
+                            [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
+                            if (!self.audioEncoder2) {
+                                AudioStreamBasicDescription inputFormat = {0};
+                                inputFormat.mSampleRate = 44100;
+                                inputFormat.mFormatID = kAudioFormatLinearPCM;
+                                inputFormat.mFormatFlags = inAudioStreamBasicDescription.mFormatFlags;
+                                inputFormat.mChannelsPerFrame = 1;
+                                inputFormat.mFramesPerPacket = 1;
+                                inputFormat.mBitsPerChannel = 16;
+                                inputFormat.mBytesPerFrame = inputFormat.mBitsPerChannel / 8 * inputFormat.mChannelsPerFrame;
+                                inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket;
+                                self.audioEncoder2 = [[XDXAduioEncoder alloc] initWithSourceFormat:inputFormat
+                                                                                      destFormatID:kAudioFormatMPEG4AAC
+                                                                                        sampleRate:44100
+                                                                               isUseHardwareEncode:YES];
+                            }
+                            ///<  发送
+                            AudioBuffer inBuffer;
+                            inBuffer.mNumberChannels = 1;
+                            inBuffer.mData = pcmData;
+                            inBuffer.mDataByteSize = (UInt32)pcmLength;
+                            
+                            AudioBufferList buffers;
+                            buffers.mNumberBuffers = 1;
+                            buffers.mBuffers[0] = inBuffer;
+                            
+                            Float64 currentTime = CMTimeGetSeconds(CMClockMakeHostTimeFromSystemUnits(CACurrentMediaTime()));
+                            
+                            int64_t pts = (int64_t)((currentTime - 100) * 1000);
+                            [self.audioEncoder2 encodeAudioWithSourceBuffer:buffers.mBuffers[0].mData sourceBufferSize:buffers.mBuffers[0].mDataByteSize pts:pts completeHandler:^(LFAudioFrame * _Nonnull frame) {
+                                if (weakSelf.isBStatus) {
+                                    NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
+                                    [weakSelf.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000 + 500)];
+                                } else {
+                                    [weakSelf.mixAudioManager sendMicBufferList:frame.data timeStamp:(CACurrentMediaTime()*1000)];
+                                }
+                            }];
                         }
-                        ///<  发送
-                        AudioBuffer inBuffer;
-                        inBuffer.mNumberChannels = 1;
-                        inBuffer.mData = pcmData;
-                        inBuffer.mDataByteSize = (UInt32)pcmLength;
-                        
-                        AudioBufferList buffers;
-                        buffers.mNumberBuffers = 1;
-                        buffers.mBuffers[0] = inBuffer;
-                        
-                        Float64 currentTime = CMTimeGetSeconds(CMClockMakeHostTimeFromSystemUnits(CACurrentMediaTime()));
-                        
-                        int64_t pts = (int64_t)((currentTime - 100) * 1000);
-                        [self.audioEncoder2 encodeAudioWithSourceBuffer:buffers.mBuffers[0].mData sourceBufferSize:buffers.mBuffers[0].mDataByteSize pts:pts completeHandler:^(LFAudioFrame * _Nonnull frame) {
-                            [weakSelf.mixAudioManager sendMicBufferList:frame.data timeStamp:(CACurrentMediaTime()*1000)];
-                        }];
                     }
                     CFRelease(sampleBuffer);
                 });
@@ -428,7 +452,7 @@
     MTIImageOrientation imageOrientation = MTIImageOrientationUp;
     if (self.rotateOrientation == kCGImagePropertyOrientationUp) {
         if (realWidthScale == 1 && realHeightScale == 1) {
-            [self.videoEncoder encodeVideoData:pixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+            [self.videoEncoder encodeVideoData:pixelBuffer timeStamp:(CACurrentMediaTime()*1000 + 500)];
         } else {
             MTIImage *inputImage = [[MTIImage alloc] initWithCVPixelBuffer:pixelBuffer alphaType:MTIAlphaTypeAlphaIsOne];
             inputImage = [[MTIUnaryImageRenderingFilter imageByProcessingImage:inputImage orientation:imageOrientation parameters:@{} outputPixelFormat:MTIPixelFormatUnspecified outputImageSize:CGSizeMake(width, height)] imageWithCachePolicy:inputImage.cachePolicy];
@@ -443,7 +467,7 @@
                 CMSampleBufferRef outputSampleBuffer = SampleBufferByReplacingImageBuffer(buffer, outputPixelBuffer);
                 CVPixelBufferRef pushPixelBuffer = CMSampleBufferGetImageBuffer(outputSampleBuffer);
                 CVPixelBufferRelease(outputPixelBuffer);
-                [self.videoEncoder encodeVideoData:pushPixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+                [self.videoEncoder encodeVideoData:pushPixelBuffer timeStamp:(CACurrentMediaTime()*1000 + 500)];
                 CFRelease(outputSampleBuffer);
             } else {
                 NSLog(@"-------------error");
@@ -468,7 +492,7 @@
             CMSampleBufferRef outputSampleBuffer = SampleBufferByReplacingImageBuffer(buffer, outputPixelBuffer);
             CVPixelBufferRef pushPixelBuffer = CMSampleBufferGetImageBuffer(outputSampleBuffer);
             CVPixelBufferRelease(outputPixelBuffer);
-            [self.videoEncoder encodeVideoData:pushPixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+            [self.videoEncoder encodeVideoData:pushPixelBuffer timeStamp:(CACurrentMediaTime()*1000 + 500)];
             CFRelease(outputSampleBuffer);
         } else {
             NSLog(@"-------------error");
@@ -534,7 +558,6 @@
     NSLog(@"--------%lu", status);
     
     if (status == LFLiveStart) {
-        [self sendLocalNotificationToHostAppWithTitle:@"屏幕推流" msg:@"推流开始" userInfo:nil];
         if (!self.canUpload) {
             self.AVAlignment = NO;
             self.hasCaptureAudio = NO;

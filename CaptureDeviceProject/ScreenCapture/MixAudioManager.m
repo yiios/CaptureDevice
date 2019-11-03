@@ -91,6 +91,7 @@ const NSInteger kLength = 2048;
                 
             }
             model.videoData = [[NSData alloc] initWithBytes:totalModelBuf length:model.videoData.length];
+            model.timeStamp = (CACurrentMediaTime()*1000);;
             free(totalModelBuf);
             if (self.delegate && [self.delegate respondsToSelector:@selector(mixDidOutputModel:)]) {
                 [self.delegate mixDidOutputModel:model];
@@ -115,7 +116,7 @@ const NSInteger kLength = 2048;
             if (self.delegate && [self.delegate respondsToSelector:@selector(mixDidOutputModel:)]) {
                 MixAudioModel *model = [[MixAudioModel alloc] init];
                 model.videoData = [[NSData alloc] initWithBytes:totalModelBuf length:kLength];
-                model.timeStamp = currentTimeStamp - distance + distance/encodeCount*index;
+                model.timeStamp = (CACurrentMediaTime()*1000);
                 [self.delegate mixDidOutputModel:model];
             }
             free(totalModelBuf);

@@ -15,4 +15,6 @@
 ///< flv或者rtmp包头
 @property (nonatomic, strong) NSData *header;
 
+- (NSComparisonResult)compareFrame:(LFFrame *)frame;
+
 @end
