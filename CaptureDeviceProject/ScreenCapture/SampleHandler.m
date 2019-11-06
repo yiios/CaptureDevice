@@ -308,7 +308,7 @@
                         if (weakSelf.isBStatus) {
                             [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
                             NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
-                            [self.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000 + 500)];
+                            [self.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000)];
                         } else {
                             inAudioStreamBasicDescription.mFormatFlags = 0xe;
                             [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
@@ -343,7 +343,7 @@
                             [self.audioEncoder2 encodeAudioWithSourceBuffer:buffers.mBuffers[0].mData sourceBufferSize:buffers.mBuffers[0].mDataByteSize pts:pts completeHandler:^(LFAudioFrame * _Nonnull frame) {
                                 if (weakSelf.isBStatus) {
                                     NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
-                                    [weakSelf.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000 + 500)];
+                                    [weakSelf.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000)];
                                 } else {
                                     [weakSelf.mixAudioManager sendMicBufferList:frame.data timeStamp:(CACurrentMediaTime()*1000)];
                                 }
@@ -452,7 +452,7 @@
     MTIImageOrientation imageOrientation = MTIImageOrientationUp;
     if (self.rotateOrientation == kCGImagePropertyOrientationUp) {
         if (realWidthScale == 1 && realHeightScale == 1) {
-            [self.videoEncoder encodeVideoData:pixelBuffer timeStamp:(CACurrentMediaTime()*1000 + 500)];
+            [self.videoEncoder encodeVideoData:pixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
         } else {
             MTIImage *inputImage = [[MTIImage alloc] initWithCVPixelBuffer:pixelBuffer alphaType:MTIAlphaTypeAlphaIsOne];
             inputImage = [[MTIUnaryImageRenderingFilter imageByProcessingImage:inputImage orientation:imageOrientation parameters:@{} outputPixelFormat:MTIPixelFormatUnspecified outputImageSize:CGSizeMake(width, height)] imageWithCachePolicy:inputImage.cachePolicy];
@@ -467,7 +467,7 @@
                 CMSampleBufferRef outputSampleBuffer = SampleBufferByReplacingImageBuffer(buffer, outputPixelBuffer);
                 CVPixelBufferRef pushPixelBuffer = CMSampleBufferGetImageBuffer(outputSampleBuffer);
                 CVPixelBufferRelease(outputPixelBuffer);
-                [self.videoEncoder encodeVideoData:pushPixelBuffer timeStamp:(CACurrentMediaTime()*1000 + 500)];
+                [self.videoEncoder encodeVideoData:pushPixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
                 CFRelease(outputSampleBuffer);
             } else {
                 NSLog(@"-------------error");
@@ -492,7 +492,7 @@
             CMSampleBufferRef outputSampleBuffer = SampleBufferByReplacingImageBuffer(buffer, outputPixelBuffer);
             CVPixelBufferRef pushPixelBuffer = CMSampleBufferGetImageBuffer(outputSampleBuffer);
             CVPixelBufferRelease(outputPixelBuffer);
-            [self.videoEncoder encodeVideoData:pushPixelBuffer timeStamp:(CACurrentMediaTime()*1000 + 500)];
+            [self.videoEncoder encodeVideoData:pushPixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
             CFRelease(outputSampleBuffer);
         } else {
             NSLog(@"-------------error");
