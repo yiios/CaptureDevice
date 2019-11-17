@@ -11,6 +11,8 @@
 
 @interface NavBgImage : UIImage
 
++ (BOOL)mfa_swizzleInstanceMethod:(SEL)originalSel with:(SEL)newSel;
+
 + (UIImage *)imageWithImage:(UIImage *)image TintColor:(UIColor *)tintColor;
 
 //用颜色创建图片

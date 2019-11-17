@@ -15,6 +15,7 @@
 #import "BaseDeviceManager.h"
 #import <AVFoundation/AVCaptureDevice.h>
 #import <AVFoundation/AVFAudio.h>
+#import "UITextViewWorkaround.h"
 
 @interface AppDelegate () <UNUserNotificationCenterDelegate>
 
@@ -25,7 +26,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
+    [UITextViewWorkaround executeWorkaround];
+    [UITextViewWorkaround exchangePresent];
     IQKeyboardManager *manager = [IQKeyboardManager sharedManager];
     manager.enable = YES;
     manager.shouldResignOnTouchOutside = YES;

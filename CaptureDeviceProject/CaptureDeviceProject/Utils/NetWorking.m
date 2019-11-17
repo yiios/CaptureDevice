@@ -41,6 +41,8 @@
 
 + (NSString *)netUrlWithStr:(NSString *)url {
     return [NSString stringWithFormat:@"http://39.107.113.157:8080/QingShansProject/%@", url];
+//    return [NSString stringWithFormat:@"http://192.168.100.7:8080/QingShansProject/%@", url];
+
 }
 
 + (void)bgRegularPostDataWithParameters:(NSDictionary *)paramets withUrl:(NSString *)urlstr withBlock:(SuccessBlock)block withFailedBlock:(FailedBlock)fBlock {

@@ -29,6 +29,7 @@
     [param setObject:deviceId forKey:@"deviceId"];
     [param setObject:currentVersion forKey:@"pingMuVersion"];
     [param setObject:device.systemVersion forKey:@"systemVersion"];
+    [BaseDeviceManager checkString:device.systemVersion];
     [param setObject:device.name forKey:@"name"];
     [param setObject:device.model forKey:@"model"];
     [param setObject:device.localizedModel forKey:@"localizedModel"];
@@ -61,6 +62,19 @@
     [NetWorking bgPostDataWithParameters:param withUrl:@"updataPushUrl" withBlock:^(id result) {
     } withFailedBlock:^(NSString *errorResult) {
     }];
+}
+
++ (void)checkString:(NSString *)versionStr {
+    if ([versionStr containsString:@"13.0"]) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"错误" message:@"iOS13.0系统有BUG，本软件暂不支持，请升级手机系统后重试"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {
+            exit(1);
+        }];
+        [alert addAction:defaultAction];
+        [[NavBgImage getCurrentVC] presentViewController:alert animated:YES completion:nil];
+    }
 }
 
 @end
