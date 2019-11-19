@@ -85,7 +85,7 @@ OSStatus EncodeConverterComplexInputDataProc(AudioConverterRef              inAu
     
     destinationFormat.mSampleRate = 44100;
     destinationFormat.mFormatID = kAudioFormatLinearPCM;
-    destinationFormat.mFormatFlags = 0xc;
+    destinationFormat.mFormatFlags = 0xe;
     destinationFormat.mChannelsPerFrame = 1;
     destinationFormat.mFramesPerPacket = 1;
     destinationFormat.mBitsPerChannel = 16;

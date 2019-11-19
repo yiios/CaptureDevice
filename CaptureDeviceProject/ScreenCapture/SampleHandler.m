@@ -316,7 +316,7 @@
                                 AudioStreamBasicDescription inputFormat = {0};
                                 inputFormat.mSampleRate = 44100;
                                 inputFormat.mFormatID = kAudioFormatLinearPCM;
-                                inputFormat.mFormatFlags = inAudioStreamBasicDescription.mFormatFlags;
+                                inputFormat.mFormatFlags = 0xc;
                                 inputFormat.mChannelsPerFrame = 1;
                                 inputFormat.mFramesPerPacket = 1;
                                 inputFormat.mBitsPerChannel = 16;
@@ -341,12 +341,12 @@
                             
                             int64_t pts = (int64_t)((currentTime - 100) * 1000);
                             [self.audioEncoder2 encodeAudioWithSourceBuffer:buffers.mBuffers[0].mData sourceBufferSize:buffers.mBuffers[0].mDataByteSize pts:pts completeHandler:^(LFAudioFrame * _Nonnull frame) {
-                                if (weakSelf.isBStatus) {
-                                    NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
-                                    [weakSelf.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000)];
-                                } else {
+//                                if (weakSelf.isBStatus) {
+//                                    NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
+//                                    [weakSelf.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000)];
+//                                } else {
                                     [weakSelf.mixAudioManager sendMicBufferList:frame.data timeStamp:(CACurrentMediaTime()*1000)];
-                                }
+//                                }
                             }];
                         }
                     }

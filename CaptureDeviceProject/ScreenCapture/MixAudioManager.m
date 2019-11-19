@@ -49,11 +49,21 @@ const NSInteger kLength = 2048;
 
 - (void)sendAppBufferList:(NSData *)audioData timeStamp:(uint64_t)timeStamp {
     NSInteger totalSize = audioData.length;
-    NSInteger encodeCount = totalSize/kLength;
-    char *totalBuf = malloc(totalSize);
+    NSInteger encodeCount = totalSize/kLength/2;
+    char *totalBuf = malloc(totalSize/2);
+//    char *totalBufReally = malloc(totalSize);
+//
+//    memcpy(totalBufReally, audioData.bytes, audioData.length);
+//
+//    for (int i = 0; i < totalSize/2; i++)
+//    {
+//        totalBuf[i] = ((totalBufReally[2 * i]) + totalBufReally[2 * i + 1])/4;
+////        NSLog(@"---- %d", totalBuf[i]);
+//    }
+//    free(totalBufReally);
+
     char *p = totalBuf;
-    memcpy(totalBuf, audioData.bytes, audioData.length);
-    
+
     if (_micModelArray.count > 0) {
         BOOL isInReceiver = [self isInReceiverPluggedIn];
         for (NSInteger i = 0;i < _micModelArray.count;i++) {
