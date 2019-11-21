@@ -278,7 +278,7 @@
                         CMAudioFormatDescriptionRef audioFormatDes =  (CMAudioFormatDescriptionRef)CMSampleBufferGetFormatDescription(sampleBuffer);
                         AudioStreamBasicDescription inAudioStreamBasicDescription = *(CMAudioFormatDescriptionGetStreamBasicDescription(audioFormatDes));
                         inAudioStreamBasicDescription.mFormatFlags = 0xe;
-                        [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
+                        self.mixAudioManager.appInputFormat = inAudioStreamBasicDescription;
                         [self.mixAudioManager sendAppBufferList:[[NSData alloc] initWithBytes:pcmData length:pcmLength] timeStamp:(CACurrentMediaTime()*1000)];
                     }
                     CFRelease(sampleBuffer);
@@ -311,7 +311,7 @@
                             [self.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000)];
                         } else {
                             inAudioStreamBasicDescription.mFormatFlags = 0xe;
-                            [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
+                            self.mixAudioManager.micInputFormat = inAudioStreamBasicDescription;
                             if (!self.audioEncoder2) {
                                 AudioStreamBasicDescription inputFormat = {0};
                                 inputFormat.mSampleRate = 44100;
@@ -341,12 +341,12 @@
                             
                             int64_t pts = (int64_t)((currentTime - 100) * 1000);
                             [self.audioEncoder2 encodeAudioWithSourceBuffer:buffers.mBuffers[0].mData sourceBufferSize:buffers.mBuffers[0].mDataByteSize pts:pts completeHandler:^(LFAudioFrame * _Nonnull frame) {
-//                                if (weakSelf.isBStatus) {
-//                                    NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
-//                                    [weakSelf.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000)];
-//                                } else {
+                                if (weakSelf.isBStatus) {
+                                    NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
+                                    [weakSelf.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000)];
+                                } else {
                                     [weakSelf.mixAudioManager sendMicBufferList:frame.data timeStamp:(CACurrentMediaTime()*1000)];
-//                                }
+                                }
                             }];
                         }
                     }
@@ -519,9 +519,7 @@
 
 #pragma mark -- MixAudioManagerDelegate
 - (void)mixDidOutputModel:(MixAudioModel *)mixAudioModel {
-//    if ([self getMemoryUsage] > 30) {
-//        return;
-//    }
+//    [self.audioEncoder setCustomInputFormat:self.mixAudioManager.currentInputFormat];
     [self.audioEncoder encodeAudioData:mixAudioModel.videoData timeStamp:mixAudioModel.timeStamp];
 }
 

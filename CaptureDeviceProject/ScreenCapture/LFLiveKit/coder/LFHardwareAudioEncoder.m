@@ -152,6 +152,7 @@
         inputFormat.mSampleRate = _childCustomInputFormat.mSampleRate;
         inputFormat.mFormatID = _childCustomInputFormat.mFormatID;
         inputFormat.mFormatFlags = _childCustomInputFormat.mFormatFlags;
+        _configuration.numberOfChannels = _childCustomInputFormat.mChannelsPerFrame;
         inputFormat.mChannelsPerFrame = (UInt32)_configuration.numberOfChannels;
         inputFormat.mFramesPerPacket = 1;
         inputFormat.mBitsPerChannel = 16;
