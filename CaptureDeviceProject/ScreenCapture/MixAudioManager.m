@@ -48,21 +48,25 @@
 //    char *outModelBuf = malloc(4096);
 //    int k = 0;
 //    for (int j = 0; j < audioData.length; j+=2) {
-//        mic = 0xFF00 & (totalModelBuf[j] << 8);
-//        mic += (totalModelBuf[j+1] & 0x00FF);
-//        if (mic > MAX)
-//        {
-//            mic = MAX;
-//        }
-//        if (mic < MIN)
-//        {
-//            mic = MIN;
-//        }
+////        mic = 0xFF00 & (totalModelBuf[j] << 8);
+////        mic += (totalModelBuf[j+1] & 0x00FF);
+////        if (mic > MAX)
+////        {
+////            mic = MAX;
+////        }
+////        if (mic < MIN)
+////        {
+////            mic = MIN;
+////        }
 //        if (k < 4096) {
-//            outModelBuf[k] = ((short)((mic&0xFF00)>>8));
-//            outModelBuf[k+1] = ((short)mic&0x00FF);
-//            outModelBuf[k+2] = ((short)((mic&0xFF00)>>8));
-//            outModelBuf[k+3] = ((short)mic&0x00FF);
+////            outModelBuf[k] = ((short)((mic&0xFF00)>>8));
+////            outModelBuf[k+1] = ((short)mic&0x00FF);
+////            outModelBuf[k+2] = ((short)((mic&0xFF00)>>8));
+////            outModelBuf[k+3] = ((short)mic&0x00FF);
+//            outModelBuf[k] = totalModelBuf[j];
+//            outModelBuf[k+1] = totalModelBuf[j+1];
+//            outModelBuf[k+2] = totalModelBuf[j];
+//            outModelBuf[k+3] = totalModelBuf[j+1];
 //        } else {
 //            break;
 //        }
@@ -78,7 +82,7 @@
 //        [self.delegate mixDidOutputModel:model];
 //    }
 //
-    
+//
 }
 
 - (void)sendAppBufferList:(NSData *)audioData timeStamp:(uint64_t)timeStamp {
@@ -87,54 +91,101 @@
     if (@available(iOS 13.0, *)) {
         if (_micModelArray.count > 0) {
             kLength = 4096;
-
+            //
             BOOL isInReceiver = [self isInReceiverPluggedIn];
             if (!isInReceiver) {
-                char *totalBuf = malloc(audioData.length);
-                char *p = totalBuf;
-            } else {
-                
-                MixAudioModel *model = _micModelArray[0];
-                char *totalModelBuf = malloc(model.videoData.length);
-                memcpy(totalModelBuf, model.videoData.bytes, model.videoData.length);
                 int const MAX = 32767;
                 int const MIN = -32768;
-                short mic = 0;
-                char *outModelBuf = malloc(kLength);
-                int k = 0;
-                for (int j = 0; j < model.videoData.length; j+=2) {
-                    mic = 0xFF00 & (totalModelBuf[j] << 8);
-                    mic += (totalModelBuf[j+1] & 0x00FF);
-                    if (mic > MAX)
-                    {
-                        mic = MAX;
+                short app1 = 0, mic1 = 0, app2 = 0, mic2 = 0;
+                for (int i = 0; i < 1; i ++) {
+                    char *appBuf = malloc(audioData.length);
+                    memcpy(appBuf, audioData.bytes, audioData.length);
+                    
+                    MixAudioModel *model = _micModelArray[i];
+                    char *totalModelBuf = malloc(model.videoData.length);
+                    memcpy(totalModelBuf, model.videoData.bytes, model.videoData.length);
+                    char *outModelBuf = malloc(kLength);
+                    int k = 0;
+                    for (int j = 0; j < model.videoData.length; j+=2) {
+                        if (k < kLength) {
+                            app1 = 0xFF00 & (appBuf[k] << 8);
+                            app1 += (appBuf[k+1] & 0x00FF);
+                            app2 = 0xFF00 & (appBuf[k] << 8);
+                            app2 += (appBuf[k+1] & 0x00FF);
+                            
+                            mic1 = 0xFF00 & (totalModelBuf[j] << 8);
+                            mic1 += (totalModelBuf[j+1] & 0x00FF);
+                            mic2 = 0xFF00 & (totalModelBuf[j] << 8);
+                            mic2 += (totalModelBuf[j+1] & 0x00FF);
+                            
+                            app1 = app1*0.2 + mic1;
+                            app2 = app2*0.2 + mic2;
+                            if (app1 > MAX)
+                            {
+                                app1 = MAX;
+                            }
+                            if (app1 < MIN)
+                            {
+                                app1 = MIN;
+                            }
+                            if (app2 > MAX)
+                            {
+                                app2 = MAX;
+                            }
+                            if (app2 < MIN)
+                            {
+                                app2 = MIN;
+                            }
+                            
+                            outModelBuf[k] = ((short)((app1&0xFF00)>>8));
+                            outModelBuf[k+1] = ((short)app1&0x00FF);
+                            outModelBuf[k+2] = ((short)((app2&0xFF00)>>8));
+                            outModelBuf[k+3] = ((short)app2&0x00FF);
+                        } else {
+                            break;
+                        }
+                        k += 4;
                     }
-                    if (mic < MIN)
-                    {
-                        mic = MIN;
+                    free(totalModelBuf);
+                    free(appBuf);
+                    model.videoData = [[NSData alloc] initWithBytes:outModelBuf length:kLength];
+                    model.timeStamp = (CACurrentMediaTime()*1000);
+                    free(outModelBuf);
+                    
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(mixDidOutputModel:)]) {
+                        [self.delegate mixDidOutputModel:model];
                     }
-                    if (k < kLength) {
-                        outModelBuf[k] = ((short)((mic&0xFF00)>>8));
-                        outModelBuf[k+1] = ((short)mic&0x00FF);
-                        outModelBuf[k+2] = ((short)((mic&0xFF00)>>8));
-                        outModelBuf[k+3] = ((short)mic&0x00FF);
-                    } else {
-                        break;
-                    }
-                    k += 4;
                 }
-                free(totalModelBuf);
-                model.videoData = [[NSData alloc] initWithBytes:outModelBuf length:kLength];
-                model.timeStamp = (CACurrentMediaTime()*1000);
-                free(outModelBuf);
-
-                if (self.delegate && [self.delegate respondsToSelector:@selector(mixDidOutputModel:)]) {
-                    [self.delegate mixDidOutputModel:model];
+                [_micModelArray removeObjectAtIndex:0];
+            } else {
+                for (int i = 0; i < 1; i ++) {
+                    MixAudioModel *model = _micModelArray[i];
+                    char *totalModelBuf = malloc(model.videoData.length);
+                    memcpy(totalModelBuf, model.videoData.bytes, model.videoData.length);
+                    char *outModelBuf = malloc(kLength);
+                    int k = 0;
+                    for (int j = 0; j < model.videoData.length; j+=2) {
+                        if (k < kLength) {
+                            outModelBuf[k] = totalModelBuf[j];
+                            outModelBuf[k+1] = totalModelBuf[j+1];
+                            outModelBuf[k+2] = totalModelBuf[j];
+                            outModelBuf[k+3] = totalModelBuf[j+1];
+                        } else {
+                            break;
+                        }
+                        k += 4;
+                    }
+                    free(totalModelBuf);
+                    model.videoData = [[NSData alloc] initWithBytes:outModelBuf length:kLength];
+                    model.timeStamp = (CACurrentMediaTime()*1000);
+                    free(outModelBuf);
+                    
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(mixDidOutputModel:)]) {
+                        [self.delegate mixDidOutputModel:model];
+                    }
                 }
                 [_micModelArray removeObjectAtIndex:0];
             }
-
-
         }
         else {
             MixAudioModel *model = [[MixAudioModel alloc] init];

@@ -304,6 +304,8 @@
                     } else {
                         CMAudioFormatDescriptionRef audioFormatDes =  (CMAudioFormatDescriptionRef)CMSampleBufferGetFormatDescription(sampleBuffer);
                         AudioStreamBasicDescription inAudioStreamBasicDescription = *(CMAudioFormatDescriptionGetStreamBasicDescription(audioFormatDes));
+//                        NSLog(@"***************** %lu", pcmLength);
+
 //                        mFormatFlags: 0xc
                         if (weakSelf.isBStatus) {
                             [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
@@ -519,7 +521,7 @@
 
 #pragma mark -- MixAudioManagerDelegate
 - (void)mixDidOutputModel:(MixAudioModel *)mixAudioModel {
-//    [self.audioEncoder setCustomInputFormat:self.mixAudioManager.currentInputFormat];
+    [self.audioEncoder setCustomInputFormat:self.mixAudioManager.currentInputFormat];
     [self.audioEncoder encodeAudioData:mixAudioModel.videoData timeStamp:mixAudioModel.timeStamp];
 }
 
