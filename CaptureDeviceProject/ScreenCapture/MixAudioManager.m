@@ -15,8 +15,6 @@
 
 @property (nonatomic, strong) NSMutableArray *micModelArray;
 
-@property (nonatomic, assign) uint64_t lastTimestamps;
-
 @end
 
 @implementation MixAudioManager
@@ -186,6 +184,11 @@
                 }
                 [_micModelArray removeObjectAtIndex:0];
             }
+            if (_micModelArray.count > 4) {
+                [_micModelArray removeObjectAtIndex:1];
+                [_micModelArray removeObjectAtIndex:3];
+
+            }
         }
         else {
             MixAudioModel *model = [[MixAudioModel alloc] init];
@@ -249,18 +252,12 @@
                 }
             }
         } else {
-            uint64_t currentTimeStamp = (CACurrentMediaTime()*1000);
-            if (self.lastTimestamps == 0) {
-                self.lastTimestamps = currentTimeStamp;
-            }
-            NSInteger distance = currentTimeStamp - self.lastTimestamps;
-            if (distance == 0 || distance > 600) {
-                distance = 500;
-            }
-            self.lastTimestamps = currentTimeStamp;
             for(NSInteger index = 0;index < encodeCount;index++){
                 char *totalModelBuf = malloc(kLength);
                 memcpy(totalModelBuf, p, kLength);
+//                for (int i = 0; i < kLength; i ++) {
+//                    NSLog(@"%hhd", totalModelBuf[i]);
+//                }
                 if (self.delegate && [self.delegate respondsToSelector:@selector(mixDidOutputModel:)]) {
                     MixAudioModel *model = [[MixAudioModel alloc] init];
                     model.videoData = [[NSData alloc] initWithBytes:totalModelBuf length:kLength];
@@ -270,7 +267,6 @@
                 free(totalModelBuf);
                 p += kLength;
             }
-            self.lastTimestamps = currentTimeStamp;
         }
         free(totalBuf);
         [_micModelArray removeAllObjects];
