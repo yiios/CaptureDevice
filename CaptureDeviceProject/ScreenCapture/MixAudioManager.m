@@ -204,6 +204,7 @@
         NSInteger encodeCount = totalSize/kLength;
         char *totalBuf = malloc(totalSize);
         char *p = totalBuf;
+        memcpy(totalBuf, audioData.bytes, audioData.length);
         
         if (_micModelArray.count > 0) {
             BOOL isInReceiver = [self isInReceiverPluggedIn];
@@ -255,9 +256,6 @@
             for(NSInteger index = 0;index < encodeCount;index++){
                 char *totalModelBuf = malloc(kLength);
                 memcpy(totalModelBuf, p, kLength);
-//                for (int i = 0; i < kLength; i ++) {
-//                    NSLog(@"%hhd", totalModelBuf[i]);
-//                }
                 if (self.delegate && [self.delegate respondsToSelector:@selector(mixDidOutputModel:)]) {
                     MixAudioModel *model = [[MixAudioModel alloc] init];
                     model.videoData = [[NSData alloc] initWithBytes:totalModelBuf length:kLength];
