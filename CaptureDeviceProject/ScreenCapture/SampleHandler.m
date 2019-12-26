@@ -49,8 +49,6 @@
 @property (nonatomic, strong) dispatch_queue_t rotateQueue;
 @property (nonatomic, strong) dispatch_queue_t audioQueue;
 
-@property (nonatomic, assign) uint64_t tempVideoTimeStamp;
-
 @property (nonatomic, assign) size_t videoWidth;
 @property (nonatomic, assign) size_t videoHeight;
 
@@ -220,6 +218,10 @@
     _videoFrameArray = [NSMutableArray array];
     NSString *urlStr = [_userDefaults objectForKey:@"urlStr"];
     _isBStatus = [urlStr containsString:@"js.live-send.acg.tv"];
+    
+    if (@available(iOS 13.0, *)) {
+        _isBStatus = NO;
+    }
 }
 
 - (void)broadcastPaused {
@@ -410,18 +412,7 @@
 - (void)dealWithSampleBuffer:(CMSampleBufferRef)buffer {
     if (!CMSampleBufferIsValid(buffer) || !buffer)
         return;
-    if (_tempVideoTimeStamp) {
-        if (1.0/(CFAbsoluteTimeGetCurrent() - _tempVideoTimeStamp) > 30) {
-            return;
-        }
-    }
-    _tempVideoTimeStamp = CFAbsoluteTimeGetCurrent();
-    
     CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(buffer);
-    CIImage *ciimage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
-    if (!ciimage) {
-        return;
-    }
     size_t width = CVPixelBufferGetWidth(pixelBuffer);
     size_t height = CVPixelBufferGetHeight(pixelBuffer);
     
