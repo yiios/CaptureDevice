@@ -420,20 +420,20 @@
     CGFloat heightScale = height/1280.0;
     CGFloat realWidthScale = 1;
     CGFloat realHeightScale = 1;
-    
+
     if (widthScale > 1 || heightScale > 1) {
         if (widthScale < heightScale) {
             realHeightScale = 1280.0/height;
-            CGFloat nowWidth = width * 1280 / height;
-            height = 1280;
-            realWidthScale = nowWidth/width;
-            width = nowWidth + 1;
+            CGFloat nowWidth = width * 1280.0 / height;
+            height = 1280.0;
+            realWidthScale = ceilf(nowWidth)/width;
+            width = ceilf(nowWidth);
         } else {
             realWidthScale = 720.0/width;
-            CGFloat nowHeight = 720 * height / width;
-            width = 720;
-            realHeightScale = nowHeight/height;
-            height = nowHeight + 1;
+            CGFloat nowHeight = 720.0 * height / width;
+            width = 720.0;
+            realHeightScale = ceilf(nowHeight)/height;
+            height = ceilf(nowHeight);
         }
     }
     self.videoWidth = width;

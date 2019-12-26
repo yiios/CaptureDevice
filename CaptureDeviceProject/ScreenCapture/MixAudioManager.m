@@ -14,6 +14,7 @@
 }
 
 @property (nonatomic, strong) NSMutableArray *micModelArray;
+@property (nonatomic, assign) BOOL isMic;
 
 @end
 
@@ -36,7 +37,7 @@
     model.videoData = audioData;
     model.timeStamp = timeStamp;
     [_micModelArray addObject:model];
-    
+    _isMic = YES;
     
 //    char *totalModelBuf = malloc(audioData.length);
 //    memcpy(totalModelBuf, audioData.bytes, audioData.length);
@@ -108,8 +109,8 @@
                         if (k < kLength) {
                             app1 = 0xFF00 & (appBuf[k] << 8);
                             app1 += (appBuf[k+1] & 0x00FF);
-                            app2 = 0xFF00 & (appBuf[k] << 8);
-                            app2 += (appBuf[k+1] & 0x00FF);
+                            app2 = 0xFF00 & (appBuf[k+2] << 8);
+                            app2 += (appBuf[k+3] & 0x00FF);
                             
                             mic1 = 0xFF00 & (totalModelBuf[j] << 8);
                             mic1 += (totalModelBuf[j+1] & 0x00FF);
@@ -191,11 +192,13 @@
             }
         }
         else {
-            MixAudioModel *model = [[MixAudioModel alloc] init];
-            model.videoData = audioData;
-            model.timeStamp = (CACurrentMediaTime()*1000);
-            if (self.delegate && [self.delegate respondsToSelector:@selector(mixDidOutputModel:)]) {
-                [self.delegate mixDidOutputModel:model];
+            if (!_isMic) {
+                MixAudioModel *model = [[MixAudioModel alloc] init];
+                model.videoData = audioData;
+                model.timeStamp = (CACurrentMediaTime()*1000);
+                if (self.delegate && [self.delegate respondsToSelector:@selector(mixDidOutputModel:)]) {
+                    [self.delegate mixDidOutputModel:model];
+                }
             }
         }
     } else {
