@@ -2361,6 +2361,7 @@
 				CODE_SIGN_ENTITLEMENTS = CaptureDeviceProject/CaptureDeviceProject.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(CAPTUREDEVICE_BUILD)";
 				DEVELOPMENT_TEAM = 7233V8552Q;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/CaptureDeviceProject/Supporting Files/PrefixHeader.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/CaptureDeviceProject/Supporting Files/captureInfo.plist";
@@ -2369,6 +2370,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = "$(CAPTUREDEVICE_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2384,6 +2386,7 @@
 				CODE_SIGN_ENTITLEMENTS = CaptureDeviceProject/CaptureDeviceProject.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(CAPTUREDEVICE_BUILD)";
 				DEVELOPMENT_TEAM = 7233V8552Q;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/CaptureDeviceProject/Supporting Files/PrefixHeader.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/CaptureDeviceProject/Supporting Files/captureInfo.plist";
@@ -2392,6 +2395,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = "$(CAPTUREDEVICE_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = gunmm.CaptureDeviceProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
