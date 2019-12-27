@@ -19,12 +19,16 @@ PODS:
     - MetalPetal/Core (= 1.4.0)
   - MetalPetal/Core (1.4.0)
   - Toast (4.0.0)
+  - YYKit (1.0.9):
+    - YYKit/no-arc (= 1.0.9)
+  - YYKit/no-arc (1.0.9)
 
 DEPENDENCIES:
   - AFNetworking (~> 3.1.0)
   - IQKeyboardManager
   - MetalPetal
   - Toast
+  - YYKit
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -32,13 +36,15 @@ SPEC REPOS:
     - IQKeyboardManager
     - MetalPetal
     - Toast
+    - YYKit
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   IQKeyboardManager: 964638372b4a61892cc74fdfa6fd26de8c9464a2
   MetalPetal: 92eea965b9b2f0c677d82618c2e78fa7e4347846
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
+  YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: 101ac8c80c3a4054b68c30cbbed8639daf4acbc1
+PODFILE CHECKSUM: ffc0a60a9b366b74806da2745585e412d91ae6be
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.7.5

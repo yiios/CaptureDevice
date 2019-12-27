@@ -7,6 +7,7 @@
 //
 
 #import "ScreenCatchTableFooterView.h"
+#import "PayManager.h"
 
 CGFloat const ScreenCatchTableFooterViewHeight = 94;
 
@@ -48,9 +49,11 @@ CGFloat const ScreenCatchTableFooterViewHeight = 94;
 }
 
 - (IBAction)failed:(id)sender {
-    if (self.failedBtnActBlock) {
-        self.failedBtnActBlock();
-    }
+//    if (self.failedBtnActBlock) {
+//        self.failedBtnActBlock();
+//    }
+    
+    [[PayManager manager] getRequestAppleProduct];
 }
 
 

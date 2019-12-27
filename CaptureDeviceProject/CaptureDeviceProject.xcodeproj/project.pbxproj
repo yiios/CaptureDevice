@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -242,6 +242,8 @@
 		76C9072A22F5C1A8006BA6E5 /* SelectListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 76C9072922F5C1A8006BA6E5 /* SelectListModel.m */; };
 		76DA0B242316D64C0053693F /* MixAudioModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 76DA0B232316D64C0053693F /* MixAudioModel.m */; };
 		CD5A637322FBF3AD00D6A5B1 /* XDXAduioEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = CD5A637122FBF3AD00D6A5B1 /* XDXAduioEncoder.m */; };
+		CD5FFF4723B5DA6100181C50 /* PayManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CD5FFF4623B5DA6100181C50 /* PayManager.m */; };
+		CD5FFFD023B5EE4B00181C50 /* UserInfoKeyChain.m in Sources */ = {isa = PBXBuildFile; fileRef = CD5FFFCF23B5EE4B00181C50 /* UserInfoKeyChain.m */; };
 		CD93A6E022F1374D009190E2 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD93A6DF22F1374D009190E2 /* ReplayKit.framework */; };
 		CD93A6E422F1374D009190E2 /* SampleHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = CD93A6E322F1374D009190E2 /* SampleHandler.m */; };
 		CD93A6F822F1374D009190E2 /* ScreenCapture.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = CD93A6DD22F1374D009190E2 /* ScreenCapture.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -767,10 +769,13 @@
 		76C9072922F5C1A8006BA6E5 /* SelectListModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelectListModel.m; sourceTree = "<group>"; };
 		76DA0B222316D64C0053693F /* MixAudioModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MixAudioModel.h; sourceTree = "<group>"; };
 		76DA0B232316D64C0053693F /* MixAudioModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MixAudioModel.m; sourceTree = "<group>"; };
-		7C8F6585BF7D37AB6625E812 /* Pods-CaptureDeviceProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureDeviceProject.debug.xcconfig"; path = "Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject.debug.xcconfig"; sourceTree = "<group>"; };
-		A877AE4A91C35ADB3A4DB0D8 /* Pods-CaptureDeviceProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureDeviceProject.release.xcconfig"; path = "Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject.release.xcconfig"; sourceTree = "<group>"; };
+		7DEC799C91DB8396D2EB332B /* Pods-CaptureDeviceProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureDeviceProject.debug.xcconfig"; path = "Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject.debug.xcconfig"; sourceTree = "<group>"; };
 		CD5A637122FBF3AD00D6A5B1 /* XDXAduioEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XDXAduioEncoder.m; sourceTree = "<group>"; };
 		CD5A637222FBF3AD00D6A5B1 /* XDXAduioEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XDXAduioEncoder.h; sourceTree = "<group>"; };
+		CD5FFF4523B5DA6100181C50 /* PayManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PayManager.h; sourceTree = "<group>"; };
+		CD5FFF4623B5DA6100181C50 /* PayManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PayManager.m; sourceTree = "<group>"; };
+		CD5FFFCE23B5EE4B00181C50 /* UserInfoKeyChain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserInfoKeyChain.h; sourceTree = "<group>"; };
+		CD5FFFCF23B5EE4B00181C50 /* UserInfoKeyChain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserInfoKeyChain.m; sourceTree = "<group>"; };
 		CD93A6DD22F1374D009190E2 /* ScreenCapture.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ScreenCapture.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD93A6DF22F1374D009190E2 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		CD93A6E222F1374D009190E2 /* SampleHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SampleHandler.h; sourceTree = "<group>"; };
@@ -793,6 +798,7 @@
 		CD97051C22DC6D9600132518 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CDAF89A0231671E000E74B81 /* MixAudioManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MixAudioManager.h; sourceTree = "<group>"; };
 		CDAF89A1231671E000E74B81 /* MixAudioManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MixAudioManager.m; sourceTree = "<group>"; };
+		F80202460823907D9D0E0CF8 /* Pods-CaptureDeviceProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaptureDeviceProject.release.xcconfig"; path = "Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1441,6 +1447,8 @@
 				765FCB0A22F5730200948374 /* UIView+HUD.m */,
 				7606F9D7237B059500605EE6 /* UITextViewWorkaround.h */,
 				7606F9D8237B059500605EE6 /* UITextViewWorkaround.m */,
+				CD5FFFCE23B5EE4B00181C50 /* UserInfoKeyChain.h */,
+				CD5FFFCF23B5EE4B00181C50 /* UserInfoKeyChain.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1484,6 +1492,15 @@
 				76C9072922F5C1A8006BA6E5 /* SelectListModel.m */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		CD5FFF4423B5DA4C00181C50 /* Pay */ = {
+			isa = PBXGroup;
+			children = (
+				CD5FFF4523B5DA6100181C50 /* PayManager.h */,
+				CD5FFF4623B5DA6100181C50 /* PayManager.m */,
+			);
+			path = Pay;
 			sourceTree = "<group>";
 		};
 		CD93A6DE22F1374D009190E2 /* Frameworks */ = {
@@ -1543,6 +1560,7 @@
 		CD9704F522DC6D9500132518 /* CaptureDeviceProject */ = {
 			isa = PBXGroup;
 			children = (
+				CD5FFF4423B5DA4C00181C50 /* Pay */,
 				CD93A70022F13E3C009190E2 /* CaptureDeviceProject.entitlements */,
 				765FCACC22F51CBF00948374 /* Camera */,
 				765FCADB22F51CDE00948374 /* ScreenCatch */,
@@ -1578,8 +1596,8 @@
 		D71758EE4C55551FD4152902 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				7C8F6585BF7D37AB6625E812 /* Pods-CaptureDeviceProject.debug.xcconfig */,
-				A877AE4A91C35ADB3A4DB0D8 /* Pods-CaptureDeviceProject.release.xcconfig */,
+				7DEC799C91DB8396D2EB332B /* Pods-CaptureDeviceProject.debug.xcconfig */,
+				F80202460823907D9D0E0CF8 /* Pods-CaptureDeviceProject.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1820,22 +1838,11 @@
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
-				"${BUILT_PRODUCTS_DIR}/IQKeyboardManager/IQKeyboardManager.framework",
-				"${BUILT_PRODUCTS_DIR}/MetalPetal/MetalPetal.framework",
-				"${BUILT_PRODUCTS_DIR}/Toast/Toast.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardManager.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MetalPetal.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Toast.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-CaptureDeviceProject/Pods-CaptureDeviceProject-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2068,6 +2075,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD5FFF4723B5DA6100181C50 /* PayManager.m in Sources */,
 				769E25DF231125A200D39537 /* NetWorking.m in Sources */,
 				7647932122F5B413005B622E /* SelectListViewController.m in Sources */,
 				CD97050622DC6D9600132518 /* main.m in Sources */,
@@ -2082,6 +2090,7 @@
 				765FCAE622F523FD00948374 /* BaseNavigationController.m in Sources */,
 				765FCAD922F51CBF00948374 /* CameraConfigModel.m in Sources */,
 				765FCAD722F51CBF00948374 /* CameraCatchViewController.m in Sources */,
+				CD5FFFD023B5EE4B00181C50 /* UserInfoKeyChain.m in Sources */,
 				765FCAF122F5297100948374 /* CSConstants.m in Sources */,
 				765FCAF622F52B1E00948374 /* NavBgImage.m in Sources */,
 				769E25E32311483900D39537 /* PushFailGuidanceController.m in Sources */,
@@ -2147,7 +2156,6 @@
 /* Begin XCBuildConfiguration section */
 		761AB8F423099CCD00B97B0C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7C8F6585BF7D37AB6625E812 /* Pods-CaptureDeviceProject.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
@@ -2170,7 +2178,6 @@
 		};
 		761AB8F523099CCD00B97B0C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A877AE4A91C35ADB3A4DB0D8 /* Pods-CaptureDeviceProject.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
@@ -2193,7 +2200,7 @@
 		};
 		CD93A6FD22F1374D009190E2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7C8F6585BF7D37AB6625E812 /* Pods-CaptureDeviceProject.debug.xcconfig */;
+			baseConfigurationReference = 7DEC799C91DB8396D2EB332B /* Pods-CaptureDeviceProject.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ScreenCapture/ScreenCapture.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -2217,7 +2224,7 @@
 		};
 		CD93A6FE22F1374D009190E2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A877AE4A91C35ADB3A4DB0D8 /* Pods-CaptureDeviceProject.release.xcconfig */;
+			baseConfigurationReference = F80202460823907D9D0E0CF8 /* Pods-CaptureDeviceProject.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ScreenCapture/ScreenCapture.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -2355,7 +2362,7 @@
 		};
 		CD97052022DC6D9600132518 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7C8F6585BF7D37AB6625E812 /* Pods-CaptureDeviceProject.debug.xcconfig */;
+			baseConfigurationReference = 7DEC799C91DB8396D2EB332B /* Pods-CaptureDeviceProject.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = CaptureDeviceProject/CaptureDeviceProject.entitlements;
@@ -2380,7 +2387,7 @@
 		};
 		CD97052122DC6D9600132518 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A877AE4A91C35ADB3A4DB0D8 /* Pods-CaptureDeviceProject.release.xcconfig */;
+			baseConfigurationReference = F80202460823907D9D0E0CF8 /* Pods-CaptureDeviceProject.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = CaptureDeviceProject/CaptureDeviceProject.entitlements;

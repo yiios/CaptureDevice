@@ -75,6 +75,7 @@
     }] resume];
     
     [self registerAPN];
+    [UserInfoKeyChain keychainInstance];
     [BaseDeviceManager uploadDeviceInfo];
     return YES;
 }
