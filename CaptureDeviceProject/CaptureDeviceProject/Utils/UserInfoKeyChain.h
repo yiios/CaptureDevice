@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *deviceId;
 @property (nonatomic, copy) NSString *downLoadTime;
 @property (nonatomic, copy) NSString *expirationTime;
+@property (nonatomic, copy) NSString *isCreate;
+
 
 + (instancetype)keychainInstance;
 

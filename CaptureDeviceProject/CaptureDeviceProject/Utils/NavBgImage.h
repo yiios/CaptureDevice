@@ -32,6 +32,6 @@
 //判断当前显示VC是不是模态视图
 + (BOOL)judgeCurrentVCIspresented;
 
-
++ (NSString *)getTimestamp:(NSString*)mStr;
 
 @end

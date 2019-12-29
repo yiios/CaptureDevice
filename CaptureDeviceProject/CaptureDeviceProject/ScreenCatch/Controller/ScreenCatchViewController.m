@@ -16,6 +16,7 @@
 #import "PushFailGuidanceController.h"
 #import "NetWorking.h"
 #import "BaseDeviceManager.h"
+#import "PayManager.h"
 
 @interface ScreenCatchViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -56,17 +57,17 @@
 
 - (void)initData {
     self.sectionHeadTitleArray = @[
-                                   @"推流地址",
-                                   @"屏幕方向",
-                                   @"音量设置",
-                                   @"",
-                                   ];
+        @"推流地址",
+        @"屏幕方向",
+        @"音量设置",
+        @"",
+    ];
     
     self.userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.gunmm.CaptureDeviceProject"];
     NSInteger screenOrientationValue = [[self.userDefaults objectForKey:@"screenOrientationValue"] integerValue];
     NSInteger applicationVoiceValue = [[self.userDefaults objectForKey:@"applicationVoiceValue"] integerValue] == 0 ? 10 : [[self.userDefaults objectForKey:@"applicationVoiceValue"] integerValue];
     NSInteger micVoiceValue = [[self.userDefaults objectForKey:@"micVoiceValue"] integerValue] == 0 ? 80 : [[self.userDefaults objectForKey:@"micVoiceValue"] integerValue];
-
+    
     self.screenOrientationdataList = [NSMutableArray array];
     self.applicationVoicedataList = [NSMutableArray array];
     self.micVoicedataList = [NSMutableArray array];
@@ -94,7 +95,7 @@
         }
         i += 5;
     }
-
+    
     for (int i = 5; i <= 100;) {
         NSString *titleString = @"";
         if (i == 80) {
@@ -165,7 +166,19 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     if (section == 1) {
-        self.footerView.showBtn = self.urlStr.length > 0;
+        if (self.urlStr.length > 0) {
+            UserInfoKeyChain *userInfoKeyChain = [UserInfoKeyChain keychainInstance];
+            long expirationTimeLong = [userInfoKeyChain.expirationTime longValue];
+            NSDate *dateNow = [NSDate date];//现在时间
+            long dateNowTimeLong = [dateNow timeIntervalSince1970];
+            if (dateNowTimeLong > expirationTimeLong) {
+                [[PayManager manager] getRequestAppleProduct];
+            } else {
+                self.footerView.showBtn = YES;
+            }
+        } else {
+            self.footerView.showBtn = NO;
+        }
         return self.footerView;
     }
     return nil;

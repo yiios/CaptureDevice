@@ -17,13 +17,26 @@
     item.account = [self keychainAccount];
     item = [YYKeychain selectOneItem:item error:&error];
     if (error || !item) {
-        
-        
-        
-        return nil;
+        UserInfoKeyChain *userInfoKeyChain = [[UserInfoKeyChain alloc] init];
+        userInfoKeyChain.isCreate = @"1";
+
+        NSString *deviceId = [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceId"];
+        if (deviceId.length == 0) {
+            deviceId = [[NSUUID UUID] UUIDString];
+            userInfoKeyChain.isCreate = @"";
+        }
+        NSDate *dateNow = [NSDate date];//现在时间
+        long downLoadTimeLong = [dateNow timeIntervalSince1970];
+        long expirationTimeLong = [dateNow timeIntervalSince1970] + 7 * 24 * 3600;
+        userInfoKeyChain.deviceId = deviceId;
+        userInfoKeyChain.downLoadTime = [NSString stringWithFormat:@"%ld", downLoadTimeLong];
+        userInfoKeyChain.expirationTime = [NSString stringWithFormat:@"%ld", expirationTimeLong];
+        [userInfoKeyChain saveToKeychain];
+        return userInfoKeyChain;
     }
     else {
         UserInfoKeyChain *userInfoKeyChain = [self modelWithJSON:item.password];
+        userInfoKeyChain.isCreate = @"";
         return userInfoKeyChain;
     }
 }

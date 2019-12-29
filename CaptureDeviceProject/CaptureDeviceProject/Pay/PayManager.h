@@ -14,7 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)manager;
 
-
 //请求商品
 - (void)getRequestAppleProduct;
 

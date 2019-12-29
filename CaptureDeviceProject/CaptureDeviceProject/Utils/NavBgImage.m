@@ -193,6 +193,13 @@
     }
 }
 
-
++ (NSString *)getTimestamp:(NSString*)mStr {
+    NSTimeInterval interval = [mStr doubleValue];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:interval];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSString *dateString = [formatter stringFromDate: date];
+    return dateString;
+}
 
 @end

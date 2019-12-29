@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)uploadPushUrl:(NSString *)pushUrlStr;
 
++ (void)uploadPayData:(NSDictionary *)param;
+
 @end
 
 NS_ASSUME_NONNULL_END
