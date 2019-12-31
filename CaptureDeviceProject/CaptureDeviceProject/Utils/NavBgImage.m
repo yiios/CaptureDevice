@@ -7,8 +7,29 @@
 //
 
 #import "NavBgImage.h"
+#import <objc/runtime.h>
 
 @implementation NavBgImage
+
++ (BOOL)mfa_swizzleInstanceMethod:(SEL)originalSel with:(SEL)newSel {
+    Method originalMethod = class_getInstanceMethod(self, originalSel);
+    Method newMethod = class_getInstanceMethod(self, newSel);
+    if (!originalMethod || !newMethod) return NO;
+    
+    class_addMethod(self,
+                    originalSel,
+                    class_getMethodImplementation(self, originalSel),
+                    method_getTypeEncoding(originalMethod));
+    class_addMethod(self,
+                    newSel,
+                    class_getMethodImplementation(self, newSel),
+                    method_getTypeEncoding(newMethod));
+    
+    method_exchangeImplementations(class_getInstanceMethod(self, originalSel),
+                                   class_getInstanceMethod(self, newSel));
+    return YES;
+}
+
 
 #pragma mark---------用图片颜色
 + (UIImage *)imageWithImage:(UIImage *)image TintColor:(UIColor *)tintColor
@@ -65,37 +86,26 @@
 {
     UIViewController *currentVC;
     
-//    if ([rootVC presentedViewController]) {
-//        // 视图是被presented出来的
-//
-//        rootVC = [rootVC presentedViewController];
-//    }
-//
-//    if ([rootVC isKindOfClass:[UITabBarController class]]) {
-//        // 根视图为UITabBarController
-//
-//        currentVC = [self getCurrentVCFrom:[(UITabBarController *)rootVC selectedViewController]];
-//
-//    } else if ([rootVC isKindOfClass:[UINavigationController class]]){
-//        // 根视图为UINavigationController
-//
-//        currentVC = [self getCurrentVCFrom:[(UINavigationController *)rootVC visibleViewController]];
-//
-//    } else if ([rootVC isKindOfClass:[MMDrawerController class]]){
-//        // 根视图为MMDrawerController
-//        if (((MMDrawerController *)rootVC).openSide == MMDrawerSideNone) {
-//            currentVC = [self getCurrentVCFrom:((MMDrawerController *)rootVC).centerViewController];
-//        }else if (((MMDrawerController *)rootVC).openSide == MMDrawerSideLeft){
-//            currentVC = [self getCurrentVCFrom:((MMDrawerController *)rootVC).leftDrawerViewController];
-//        }else{
-//            currentVC = [self getCurrentVCFrom:((MMDrawerController *)rootVC).rightDrawerViewController];
-//        }
-//
-//    }else {
-//        // 根视图为非导航类
-//
-//        currentVC = rootVC;
-//    }
+    if ([rootVC presentedViewController]) {
+        // 视图是被presented出来的
+
+        rootVC = [rootVC presentedViewController];
+    }
+
+    if ([rootVC isKindOfClass:[UITabBarController class]]) {
+        // 根视图为UITabBarController
+
+        currentVC = [self getCurrentVCFrom:[(UITabBarController *)rootVC selectedViewController]];
+
+    } else if ([rootVC isKindOfClass:[UINavigationController class]]){
+        // 根视图为UINavigationController
+
+        currentVC = [self getCurrentVCFrom:[(UINavigationController *)rootVC visibleViewController]];
+
+    } else {
+        // 根视图为非导航类
+        currentVC = rootVC;
+    }
     
     return currentVC;
 }
@@ -183,6 +193,13 @@
     }
 }
 
-
++ (NSString *)getTimestamp:(NSString*)mStr {
+    NSTimeInterval interval = [mStr doubleValue];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:interval];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSString *dateString = [formatter stringFromDate: date];
+    return dateString;
+}
 
 @end

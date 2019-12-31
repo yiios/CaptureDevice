@@ -15,4 +15,5 @@ typedef void (^FailedBlock)(NSString *errorResult);
 
 + (void)bgPostDataWithParameters:(NSDictionary *)paramets withUrl:(NSString *)urlstr withBlock:(SuccessBlock)block withFailedBlock:(FailedBlock)fBlock;
 
++ (void)bgRegularPostDataWithParameters:(NSDictionary *)paramets withUrl:(NSString *)urlstr withBlock:(SuccessBlock)block withFailedBlock:(FailedBlock)fBlock;
 @end

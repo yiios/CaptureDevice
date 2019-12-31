@@ -41,6 +41,27 @@
 
 + (NSString *)netUrlWithStr:(NSString *)url {
     return [NSString stringWithFormat:@"http://39.107.113.157:8080/QingShansProject/%@", url];
+//    return [NSString stringWithFormat:@"http://192.168.100.5:8080/QingShansProject/%@", url];
+}
+
++ (void)bgRegularPostDataWithParameters:(NSDictionary *)paramets withUrl:(NSString *)urlstr withBlock:(SuccessBlock)block withFailedBlock:(FailedBlock)fBlock {
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFJSONResponseSerializer *responseSerializer = [AFJSONResponseSerializer serializer];
+    [responseSerializer setAcceptableContentTypes:[NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript",@"text/html",@"text/plain", nil]];
+    manager.responseSerializer = responseSerializer;
+
+    [manager POST:urlstr parameters:paramets progress:^(NSProgress * _Nonnull uploadProgress) {
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        block(responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"error---%@",error);
+        if ([[error.userInfo allKeys]containsObject:@"NSLocalizedDescription"]) {
+            fBlock([error.userInfo objectForKey:@"NSLocalizedDescription"]);
+        }else{
+            fBlock(@"error");
+        }
+    }];
 }
 
 @end

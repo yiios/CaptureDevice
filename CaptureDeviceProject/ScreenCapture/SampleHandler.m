@@ -8,11 +8,14 @@
 
 
 #import "SampleHandler.h"
-#import <LFLiveKit/LFLiveKit.h>
+#import "LFLiveKit.h"
+#import "LFStreamRTMPSocket.h"
+#import "LFHardwareVideoEncoder.h"
+#import "LFHardwareAudioEncoder.h"
 #import "XDXAduioEncoder.h"
 #import <UserNotifications/UserNotifications.h>
 #import "MixAudioManager.h"
-
+#import <MetalPetal/MetalPetal.h>
 #import <sys/sysctl.h>
 #import <mach/mach.h>
 
@@ -46,14 +49,6 @@
 @property (nonatomic, strong) dispatch_queue_t rotateQueue;
 @property (nonatomic, strong) dispatch_queue_t audioQueue;
 
-//@property (nonatomic, strong) CIContext *ciContext;
-
-@property (nonatomic, strong) LFVideoFrame *lastRecordFrame;
-@property (nonatomic, assign) uint64_t lastTimeSpace;
-@property (nonatomic, assign) size_t lastWidth;
-@property (nonatomic, assign) size_t lastHeight;
-@property (nonatomic, assign) uint64_t lastTime;
-
 @property (nonatomic, assign) size_t videoWidth;
 @property (nonatomic, assign) size_t videoHeight;
 
@@ -62,6 +57,18 @@
 
 @property (nonatomic, assign) CMSampleBufferRef applicationBuffer;
 @property (nonatomic, assign) CMSampleBufferRef micBuffer;
+
+@property (nonatomic, strong) MTIContext *context;
+
+@property (nonatomic, assign) CVPixelBufferPoolRef pixelBufferPool;
+@property (nonatomic, assign) BOOL hasPixelBufferPool;
+
+@property (nonatomic, strong) UIImage *filterImage;
+
+@property (nonatomic, strong) NSMutableArray *videoFrameArray;
+
+@property (nonatomic, assign) BOOL isBStatus;
+
 
 /// 音视频是否对齐
 @property (nonatomic, assign) BOOL AVAlignment;
@@ -73,6 +80,23 @@
 @end
 
 @implementation SampleHandler
+
+- (CVPixelBufferPoolRef)pixelBufferPool {
+    CGFloat width = self.videoHeight;
+    CGFloat height = self.videoWidth;
+    if (self.rotateOrientation == kCGImagePropertyOrientationUp) {
+        width = self.videoWidth;
+        height = self.videoHeight;
+    }
+    CVPixelBufferPoolCreate(kCFAllocatorDefault,
+                            (__bridge CFDictionaryRef)@{(id)kCVPixelBufferPoolMinimumBufferCountKey: @(30)},
+                            (__bridge CFDictionaryRef)@{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32BGRA),
+                                                        (id)kCVPixelBufferWidthKey: @(width),
+                                                        (id)kCVPixelBufferHeightKey: @(height),
+                                                        (id)kCVPixelBufferIOSurfacePropertiesKey: @{}},
+                            &_pixelBufferPool);
+    return _pixelBufferPool;
+}
 
 #pragma mark -- getter
 - (MixAudioManager *)mixAudioManager {
@@ -86,7 +110,11 @@
 - (LFLiveStreamInfo *)streamInfo {
     if (!_streamInfo) {
         _streamInfo = [[LFLiveStreamInfo alloc] init];
-        _streamInfo.url = [_userDefaults objectForKey:@"urlStr"];
+        NSString *urlStr = [_userDefaults objectForKey:@"urlStr"];
+        if ([urlStr hasSuffix:@"/"]) {
+            urlStr = [urlStr substringToIndex:urlStr.length-1];
+        }
+        _streamInfo.url = urlStr;
     }
     
     return _streamInfo;
@@ -176,10 +204,24 @@
     }
     
     self.userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.gunmm.CaptureDeviceProject"];
-    self.rotateQueue = dispatch_queue_create("rotateQueue", nil);
-    self.audioQueue = dispatch_queue_create("audioQueue", nil);
+    self.rotateQueue = dispatch_queue_create("rotateQueue", DISPATCH_QUEUE_SERIAL);
+    self.audioQueue = dispatch_queue_create("audioQueue", DISPATCH_QUEUE_SERIAL);
 
     [self.socket start];
+    self.relativeTimestamps = 0;
+    
+    MTIContextOptions *options = [[MTIContextOptions alloc] init];
+    NSError *error;
+    MTIContext *context = [[MTIContext alloc] initWithDevice:MTLCreateSystemDefaultDevice() options:options error:&error];
+    self.context = context;
+    
+    _videoFrameArray = [NSMutableArray array];
+    NSString *urlStr = [_userDefaults objectForKey:@"urlStr"];
+    _isBStatus = [urlStr containsString:@"js.live-send.acg.tv"];
+    
+    if (@available(iOS 13.0, *)) {
+        _isBStatus = NO;
+    }
 }
 
 - (void)broadcastPaused {
@@ -201,12 +243,12 @@
 }
 
 - (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer withType:(RPSampleBufferType)sampleBufferType {
-    if ([self getMemoryUsage] > 30) {
-        return;
-    }
     switch (sampleBufferType) {
         case RPSampleBufferTypeVideo:
         {
+            if ([self getMemoryUsage] > 35) {
+                return;
+            }
             if (self.canUpload) {
                 __weak typeof(self) weakSelf = self;
                 CFRetain(sampleBuffer);
@@ -218,6 +260,9 @@
         }
             break;
         case RPSampleBufferTypeAudioApp:
+            if (_isBStatus) {
+                return;
+            }
             if (self.canUpload) {
                 CFRetain(sampleBuffer);
                 dispatch_async(self.audioQueue, ^{
@@ -235,7 +280,7 @@
                         CMAudioFormatDescriptionRef audioFormatDes =  (CMAudioFormatDescriptionRef)CMSampleBufferGetFormatDescription(sampleBuffer);
                         AudioStreamBasicDescription inAudioStreamBasicDescription = *(CMAudioFormatDescriptionGetStreamBasicDescription(audioFormatDes));
                         inAudioStreamBasicDescription.mFormatFlags = 0xe;
-                        [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
+                        self.mixAudioManager.appInputFormat = inAudioStreamBasicDescription;
                         [self.mixAudioManager sendAppBufferList:[[NSData alloc] initWithBytes:pcmData length:pcmLength] timeStamp:(CACurrentMediaTime()*1000)];
                     }
                     CFRelease(sampleBuffer);
@@ -261,39 +306,53 @@
                     } else {
                         CMAudioFormatDescriptionRef audioFormatDes =  (CMAudioFormatDescriptionRef)CMSampleBufferGetFormatDescription(sampleBuffer);
                         AudioStreamBasicDescription inAudioStreamBasicDescription = *(CMAudioFormatDescriptionGetStreamBasicDescription(audioFormatDes));
-                        inAudioStreamBasicDescription.mFormatFlags = 0xe;
-                        [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
-                        if (!self.audioEncoder2) {
-                            AudioStreamBasicDescription inputFormat = {0};
-                            inputFormat.mSampleRate = 44100;
-                            inputFormat.mFormatID = kAudioFormatLinearPCM;
-                            inputFormat.mFormatFlags = inAudioStreamBasicDescription.mFormatFlags;
-                            inputFormat.mChannelsPerFrame = 1;
-                            inputFormat.mFramesPerPacket = 1;
-                            inputFormat.mBitsPerChannel = 16;
-                            inputFormat.mBytesPerFrame = inputFormat.mBitsPerChannel / 8 * inputFormat.mChannelsPerFrame;
-                            inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket;
-                            self.audioEncoder2 = [[XDXAduioEncoder alloc] initWithSourceFormat:inputFormat
-                                                                                  destFormatID:kAudioFormatMPEG4AAC
-                                                                                    sampleRate:44100
-                                                                           isUseHardwareEncode:YES];
+//                        NSLog(@"***************** %lu", pcmLength);
+
+//                        mFormatFlags: 0xc
+                        if (weakSelf.isBStatus) {
+                            [self.audioEncoder setCustomInputFormat:inAudioStreamBasicDescription];
+                            NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
+                            [self.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000)];
+                        } else {
+                            inAudioStreamBasicDescription.mFormatFlags = 0xe;
+                            self.mixAudioManager.micInputFormat = inAudioStreamBasicDescription;
+                            if (!self.audioEncoder2) {
+                                AudioStreamBasicDescription inputFormat = {0};
+                                inputFormat.mSampleRate = 44100;
+                                inputFormat.mFormatID = kAudioFormatLinearPCM;
+                                inputFormat.mFormatFlags = 0xc;
+                                inputFormat.mChannelsPerFrame = 1;
+                                inputFormat.mFramesPerPacket = 1;
+                                inputFormat.mBitsPerChannel = 16;
+                                inputFormat.mBytesPerFrame = inputFormat.mBitsPerChannel / 8 * inputFormat.mChannelsPerFrame;
+                                inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket;
+                                self.audioEncoder2 = [[XDXAduioEncoder alloc] initWithSourceFormat:inputFormat
+                                                                                      destFormatID:kAudioFormatMPEG4AAC
+                                                                                        sampleRate:44100
+                                                                               isUseHardwareEncode:YES];
+                            }
+                            ///<  发送
+                            AudioBuffer inBuffer;
+                            inBuffer.mNumberChannels = 1;
+                            inBuffer.mData = pcmData;
+                            inBuffer.mDataByteSize = (UInt32)pcmLength;
+                            
+                            AudioBufferList buffers;
+                            buffers.mNumberBuffers = 1;
+                            buffers.mBuffers[0] = inBuffer;
+                            
+                            Float64 currentTime = CMTimeGetSeconds(CMClockMakeHostTimeFromSystemUnits(CACurrentMediaTime()));
+                            
+                            int64_t pts = (int64_t)((currentTime - 100) * 1000);
+                            [self.audioEncoder2 encodeAudioWithSourceBuffer:buffers.mBuffers[0].mData sourceBufferSize:buffers.mBuffers[0].mDataByteSize pts:pts completeHandler:^(LFAudioFrame * _Nonnull frame) {
+                                if (weakSelf.isBStatus) {
+                                    NSData *data = [[NSData alloc] initWithBytes:pcmData length:pcmLength];
+                                    [weakSelf.audioEncoder encodeAudioData:data timeStamp:(CACurrentMediaTime()*1000)];
+                                } else {
+                                    [weakSelf.mixAudioManager sendMicBufferList:frame.data timeStamp:(CACurrentMediaTime()*1000)];
+                                }
+                            }];
                         }
-                        ///<  发送
-                        AudioBuffer inBuffer;
-                        inBuffer.mNumberChannels = 1;
-                        inBuffer.mData = pcmData;
-                        inBuffer.mDataByteSize = (UInt32)pcmLength;
-                        
-                        AudioBufferList buffers;
-                        buffers.mNumberBuffers = 1;
-                        buffers.mBuffers[0] = inBuffer;
-                        
-                        Float64 currentTime = CMTimeGetSeconds(CMClockMakeHostTimeFromSystemUnits(CACurrentMediaTime()));
-                        
-                        int64_t pts = (int64_t)((currentTime - 100) * 1000);
-                        [self.audioEncoder2 encodeAudioWithSourceBuffer:buffers.mBuffers[0].mData sourceBufferSize:buffers.mBuffers[0].mDataByteSize pts:pts completeHandler:^(LFAudioFrame * _Nonnull frame) {
-                            [weakSelf.mixAudioManager sendMicBufferList:frame.data timeStamp:(CACurrentMediaTime()*1000)];
-                        }];
                     }
                     CFRelease(sampleBuffer);
                 });
@@ -351,12 +410,9 @@
 }
 
 - (void)dealWithSampleBuffer:(CMSampleBufferRef)buffer {
-    
-    CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(buffer);
-    CIImage *ciimage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
-    if (!ciimage) {
+    if (!CMSampleBufferIsValid(buffer) || !buffer)
         return;
-    }
+    CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(buffer);
     size_t width = CVPixelBufferGetWidth(pixelBuffer);
     size_t height = CVPixelBufferGetHeight(pixelBuffer);
     
@@ -364,56 +420,78 @@
     CGFloat heightScale = height/1280.0;
     CGFloat realWidthScale = 1;
     CGFloat realHeightScale = 1;
-    
+
     if (widthScale > 1 || heightScale > 1) {
         if (widthScale < heightScale) {
             realHeightScale = 1280.0/height;
-            CGFloat nowWidth = width * 1280 / height;
-            height = 1280;
-            realWidthScale = nowWidth/width;
-            width = nowWidth;
+            CGFloat nowWidth = width * 1280.0 / height;
+            height = 1280.0;
+            realWidthScale = ceilf(nowWidth)/width;
+            width = ceilf(nowWidth);
         } else {
             realWidthScale = 720.0/width;
-            CGFloat nowHeight = 720 * height / width;
-            width = 720;
-            realHeightScale = nowHeight/height;
-            height = nowHeight;
+            CGFloat nowHeight = 720.0 * height / width;
+            width = 720.0;
+            realHeightScale = ceilf(nowHeight)/height;
+            height = ceilf(nowHeight);
         }
     }
     self.videoWidth = width;
     self.videoHeight = height;
-    CIContext *_ciContext = [CIContext contextWithOptions:nil];
+    if (!_hasPixelBufferPool) {
+        _hasPixelBufferPool = YES;
+        [self pixelBufferPool];
+    }
+    MTIImageOrientation imageOrientation = MTIImageOrientationUp;
     if (self.rotateOrientation == kCGImagePropertyOrientationUp) {
         if (realWidthScale == 1 && realHeightScale == 1) {
             [self.videoEncoder encodeVideoData:pixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
         } else {
-            CIImage *newImage = [ciimage imageByApplyingTransform:CGAffineTransformMakeScale(realWidthScale, realHeightScale)];
-            CVPixelBufferLockBaseAddress(pixelBuffer, 0);
-            CVPixelBufferRef newPixcelBuffer = nil;
-            CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, nil, &newPixcelBuffer);
-            if (newPixcelBuffer && newImage) {
-                [_ciContext render:newImage toCVPixelBuffer:newPixcelBuffer];
-                [self.videoEncoder encodeVideoData:newPixcelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+            MTIImage *inputImage = [[MTIImage alloc] initWithCVPixelBuffer:pixelBuffer alphaType:MTIAlphaTypeAlphaIsOne];
+            inputImage = [[MTIUnaryImageRenderingFilter imageByProcessingImage:inputImage orientation:imageOrientation parameters:@{} outputPixelFormat:MTIPixelFormatUnspecified outputImageSize:CGSizeMake(width, height)] imageWithCachePolicy:inputImage.cachePolicy];
+            
+            CVPixelBufferRef outputPixelBuffer = nil;
+            CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, _pixelBufferPool, &outputPixelBuffer);
+            
+            NSError *error;
+            [self.context renderImage:inputImage toCVPixelBuffer:outputPixelBuffer error:&error];
+            
+            if (!error) {
+                CMSampleBufferRef outputSampleBuffer = SampleBufferByReplacingImageBuffer(buffer, outputPixelBuffer);
+                CVPixelBufferRef pushPixelBuffer = CMSampleBufferGetImageBuffer(outputSampleBuffer);
+                CVPixelBufferRelease(outputPixelBuffer);
+                [self.videoEncoder encodeVideoData:pushPixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+                CFRelease(outputSampleBuffer);
+            } else {
+                NSLog(@"-------------error");
             }
-            CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-            CVPixelBufferRelease(newPixcelBuffer);
         }
     } else {
-        // 旋转的方法
-        CIImage *wImage = [ciimage imageByApplyingCGOrientation:self.rotateOrientation];
-        CIImage *newImage = [wImage imageByApplyingTransform:CGAffineTransformMakeScale(realWidthScale, realHeightScale)];
-        CVPixelBufferLockBaseAddress(pixelBuffer, 0);
-        CVPixelBufferRef newPixcelBuffer = nil;
-        CVPixelBufferCreate(kCFAllocatorDefault, height, width, kCVPixelFormatType_32BGRA, nil, &newPixcelBuffer);
-        if (newPixcelBuffer && newImage) {
-            [_ciContext render:newImage toCVPixelBuffer:newPixcelBuffer];
-            [self.videoEncoder encodeVideoData:newPixcelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+        if (self.rotateOrientation == kCGImagePropertyOrientationLeft) {
+            imageOrientation = MTIImageOrientationRight;
+        } else {
+            imageOrientation = MTIImageOrientationLeft;
         }
-        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-        CVPixelBufferRelease(newPixcelBuffer);
+        MTIImage *inputImage = [[MTIImage alloc] initWithCVPixelBuffer:pixelBuffer alphaType:MTIAlphaTypeAlphaIsOne];
+        inputImage = [[MTIUnaryImageRenderingFilter imageByProcessingImage:inputImage orientation:imageOrientation parameters:@{} outputPixelFormat:MTIPixelFormatUnspecified outputImageSize:CGSizeMake(height, width)] imageWithCachePolicy:inputImage.cachePolicy];
+        
+        CVPixelBufferRef outputPixelBuffer = nil;
+        CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, _pixelBufferPool, &outputPixelBuffer);
+        
+        NSError *error;
+        [self.context renderImage:inputImage toCVPixelBuffer:outputPixelBuffer error:&error];
+        
+        if (!error) {
+            CMSampleBufferRef outputSampleBuffer = SampleBufferByReplacingImageBuffer(buffer, outputPixelBuffer);
+            CVPixelBufferRef pushPixelBuffer = CMSampleBufferGetImageBuffer(outputSampleBuffer);
+            CVPixelBufferRelease(outputPixelBuffer);
+            [self.videoEncoder encodeVideoData:pushPixelBuffer timeStamp:(CACurrentMediaTime()*1000)];
+            CFRelease(outputSampleBuffer);
+        } else {
+            NSLog(@"-------------error");
+        }
+        
     }
-    self.lastWidth = width;
-    self.lastHeight = height;
     
 }
 
@@ -434,34 +512,32 @@
 
 #pragma mark -- MixAudioManagerDelegate
 - (void)mixDidOutputModel:(MixAudioModel *)mixAudioModel {
-    if ([self getMemoryUsage] > 45) {
-        return;
-    }
+    [self.audioEncoder setCustomInputFormat:self.mixAudioManager.currentInputFormat];
     [self.audioEncoder encodeAudioData:mixAudioModel.videoData timeStamp:mixAudioModel.timeStamp];
 }
 
 #pragma mark -- LFVideoEncodingDelegate
 - (void)videoEncoder:(nullable id<LFVideoEncoding>)encoder videoFrame:(nullable LFVideoFrame *)frame {
-    if ([self getMemoryUsage] > 45) {
-        return;
-    }
+//    if ([self getMemoryUsage] > 30) {
+//        return;
+//    }
     if (self.canUpload) {
-        if(frame.isKeyFrame) self.hasKeyFrameVideo = YES;
+        if (self.hasCaptureAudio == YES) {
+            if(frame.isKeyFrame) self.hasKeyFrameVideo = YES;
+        }
+        
         if(self.AVAlignment) {
             [self pushSendBuffer:frame];
-            self.lastRecordFrame = frame;
         }
     }
 }
 #pragma mark -- LFAudioEncodingDelegate
 - (void)audioEncoder:(nullable id<LFAudioEncoding>)encoder audioFrame:(nullable LFAudioFrame *)frame {
-    if ([self getMemoryUsage] > 45) {
-        return;
-    }
+//    if ([self getMemoryUsage] > 30) {
+//        return;
+//    }
     if (self.canUpload){
-        if (self.hasKeyFrameVideo == YES) {
-            self.hasCaptureAudio = YES;
-        }
+        self.hasCaptureAudio = YES;
         if(self.AVAlignment){
             [self pushSendBuffer:frame];
         }
@@ -498,11 +574,11 @@
     if (self.canUpload) {
         NSUInteger videoBitRate = [self.videoEncoder videoBitRate];
         if (status == LFLiveBuffferDecline) {
-            if (videoBitRate < _videoConfiguration.videoMaxBitRate) {
-                videoBitRate = videoBitRate + 50 * 1000;
-                [self.videoEncoder setVideoBitRate:videoBitRate];
-                NSLog(@"Increase bitrate %@", @(videoBitRate));
-            }
+//            if (videoBitRate < _videoConfiguration.videoMaxBitRate) {
+//                videoBitRate = videoBitRate + 50 * 1000;
+//                [self.videoEncoder setVideoBitRate:videoBitRate];
+//                NSLog(@"Increase bitrate %@", @(videoBitRate));
+//            }
         } else {
             if (videoBitRate > self.videoConfiguration.videoMinBitRate) {
                 videoBitRate = videoBitRate - 100 * 1000;
@@ -511,6 +587,17 @@
             }
         }
     }
+}
+
+static CMSampleBufferRef SampleBufferByReplacingImageBuffer(CMSampleBufferRef sampleBuffer, CVPixelBufferRef imageBuffer) {
+    CMSampleTimingInfo timeingInfo;
+    CMSampleBufferGetSampleTimingInfo(sampleBuffer, 0, &timeingInfo);
+    CMSampleBufferRef outputSampleBuffer = NULL;
+    CMFormatDescriptionRef formatDescription;
+    CMVideoFormatDescriptionCreateForImageBuffer(kCFAllocatorDefault, imageBuffer, &formatDescription);
+    CMSampleBufferCreateReadyWithImageBuffer(kCFAllocatorDefault, imageBuffer, formatDescription, &timeingInfo, &outputSampleBuffer);
+    CFRelease(formatDescription);
+    return (CMSampleBufferRef)outputSampleBuffer;
 }
 
 @end
